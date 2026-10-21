@@ -1,0 +1,15 @@
+[Unit]
+Description=Previa local XUI NAXX
+After=network.target
+
+[Service]
+Type=simple
+User=naxx
+Group=naxx
+WorkingDirectory=/home/naxx/naxx-preview
+ExecStart=/usr/bin/python3 /home/naxx/naxx-preview/servidor_local.py --no-browser --host 0.0.0.0 --port 8765
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,252 @@
+Settings	Configurações gerais
+Save Changes	Salvar alterações
+General	Geral
+Security	Segurança
+Streaming	Transmissão
+Web Player	Player web
+Logs	Registros
+Preferences	Preferências
+Server Name	Nome do servidor
+Server Timezone	Fuso horário do servidor
+Message of the Day	Mensagem do dia
+Show Entries	Itens por página
+Fails Per Time	Falhas por período
+Date Format	Formato da data
+Datetime Format	Formato de data e hora
+Group Streams Table	Agrupar transmissões na tabela
+Seamless Navigation	Navegação sem recarregar a página
+Show Tickets Icon	Exibir ícone de chamados
+Disable Restart Counter	Desativar contador de reinicializações
+Auto-Cleanup Files	Limpar arquivos automaticamente
+Check VOD Cron	Verificar rotina de VOD
+Show Images & Picons	Exibir imagens e ícones de canais
+Group Buttons	Agrupar botões
+Quick Edit Modal	Janela de edição rápida
+MySQL Sleep Timeout	Tempo limite de conexões ociosas no MySQL
+Show Graphs	Exibir gráficos
+Show Connections Map	Exibir mapa de conexões
+Alternate Server View	Visualização alternativa de servidores
+Show Header Stats	Exibir estatísticas no cabeçalho
+Show Service Status	Exibir estado dos serviços
+CPU Threshold %	Limite de CPU (%)
+Memory Threshold %	Limite de memória (%)
+Disk Threshold %	Limite de disco (%)
+Network Threshold %	Limite de rede (%)
+Clients Threshold %	Limite de clientes (%)
+Search	Pesquisa
+Enable Search	Ativar pesquisa
+Number of Items	Quantidade de itens
+Reseller	Revendedor
+Disable Trials	Desativar testes
+SSL Custom DNS	DNS personalizado com SSL
+Debug	Diagnóstico
+Debug Mode	Modo de diagnóstico
+Auto-Send Logs to XUI	Enviar registros automaticamente ao XUI
+Enable reCAPTCHA	Ativar reCAPTCHA
+reCAPTCHA V2 - Site Key	reCAPTCHA V2 — chave do site
+reCAPTCHA V2 - Secret Key	reCAPTCHA V2 — chave secreta
+Default Arguments	Parâmetros padrão
+User Agent	Agente de usuário
+HTTP Proxy	Proxy HTTP
+Headers	Cabeçalhos
+On Demand Probesize	Tamanho da análise sob demanda
+IP Security	Segurança de IP
+Match Subnet of IP	Verificar sub-rede do IP
+Logout On IP Change	Encerrar sessão ao mudar de IP
+Restrict to Same IP	Restringir ao mesmo IP
+Random RTMP IP	IP RTMP aleatório
+Disallow 2nd IP	Bloquear segundo IP
+Disallow if Connections <=	Bloquear se as conexões forem menores ou iguais a
+Restream Prevention	Prevenção de retransmissão
+XUI Detect - Deny	Detecção de XUI — negar acesso
+XUI Detect - Ban Lines	Detecção de XUI — banir contas
+Block Hosting Servers	Bloquear servidores de hospedagem
+Block Proxies / VPN's	Bloquear proxies e VPNs
+Spam Prevention	Prevenção de abuso
+Flood Limit	Limite de requisições
+Per Seconds	Período em segundos
+Auth Flood Limit	Limite de requisições de autenticação
+Auth Flood Seconds	Período de autenticação em segundos
+Auth Flood Sleep	Pausa após excesso de autenticações
+Flood IP Exclusions	IPs isentos do limite de requisições
+Detect MAC Bruteforce	Detectar tentativas de força bruta por MAC
+Detect Username Bruteforce	Detectar tentativas de força bruta por usuário
+Bruteforce Frequency	Intervalo de verificação de força bruta
+Maximum Login Attempts	Máximo de tentativas de login
+Max Simultaneous Downloads	Máximo de downloads simultâneos
+TMDb Key	Chave do TMDb
+TMDb Language	Idioma do TMDb
+Download Images	Baixar imagens
+API Redirect	Redirecionamento da API
+Append Movie Year	Adicionar ano ao título do filme
+API Container	Formato de saída da API
+Cache Playlists for	Manter listas em cache por
+Grab Playlists from MySQL	Obter listas diretamente do MySQL
+Force EPG to UTC Timezone	Forçar EPG no fuso UTC
+Keep Request Protocol	Manter protocolo da requisição
+VOD Parser	Analisador de títulos de VOD
+Enable Cloudflare	Ativar Cloudflare
+Legacy Support	Compatibilidade com aplicativos antigos
+Legacy Playlist URL	URL de lista para aplicativos antigos
+Legacy XMLTV URL	URL XMLTV para aplicativos antigos
+Legacy Panel API	API do painel para aplicativos antigos
+Duplicate Streams in Legacy Apps	Duplicar transmissões em aplicativos antigos
+EPG API	API do guia de programação
+Enable EPG API	Ativar API do guia de programação
+Append Extra Data	Incluir dados adicionais
+Days to Fetch	Dias para buscar
+Days to Keep	Dias para manter
+API Services	Serviços da API
+Admin Streaming IP's	IPs de transmissão dos administradores
+API IP's	IPs autorizados na API
+API Password	Senha da API
+Disable EPG Download - Line	Desativar download de EPG para contas
+Disable EPG Download - Restreamer	Desativar download de EPG para retransmissores
+Disable Playlist Download - Line	Desativar download de listas para contas
+Disable Playlist Download - Restreamer	Desativar download de listas para retransmissores
+Disable Player API	Desativar API do player
+Disable Enigma2 API	Desativar API Enigma2
+Disable Ministra API	Desativar API Ministra
+Verify Hosts	Verificar servidores de origem
+Streaming Password	Senha de transmissão
+Enable ISP Lock	Ativar bloqueio por provedor
+Enable ASN Lock	Ativar bloqueio por ASN
+Disable MPEG-TS Output	Desativar saída MPEG-TS
+Allow Restreamers - MPEG-TS	Permitir retransmissores em MPEG-TS
+Disable HLS Output	Desativar saída HLS
+Allow Restreamers - HLS	Permitir retransmissores em HLS
+Disable RTMP Output	Desativar saída RTMP
+Allow Restreamers - RTMP	Permitir retransmissores em RTMP
+Case Sensitive Lines	Diferenciar maiúsculas e minúsculas nas contas
+Override Country with First	Usar país da primeira conexão
+Encrypt HLS Segments	Criptografar segmentos HLS
+Disallow Empty UA	Bloquear agente de usuário vazio
+VOD Bitrate Buffer	Buffer de taxa de bits do VOD
+VOD Limit At %	Limitar VOD a (%)
+Auto-Kick Hours	Desconectar automaticamente após horas
+Use Domain Name in API	Usar nome de domínio na API
+Encrypt Playlists	Criptografar listas
+Encrypt Restreamer Playlists	Criptografar listas de retransmissores
+Restrictions on Playlists & EPG	Aplicar restrições às listas e ao EPG
+Ignore Invalid Credentials	Ignorar credenciais inválidas
+Client Prebuffer	Buffer inicial do cliente
+Restreamer Prebuffer	Buffer inicial do retransmissor
+Load Balancing	Balanceamento de carga
+Restreamer Bypass Proxy	Permitir que retransmissores ignorem o proxy
+Channel Sorting Type	Tipo de ordenação dos canais
+Sort VOD by Date	Ordenar VOD por data
+Use Nginx Buffer	Usar buffer do Nginx
+Log Client ISP's	Registrar provedor dos clientes
+Online Capacity Interval	Intervalo de atualização da capacidade
+Monitor Connection Status	Monitorar estado das conexões
+Auto-Restart Crashed PHP-FPM	Reiniciar PHP-FPM automaticamente após falhas
+Kill Rogue FFMPEG PID's	Encerrar processos FFMPEG órfãos
+Redirect Expiration	Validade do redirecionamento
+HLS Read Native	Leitura nativa de HLS
+Read Buffer Size	Tamanho do buffer de leitura
+Redis Connection Sync Timer	Intervalo de sincronização de conexões do Redis
+Allow CDN / Forwarding	Permitir CDN e encaminhamento
+Max Failures	Máximo de falhas
+On-Demand Settings	Configurações sob demanda
+Instant Off	Desligamento imediato
+Exit on Failure	Encerrar em caso de falha
+Wait Timeout	Tempo limite de espera
+Request Prebuffer	Solicitar buffer inicial
+Balance As Live	Balancear como transmissão ao vivo
+On-Demand Scanner	Verificador de conteúdo sob demanda
+Enable Scanner	Ativar verificador
+Scan Time	Intervalo de verificação
+Max Probe Time	Tempo máximo de análise
+Keep Logs For	Manter registros por
+Encoding Queue Settings	Configurações da fila de codificação
+Max Movie Encodes	Máximo de filmes em codificação
+Max Channel Encodes	Máximo de canais em codificação
+Queue Loop Timer	Intervalo da fila
+Segment Settings	Configurações de segmentos
+Segment Duration	Duração do segmento
+List Size	Tamanho da lista
+Delete Threshold	Limite para exclusão
+Max Segment Wait Time	Tempo máximo de espera por segmento
+Analysis Duration	Duração da análise
+Probe Size	Tamanho da análise
+FFMPEG Version	Versão do FFMPEG
+FFMPEG Segment Type	Tipo de segmento do FFMPEG
+FFMPEG Show Warnings	Exibir avisos do FFMPEG
+Ignore Keyframes	Ignorar quadros-chave
+DTS - Use FFMPEG v4.0	DTS — usar FFMPEG v4.0
+Loopback Streams via PHP	Retornar transmissões pelo PHP
+Stream Monitor Settings	Configurações do monitor de transmissões
+Restart on Audio Loss	Reiniciar ao perder o áudio
+Priority Backup	Prioridade da fonte reserva
+Probe Duration	Duração da análise inicial
+Stream Failure Sleep	Pausa após falha de transmissão
+FPS Start Delay	Atraso inicial da verificação de FPS
+FPS Check Type	Tipo de verificação de FPS
+Probe via API	Analisar pela API
+Off Air Videos	Vídeos para conteúdo fora do ar
+Stream Down Video	Vídeo de transmissão indisponível
+Banned Video	Vídeo de conta banida
+Expired Video	Vídeo de conta expirada
+Expiring Video	Vídeo de aviso de vencimento
+2nd IP Connected Video	Vídeo de segundo IP conectado
+Allowed Countries	Países permitidos
+Show All Categories	Exibir todas as categorias
+Default Container	Formato padrão
+Always Enabled Subtitles	Manter legendas ativadas
+Connection Problem Indiciation	Indicar problemas de conexão
+Show Channel Logos	Exibir logos dos canais
+Show Preview Channel Logos	Exibir prévia dos logos dos canais
+Playback Limit	Limite de reprodução
+Default Aspect Ratio	Proporção de imagem padrão
+Default Theme Type	Tipo de tema padrão
+Legacy Theme	Tema para modelos antigos
+Legacy URL Redirect	Redirecionar URLs antigas
+Keep URL Extension	Manter extensão da URL
+Disable SSL	Desativar SSL
+Load Channels on Startup	Carregar canais ao iniciar
+Disable MAG Token	Desativar token MAG
+Allowed STB Types	Tipos de aparelhos permitidos
+Allowed STB Recording	Aparelhos autorizados a gravar
+Speedtest URL	URL do teste de velocidade
+Information Message	Mensagem informativa
+Allow Playlist Download	Permitir download de listas
+Allow Bouquet Ordering	Permitir ordenar listas de canais
+Hide Incompatible Streams	Ocultar transmissões incompatíveis
+Mark HEVC as Compatible	Marcar HEVC como compatível
+Background Blur px	Desfoque do fundo (px)
+Background Opacity %	Opacidade do fundo (%)
+Extract Subtitles	Extrair legendas
+Activity Logs	Registros de atividade
+Client Logs	Registros de clientes
+Login Logs	Registros de login
+Stream Error Logs	Registros de erros de transmissão
+Stream Restart Logs	Registros de reinicialização de transmissões
+Brackets	Parênteses
+Hyphen	Hífen
+Default Format	Formato padrão
+Extended Title	Título ampliado
+Extended Description	Descrição ampliada
+Max Clients	Máximo de clientes
+Network Speed	Velocidade da rede
+Detected Network Speed	Velocidade de rede detectada
+Bouquet	Lista de canais
+Legacy	Antigo
+Progress Info	Informações de progresso
+Modern	Moderno
+Forever	Para sempre
+All Countries	Todos os países
+Remove item	Remover item
+Choose...	Selecione…
+Default - EN	Padrão — inglês
+Leave blank to use default XUI video.	Deixe em branco para usar o vídeo padrão do XUI.
+Cancel	Cancelar
+Use Icon	Usar ícone
+Adjust Credits	Ajustar créditos
+Reason for Adjustment...	Motivo do ajuste…
+Record	Gravar
+Clear Stream Logs	Limpar registros da transmissão
+Reinstall Server	Reinstalar servidor
+Restart Services	Reiniciar serviços
+Reboot Server	Reiniciar servidor
+Update Binaries	Atualizar binários
+Update Server	Atualizar servidor

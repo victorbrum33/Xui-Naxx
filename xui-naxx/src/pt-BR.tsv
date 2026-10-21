@@ -1,0 +1,496 @@
+a_to_z	A a Z
+access_code	Código de acesso
+access_output	Saída de acesso
+actions	Ações
+active	Ativo
+activity	Atividade
+activity_id	ID da atividade
+activity_logs	Registros de atividade
+add	Adicionar
+add_bouquet	Adicionar lista de canais
+add_enigma	Adicionar dispositivo Enigma
+add_episode	Adicionar episódio
+add_episode_number	Adicionar o número do episódio ao título.
+add_group	Adicionar grupo
+add_line	Adicionar conta
+add_mag	Adicionar dispositivo MAG
+add_movie	Adicionar filme
+add_multiple	Adicionar vários
+add_package	Adicionar pacote
+add_profile	Adicionar perfil
+add_radio_station	Adicionar estação de rádio
+add_series	Adicionar série
+add_series_name	Adicionar o nome da série ao título do episódio.
+add_single	Adicionar individualmente
+add_station	Adicionar estação
+add_stream	Adicionar transmissão
+add_this_directory	Adicionar esta pasta
+add_user	Adicionar usuário
+admin_permissions	Permissões de administrador
+advanced	Avançado
+advanced_permissions_info	As permissões abaixo só se aplicam aos grupos com a permissão de administrador. Não selecionar nenhuma permissão concede acesso completo.<br/>As permissões avançadas não afetam o grupo principal de administradores. Crie um grupo separado para os demais administradores.
+aes	AES
+all_categories	Todas as categorias
+all_dates	Todas as datas
+all_reasons	Todos os motivos
+all_resellers	Todos os revendedores
+all_series	Todas as séries
+all_servers	Todos os servidores
+allowed_trials	Testes permitidos
+allowed_trials_in	Testes permitidos em
+amount	Quantidade
+aspect_ratio	Proporção da imagem
+audio_channels	Canais de áudio
+audio_codec	Codec de áudio
+audio_sample_rate	Taxa de amostragem de áudio
+auto_restart	Reinício automático
+available	Disponível
+average_audio_bitrate	Taxa média de bits de áudio
+average_video_bitrate	Taxa média de bits de vídeo
+backdrop_url	URL da imagem de fundo
+banned	Banido
+block	Bloquear
+block_ip	Bloquear IP / CIDR
+block_ip_delete_confirm	Deseja excluir este IP?
+blocked_ip_addresses	IPs / CIDRs bloqueados
+blocked_ip_deleted	IP excluído.
+blocked_ips	IPs bloqueados
+blocked_isps	Provedores bloqueados
+blocked_uas	Agentes de usuário bloqueados
+bouquet_data_not_transfered	Os dados da lista de canais não foram transferidos!
+bouquet_name	Nome da lista de canais
+bouquet_order	Ordem das listas de canais
+bouquet_order_success	Lista de canais ordenada.
+bouquet_sort_text	Para reordenar um item, selecione-o e use os botões <i class="mdi mdi-chevron-up"></i> e <i class="mdi mdi-chevron-down"></i>. Selecione vários itens arrastando ou usando CTRL. Ao terminar, clique em Salvar alterações no final da página.
+bouquets	Listas de canais
+buffer_size	Tamanho do buffer
+can_create_subresellers	Pode criar sub-revendedores
+can_delete_users	Pode excluir usuários
+can_view_live_connections	Pode visualizar conexões ao vivo
+can_view_vod_streams	Pode visualizar vídeos sob demanda e transmissões
+cast	Elenco
+categories	Categorias
+category	Categoria
+category_name	Nome da categoria
+change_password	Alterar senha
+channel	Canal
+channel_name	Nome do canal
+channel_order	Ordem dos canais
+channel_order_info	A ordem dos canais está definida por lista de canais. Acesse <a href="./settings.php">Configurações</a> > Transmissão e altere para Manual.
+choose	Escolher
+clear	Limpar
+clear_confirm	Deseja limpar os registros deste período?
+clear_logs	Limpar registros
+clear_streams	Limpar a pasta de transmissões. Todas as transmissões serão reiniciadas.
+clear_success	Registros limpos.
+clear_temp	Limpar a pasta temporária.
+client_logs	Registros de clientes
+clients	Clientes
+close_portal	Fechar portal
+code_delete_confirm	Deseja excluir este código de acesso?
+code_deleted	Código de acesso excluído.
+colour	Cor
+connection_has_been_killed	Conexão encerrada.
+connections	Conexões
+conns	Conexões
+content	Conteúdo
+cookie	Cookie
+country	País
+cpu_%	CPU (%)
+create_channel	Criar canal
+create_symlink	Criar link simbólico
+created_channel	Canal criado
+created_channels	Canais criados
+credit_logs	Registros de créditos
+crf_value	Valor CRF
+current_path	Caminho atual
+custom_channel_sid	SID personalizado do canal
+custom_ffmpeg_command	Comando FFmpeg personalizado
+custom_message	Mensagem personalizada
+dashboard	Visão geral
+dashboard_no_permissions	Bem-vindo ao XUI NAXX! Você não tem permissão para visualizar a visão geral.
+date	Data
+date_range	Período
+dates	Datas
+days	Dias
+days_to_keep	Dias de retenção
+days_to_restart	Dias para reiniciar
+delayed	Com atraso
+delete_bouquet	Excluir lista de canais
+delete_confirm	Deseja excluir esta lista de canais?
+delete_epg	Excluir guia de programação
+delete_episodes	Excluir episódios
+delete_group	Excluir grupo
+delete_movies	Excluir filmes
+delete_package	Excluir pacote
+delete_series	Excluir séries
+delete_streams	Excluir transmissões
+deleted_bouquet	Lista de canais excluída.
+description	Descrição
+deselect_all	Desmarcar todos
+details	Detalhes
+device_confirmed_1	Dispositivo excluído.
+device_confirmed_2	Dispositivo ativado.
+device_confirmed_3	Dispositivo desativado.
+device_confirmed_4	Banimento do dispositivo removido.
+device_confirmed_5	Dispositivo banido.
+device_delete_confirm	Deseja excluir este dispositivo?
+direct	Direto
+direct_source	Fonte direta
+director	Diretor
+directory	Pasta
+disabled	Desativado
+display_name	Nome de exibição
+down	Indisponível
+edit	Editar
+edit_bouquet	Editar lista de canais
+edit_epg	Editar guia de programação
+edit_episodes	Editar episódios
+edit_group	Editar grupo
+edit_movies	Editar filmes
+edit_package	Editar pacote
+edit_profile	Editar perfil
+email_address	E-mail
+encoded	Codificado
+encoding	Codificação
+enigma_devices	Dispositivos Enigma
+enter_a_bouquet_name	Digite o nome da lista de canais.
+enter_a_custom_message	Digite uma mensagem personalizada
+enter_a_radio_station_name	Digite o nome da estação de rádio.
+enter_an_episode_name	Digite o nome do episódio.
+enter_an_episode_source	Digite a fonte do episódio.
+enter_movie_name	Digite o nome do filme.
+enter_movie_source	Digite a fonte do filme.
+epg	Guia de programação (EPG)
+epg_confirm	Deseja excluir este guia de programação?
+epg_deleted	Guia de programação excluído.
+epg_name	Nome do guia de programação
+epgs	Guias de programação
+episode	Episódio
+episode_delete_confirm	Deseja excluir este episódio?
+episode_deleted	Episódio excluído.
+episode_encoding_start	A codificação do episódio foi iniciada. Ele ficará disponível após a conclusão.
+episode_encoding_stop	A codificação do episódio foi interrompida.
+episode_name	Nome do episódio
+episode_number	Número do episódio
+episode_path	Caminho ou URL do episódio
+episode_to_add	Episódio a adicionar
+episode_tooltip_1	Redireciona os usuários finais diretamente para a fonte. Esta opção expõe o endereço da fonte aos usuários.
+episode_tooltip_2	Gera um link simbólico para o arquivo original em vez de codificá-lo.
+episode_tooltip_3	Remove as legendas existentes do arquivo antes da codificação. Não remove legendas gravadas na imagem.
+episode_tooltip_4	Contêiner usado no arquivo final, tanto na codificação quanto no link simbólico.
+episode_tooltip_5	Informe o SID do canal para utilizar o guia de programação nos dispositivos Enigma2. Inclua os dois-pontos, mas remova o primeiro número (1 ou 4097). Exemplo: para '1:0:1:13f:157c:13e:820000:0:0:0:2097', informe ':0:1:13f:157c:13e:820000:0:0:0:'.
+episode_tooltip_6	Selecione um arquivo de legendas para incorporar à transmissão de saída.
+episode_tooltip_7	Algumas transmissões precisam de transcodificação para funcionar na maioria dos dispositivos. A transcodificação só será aplicada aos servidores que recebem diretamente da fonte. Os demais servidores conectados a eles não transcodificarão a transmissão.
+episodes	Episódios
+error	Erro
+error_occured	Ocorreu um erro ao processar sua solicitação.
+error_on_server	Erro no servidor
+event	Evento
+event_confirmed	Evento excluído.
+expiration	Vencimento
+expired	Vencido
+filename	Nome do arquivo
+filter_directory	Filtrar arquivos da pasta atual...
+filter_files	Filtrar arquivos
+filter_results	Filtrar resultados
+fingerprint	Marca de identificação
+fingerprint_fail	Configuração de identificação inválida. Verifique os campos e tente novamente.
+fingerprint_stream	Identificar transmissão
+fingerprint_success	Identificação solicitada. As sessões ativas serão colocadas na fila conforme as configurações.
+folder	Pasta
+folder_watch	Pastas monitoradas
+found_episodes	{num} episódios encontrados
+found_results	{num} resultados encontrados
+friday	Sexta-feira
+from	De
+generic_fail	Não foi possível concluir a operação. Verifique os dados do formulário e tente novamente.
+genres	Gêneros
+group_delete_confirm	Deseja excluir este grupo?
+group_deleted	Grupo excluído.
+group_name	Nome do grupo
+group_success	Grupo adicionado ou atualizado.
+groups	Grupos
+headers	Cabeçalhos
+hours	Horas
+http_proxy	Proxy HTTP
+id	ID
+image_url	URL da imagem
+import_movies	Importar filmes
+information	Informações
+input	Entrada
+install_server	Instalar servidor
+ip	IP
+ip_address	Endereço IP
+ips_per_line	IPs por conta
+is_admin	É administrador
+is_reseller	É revendedor
+key	Chave
+kill_process_info	Encerrar processo: procure identificar e corrigir a causa do problema. Encerrar uma transmissão apenas força seu reinício.
+languages	Idiomas
+last_updated	Última atualização
+line_activity	Atividade da conta
+lines	Contas
+live_connections	Conexões ao vivo
+loading	Carregando
+login	Entrar
+login_message_1	Usuário ou senha incorretos. Tente novamente.
+login_message_2	Código de acesso incorreto. Entre em contato com o administrador.
+login_message_3	Você não tem permissão para acessar este sistema.
+login_message_4	Sua conta foi desativada.
+login_message_5	A verificação do reCAPTCHA falhou. Tente novamente.
+logo_path_url	Caminho / URL do logotipo
+logs	Registros
+m3u	M3U
+m3u_file	Arquivo M3U
+mac_address	Endereço MAC
+mag_devices	Dispositivos MAG
+mag_event	Evento MAG
+mag_event_logs	Registros de eventos MAG
+mag_events	Eventos MAG
+mag_toast_1	Digite uma mensagem para enviar ao dispositivo MAG.
+mag_toast_2	Selecione um canal.
+mag_toast_3	Evento MAG enviado.
+mag_toast_4	Não foi possível enviar o evento MAG.
+main	Principal
+manage_bouquets	Gerenciar listas de canais
+manage_created_channels	Gerenciar canais
+manage_enigma_devices	Gerenciar dispositivos Enigma
+manage_episodes	Gerenciar episódios
+manage_lines	Gerenciar contas
+manage_mag_devices	Gerenciar dispositivos MAG
+manage_movies	Gerenciar filmes
+manage_proxies	Gerenciar proxies
+manage_series	Gerenciar séries
+manage_servers	Gerenciar servidores
+manage_stations	Gerenciar estações
+manage_streams	Gerenciar transmissões
+manage_users	Gerenciar usuários
+management	Gerenciamento
+mass_delete	Excluir em lote
+mass_delete_message_10	Selecione pelo menos uma conta para excluir.
+mass_delete_message_11	Selecione pelo menos uma estação para excluir.
+mass_delete_message_12	Selecione pelo menos um dispositivo para excluir.
+mass_delete_message_13	Selecione pelo menos um usuário para excluir.
+mass_delete_message_6	Selecione pelo menos uma transmissão para excluir.
+mass_delete_message_7	Selecione pelo menos um filme para excluir.
+mass_delete_message_8	Selecione pelo menos uma série para excluir.
+mass_delete_message_9	Selecione pelo menos um episódio para excluir.
+mass_edit	Editar em lote
+mass_edit_episodes	Editar episódios em lote
+mass_edit_episodes_success	Episódios atualizados.
+mass_edit_info	Para editar uma opção em lote, marque a caixa ao lado dela e altere o valor.
+mass_edit_movies	Editar filmes em lote
+mass_edit_movies_success	Filmes atualizados.
+max_connections	Limite de conexões
+maximum_bitrate_tolerance	Tolerância máxima da taxa de bits
+mem_mb	Memória (MB)
+message	Mensagem
+minimum_bitrate_tolerance	Tolerância mínima da taxa de bits
+minimum_credit_for_trials	Créditos mínimos para testes
+monday	Segunda-feira
+monitor	Monitorar
+months	Meses
+mount_point	Ponto de montagem
+movie	Filme
+movie_delete_confirm	Deseja excluir este filme?
+movie_delete_confirmed	Filme excluído.
+movie_encode_started	A codificação do filme foi iniciada. Ele ficará disponível após a conclusão.
+movie_encode_stopped	A codificação do filme foi interrompida.
+movie_name	Nome do filme
+movie_path_or_url	Caminho / URL do filme
+movies	Filmes
+movies_info_2	Ocorreu um erro ao gravar no banco de dados. Verifique o formulário.
+movies_info_3	O nome do filme já está em uso. Escolha outro.
+movies_info_4	Nenhum novo filme foi importado. Verifique os dados de entrada.
+multiple_episodes	Vários episódios
+name	Nome
+native_frames	Quadros nativos
+never	Nunca
+next	Próximo
+no_compatible_file	Nenhum arquivo compatível encontrado
+no_episodes_found	Nenhum episódio encontrado
+no_filter	Sem filtro
+no_results_found	Nenhum resultado encontrado
+no_tmdb_match	Nenhuma correspondência no TMDb
+notes	Observações
+official	Oficial
+offline_streams	Transmissões indisponíveis
+on_demand_probesize	Tamanho da análise sob demanda
+online	Disponível
+online_streams	Transmissões disponíveis
+options	Opções
+order_bouquets	Ordenar listas de canais
+output	Saída
+owner	Responsável
+package_delete_confirm	Deseja excluir este pacote?
+package_deleted	Pacote excluído.
+package_name	Nome do pacote
+package_success	Pacote adicionado ou atualizado.
+packages	Pacotes
+paired_user	Conta vinculada
+parent_directory	Pasta superior
+password	Senha
+permission	Permissão
+permissions_info	As permissões abaixo só se aplicam aos grupos com a permissão de revendedor.
+pid	PID
+play_channel	Reproduzir canal
+player	Reprodutor
+please_wait	Aguarde
+plot	Sinopse
+position	Posição
+poster_url	URL do pôster
+preset	Predefinição
+prev	Anterior
+process	Processo
+process_has_been_killed_wait	Processo encerrado. Ele continuará na lista até a página ser recarregada.
+process_monitor	Monitor de processos
+process_movie	Processar filme
+process_now	Processar agora
+profile_delete_confirm	Deseja excluir este perfil?
+profile_deleted	Perfil excluído.
+profile_name	Nome do perfil
+profile_success	Perfil adicionado ou atualizado.
+profile_tooltip_1	Uma predefinição reúne opções que equilibram velocidade de codificação e compressão. Predefinições mais lentas oferecem melhor compressão: permitem obter mais qualidade no mesmo tamanho de arquivo ou na mesma taxa de bits. Na codificação com qualidade constante, uma predefinição mais lenta pode reduzir a taxa de bits necessária.
+profile_tooltip_10	Altera a proporção do vídeo de saída, por exemplo, 16:9.
+profile_tooltip_11	Define a taxa de quadros.
+profile_tooltip_12	Define a taxa de amostragem do áudio em Hz.
+profile_tooltip_13	Define os canais de áudio.
+profile_tooltip_14	Informe o número de threads para a transcodificação. O valor 0 permite que o FFmpeg escolha a configuração ideal.
+profile_tooltip_15	Remove áreas sensíveis do vídeo. Informe as coordenadas x e y, a largura e a altura da região. Exemplo: x=0:y=0:w=100:h=77:band=10
+profile_tooltip_16	Adiciona seu logotipo no canto superior esquerdo da transmissão. Selecione o codec H.264 para usar esta opção. A sobreposição do logotipo aumenta bastante o consumo de CPU.
+profile_tooltip_2	Define o perfil de vídeo: Main, Baseline ou High.
+profile_tooltip_3	Altera a taxa de bits do vídeo de saída. Útil para reproduzir o vídeo em conexões de internet mais lentas.
+profile_tooltip_4	Altera a taxa de bits do áudio.
+profile_tooltip_5	Argumento -minrate do FFmpeg. Informe apenas o número da tolerância mínima da taxa de bits em kbps.
+profile_tooltip_6	Argumento -maxrate do FFmpeg. Informe apenas o número da tolerância máxima da taxa de bits em kbps.
+profile_tooltip_7	O argumento -bufsize define o buffer de controle da taxa de bits. O reprodutor pode armazenar essa quantidade de dados para compensar variações da transmissão. Informe o valor em kbps.
+profile_tooltip_8	A escala CRF vai de 0 a 51: 0 representa codificação sem perdas, 23 é o padrão e 51 oferece a menor qualidade. Valores menores aumentam a qualidade. A faixa de 18 a 28 costuma ser útil; 18 tende a ter aparência muito próxima da fonte, embora não seja tecnicamente sem perdas. A escala é exponencial: aumentar o CRF em 6 reduz aproximadamente a taxa de bits pela metade; reduzir em 6 aproximadamente a duplica. Escolha o maior CRF que ainda ofereça qualidade aceitável e ajuste após avaliar a saída.
+profile_tooltip_9	Altera a largura e a altura do vídeo de saída, por exemplo, 320:240. Para preservar a proporção, defina uma dimensão e use -1 na outra, por exemplo, 320:-1.
+quick_tools	Ferramentas rápidas
+radio	Rádio
+radio_info_1	Ocorreu um erro ao gravar no banco de dados. Verifique o formulário.
+radio_info_2	A fonte da estação de rádio já está em uso. Escolha outra.
+radio_success	Estação de rádio adicionada ou atualizada.
+rating	Avaliação
+ready	Pronto
+reason	Motivo
+reboot_device	Reiniciar dispositivo
+reboot_on_confirmation	Reiniciar portal após a confirmação
+reencode_on_edit	Recodificar ao editar
+refresh	Atualizar
+release_date	Data de lançamento
+reload_portal	Recarregar portal
+remove_existing_subtitles	Remover legendas existentes
+remove_sensitive_parts	Remover áreas sensíveis
+remove_subtitles	Remover legendas
+reorder_bouquet	Reordenar lista de canais
+reprocess_on_edit	Reprocessar ao editar
+reprocess_tmdb_data	Reprocessar dados do TMDb
+reseller_logs	Registros de revendedores
+reseller_permissions	Permissões de revendedor
+reset_stb_lock	Redefinir bloqueio do receptor
+restart_on_edit	Reiniciar ao editar
+review	Revisar
+root_password	Senha de root
+rtmp_ips	IPs RTMP
+rtmp_success	IP RTMP autorizado. Adicione '?password=' ao final da URL para autenticar.
+runtime	Duração
+saturday	Sábado
+save_changes	Salvar alterações
+save_profile	Salvar perfil
+scaling	Redimensionamento
+scan_recursively	Buscar nas subpastas
+search	Buscar
+search_devices	Buscar dispositivos
+search_directory	Buscar pasta
+search_episodes	Buscar episódios
+search_logs	Buscar registros
+search_movies	Buscar filmes
+search_processes	Buscar processos
+search_series	Buscar séries
+search_streams	Buscar transmissões
+search_user	Busque uma conta para vincular...
+season_folder	Pasta da temporada
+season_number	Número da temporada
+select_all	Selecionar todos
+select_an_event	Selecione um evento
+select_at_least_one_episode	Selecione pelo menos um episódio para editar.
+select_at_least_one_movie	Selecione pelo menos um filme para editar.
+select_at_least_one_server	Selecione pelo menos um servidor.
+select_bouquets	Selecionar listas de canais
+select_m3u_file	Selecione um arquivo M3U para enviar ou escolha uma pasta.
+select_series	Selecionar séries
+selected	Selecionado
+send_event	Enviar evento
+send_message	Enviar mensagem
+series	Séries
+series_name	Nome da série
+server	Servidor
+server_name	Nome do servidor
+server_tree	Árvore de servidores
+servers	Servidores
+show	Mostrar
+size	Tamanho
+source	Fonte
+start_stream_now	Iniciar transmissão agora
+start_typing	Digite para buscar
+station_name	Nome da estação
+station_url	URL da estação
+stations	Estações
+status	Status
+stream	Transmissão
+stream_errors	Erros de transmissão
+stream_info	Informações da transmissão
+stream_name	Nome da transmissão
+stream_source	Fonte da transmissão
+stream_success	Transmissões importadas e processadas.
+stream_tools	Ferramentas de transmissão
+streams	Transmissões
+subreseller_price	Preço para sub-revendedor
+subreseller_success	Sub-revendedor autorizado.
+subresellers	Sub-revendedores
+subtitle_location	Local das legendas
+sunday	Domingo
+system	Sistema
+target	Destino
+target_container	Contêiner de saída
+target_framerate	Taxa de quadros de saída
+threads	Threads
+thumbnail	Miniatura
+thursday	Quinta-feira
+tickets	Chamados
+time	Hora
+time_to_restart	Horário de reinício
+timeshift	Reprodução com atraso
+tmdb_results	Resultados do TMDb
+to	Até
+toggle_bouquets	Alternar listas de canais
+toggle_groups	Alternar grupos
+toggle_page	Alternar página
+tools	Ferramentas
+transcode_profiles	Perfis de transcodificação
+transcoding_disabled	Transcodificação desativada
+transcoding_profile	Perfil de transcodificação
+trial	Teste
+tuesday	Terça-feira
+type	Tipo
+updating_epg	Atualizando o guia de programação em segundo plano...
+uptime	Tempo em operação
+used	Utilizado
+user_agent	Agente de usuário
+user_lines	Contas do usuário
+useragent_success	Agente de usuário bloqueado.
+username	Usuário
+users	Usuários
+video_codec	Codec de vídeo
+video_profile	Perfil de vídeo
+view	Visualizar
+view_channels	Visualizar canais
+view_stations	Visualizar estações
+vod_name	Nome do vídeo sob demanda
+warning_fingerprint	AVISO: após ativar, esta operação não pode ser cancelada e aumentará significativamente a carga do servidor.
+watch_folder_logs	Registros de pastas monitoradas
+wednesday	Quarta-feira
+years	Anos
+youtube_trailer	Trailer do YouTube

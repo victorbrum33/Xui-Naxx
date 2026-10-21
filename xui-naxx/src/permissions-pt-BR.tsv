@@ -1,0 +1,200 @@
+permission_add_bouquet	Adicionar lista de canais
+permission_add_bouquet_text	Adicionar uma lista de canais e associar transmissões, vídeos sob demanda e rádios.
+permission_add_cat	Adicionar categoria
+permission_add_cat_text	Adicionar uma categoria.
+permission_add_code	Adicionar código de acesso
+permission_add_code_text	Adicionar um código de acesso para autenticação.
+permission_add_e2	Adicionar dispositivo Enigma
+permission_add_e2_text	Adicionar ou vincular um dispositivo Enigma sem exigir créditos.
+permission_add_epg	Adicionar guia de programação
+permission_add_epg_text	Adicionar um guia de programação.
+permission_add_episode	Adicionar episódio
+permission_add_episode_text	Adicionar um episódio a uma série, buscar arquivos e associá-lo a listas de canais e servidores.
+permission_add_group	Adicionar grupo
+permission_add_group_text	Adicionar um grupo com acesso ao sistema de permissões.
+permission_add_hmac	Adicionar código HMAC
+permission_add_hmac_text	Adicionar um código HMAC que pode conceder acesso a todas as transmissões a um desenvolvedor.
+permission_add_mag	Adicionar dispositivo MAG
+permission_add_mag_text	Adicionar ou vincular um dispositivo MAG sem exigir créditos.
+permission_add_movie	Adicionar filme
+permission_add_movie_text	Adicionar um filme, buscar arquivos e associá-lo a listas de canais e servidores.
+permission_add_packages	Adicionar pacote
+permission_add_packages_text	Adicionar um pacote, aplicá-lo a grupos e incluir listas de canais.
+permission_add_radio	Adicionar estação de rádio
+permission_add_radio_text	Adicionar uma estação de rádio e associá-la a servidores.
+permission_add_reguser	Adicionar usuário
+permission_add_reguser_text	Adicionar um usuário, conceder créditos e substituir os pacotes atribuídos.
+permission_add_rtmp	Adicionar e editar IP RTMP
+permission_add_rtmp_text	Adicionar ou editar um IP RTMP.
+permission_add_series	Adicionar série
+permission_add_series_text	Adicionar uma série e associá-la a listas de canais.
+permission_add_server	Adicionar servidor
+permission_add_server_text	Adicionar um servidor ou instalar um balanceador de carga.
+permission_add_stream	Adicionar transmissão
+permission_add_stream_text	Adicionar uma transmissão, buscar arquivos e associá-la a listas de canais e servidores.
+permission_add_user	Adicionar conta
+permission_add_user_text	Adicionar uma conta sem exigir créditos.
+permission_block_asns	Bloquear número de sistema autônomo
+permission_block_asns_text	Bloquear ASNs e visualizar a lista.
+permission_block_ips	Bloquear endereço IP
+permission_block_ips_text	Impedir o acesso de um endereço IP ao servidor.
+permission_block_isps	Bloquear provedor
+permission_block_isps_text	Impedir o acesso de um provedor ao servidor.
+permission_block_uas	Bloquear agente de usuário
+permission_block_uas_text	Impedir o acesso de um agente de usuário às transmissões.
+permission_bouquets	Visualizar listas de canais
+permission_bouquets_text	Visualizar as listas de canais.
+permission_categories	Visualizar categorias
+permission_categories_text	Visualizar a lista de categorias.
+permission_channel_order	Editar ordem dos canais
+permission_channel_order_text	Editar a ordem dos canais, vídeos sob demanda e estações de rádio.
+permission_client_request_log	Visualizar registros de clientes
+permission_client_request_log_text	Visualizar e limpar os registros de clientes.
+permission_connection_logs	Visualizar registros de atividade
+permission_connection_logs_text	Visualizar e limpar os registros de atividade.
+permission_create_channel	Criar canal
+permission_create_channel_text	Criar um canal, buscar arquivos e associá-lo a listas de canais e servidores.
+permission_credits_log	Visualizar registros de créditos
+permission_credits_log_text	Visualizar e limpar os registros de créditos.
+permission_database	Gerenciar backups do banco de dados
+permission_database_text	Visualizar, gerar ou restaurar backups do banco de dados nas configurações.
+permission_edit_bouquet	Editar lista de canais
+permission_edit_bouquet_text	Editar ou excluir listas de canais e adicionar transmissões, vídeos sob demanda e estações de rádio.
+permission_edit_cat	Editar categoria
+permission_edit_cat_text	Editar ou excluir categorias e visualizar as transmissões associadas.
+permission_edit_cchannel	Editar canal criado
+permission_edit_cchannel_text	Editar, excluir ou adicionar um canal criado.
+permission_edit_e2	Editar dispositivo Enigma
+permission_edit_e2_text	Editar, excluir ou adicionar um dispositivo Enigma.
+permission_edit_episode	Editar episódio
+permission_edit_episode_text	Editar, excluir ou adicionar um episódio.
+permission_edit_group	Editar grupo
+permission_edit_group_text	Editar, excluir ou adicionar um grupo.
+permission_edit_mag	Editar dispositivo MAG
+permission_edit_mag_text	Editar, excluir ou adicionar um dispositivo MAG.
+permission_edit_movie	Editar filme
+permission_edit_movie_text	Editar, excluir ou adicionar um filme.
+permission_edit_package	Editar pacote
+permission_edit_package_text	Editar, excluir ou adicionar um pacote.
+permission_edit_radio	Editar estação de rádio
+permission_edit_radio_text	Editar, excluir ou adicionar uma estação de rádio.
+permission_edit_reguser	Editar usuário
+permission_edit_reguser_text	Editar, excluir ou adicionar um usuário.
+permission_edit_series	Editar série
+permission_edit_series_text	Editar, excluir ou adicionar uma série.
+permission_edit_server	Editar servidor
+permission_edit_server_text	Editar, excluir ou adicionar um servidor.
+permission_edit_stream	Editar transmissão
+permission_edit_stream_text	Editar, excluir ou adicionar uma transmissão.
+permission_edit_tprofile	Editar perfil de transcodificação
+permission_edit_tprofile_text	Editar, excluir ou adicionar um perfil de transcodificação.
+permission_edit_user	Editar conta
+permission_edit_user_text	Editar, excluir ou adicionar uma conta.
+permission_epg	Visualizar guias de programação
+permission_epg_edit	Editar guia de programação
+permission_epg_edit_text	Editar ou adicionar um guia de programação.
+permission_epg_text	Visualizar a lista de guias de programação.
+permission_episodes	Visualizar episódios
+permission_episodes_text	Visualizar a lista de episódios.
+permission_fingerprint	Identificar transmissão
+permission_fingerprint_text	Aplicar marcas de identificação às transmissões.
+permission_folder_watch	Visualizar pastas monitoradas
+permission_folder_watch_add	Adicionar pasta monitorada
+permission_folder_watch_add_text	Adicionar uma pasta à tarefa agendada de monitoramento para busca automática.
+permission_folder_watch_output	Visualizar resultados do monitoramento
+permission_folder_watch_output_text	Visualizar e limpar os itens processados com sucesso ou com erro pelo monitoramento de pastas.
+permission_folder_watch_settings	Editar configurações de pastas monitoradas
+permission_folder_watch_settings_text	Editar as configurações na página de pastas monitoradas.
+permission_folder_watch_text	Visualizar ou excluir pastas monitoradas e encerrar o processo de monitoramento.
+permission_import_episodes	Importar episódios
+permission_import_episodes_text	Importar vários episódios.
+permission_import_movies	Importar filmes
+permission_import_movies_text	Importar filmes de uma pasta ou de um arquivo M3U.
+permission_import_streams	Importar transmissões
+permission_import_streams_text	Importar transmissões de um arquivo M3U.
+permission_index	Visualizar visão geral
+permission_index_text	Visualizar a visão geral do painel e dos servidores.
+permission_license	Visualizar licença
+permission_license_text	Visualizar e atualizar as informações da licença do XUI.
+permission_live_connections	Visualizar conexões ao vivo
+permission_live_connections_text	Visualizar conexões ao vivo e desconectar usuários.
+permission_login_logs	Visualizar registros de acesso
+permission_login_logs_text	Visualizar e limpar os registros de acesso.
+permission_manage_cchannels	Visualizar canais criados
+permission_manage_cchannels_text	Visualizar a lista de canais criados.
+permission_manage_e2	Visualizar dispositivos Enigma
+permission_manage_e2_text	Visualizar a lista de dispositivos Enigma.
+permission_manage_events	Visualizar eventos MAG
+permission_manage_events_text	Visualizar ou excluir os registros de eventos MAG.
+permission_manage_mag	Visualizar dispositivos MAG
+permission_manage_mag_text	Visualizar dispositivos MAG, enviar eventos e controlar os dispositivos.
+permission_manage_tickets	Visualizar chamados
+permission_manage_tickets_text	Visualizar e ler os chamados de todos os usuários.
+permission_mass_delete	Excluir conteúdo em lote
+permission_mass_delete_text	Excluir usuários, canais, vídeos sob demanda e estações de rádio em lote.
+permission_mass_edit_enigmas	Editar dispositivos Enigma em lote
+permission_mass_edit_enigmas_text	Editar dispositivos Enigma em lote.
+permission_mass_edit_lines	Editar contas em lote
+permission_mass_edit_lines_text	Editar contas de usuários em lote.
+permission_mass_edit_mags	Editar dispositivos MAG em lote
+permission_mass_edit_mags_text	Editar dispositivos MAG em lote.
+permission_mass_edit_radio	Editar estações em lote
+permission_mass_edit_radio_text	Editar estações de rádio em lote.
+permission_mass_edit_reguser	Editar usuários em lote
+permission_mass_edit_reguser_text	Editar usuários em lote.
+permission_mass_edit_streams	Editar transmissões em lote
+permission_mass_edit_streams_text	Editar transmissões em lote.
+permission_mass_edit_users	Editar usuários em lote
+permission_mass_edit_users_text	Editar usuários em lote.
+permission_mass_sedits	Editar séries em lote
+permission_mass_sedits_text	Editar séries e episódios em lote.
+permission_mass_sedits_vod	Editar filmes em lote
+permission_mass_sedits_vod_text	Editar filmes em lote.
+permission_mng_groups	Visualizar grupos
+permission_mng_groups_text	Visualizar a lista de grupos.
+permission_mng_packages	Visualizar pacotes
+permission_mng_packages_text	Visualizar a lista de pacotes.
+permission_mng_regusers	Visualizar usuários
+permission_mng_regusers_text	Visualizar a lista de usuários.
+permission_movies	Visualizar filmes
+permission_movies_text	Visualizar a lista de filmes.
+permission_panel_logs	Visualizar registros MySQL
+permission_panel_logs_text	Visualizar os registros de erros e tentativas de invasão do MySQL.
+permission_player	Visualizar reprodutor
+permission_player_text	Adicionar um reprodutor às páginas de transmissões e vídeos sob demanda.
+permission_process_monitor	Visualizar monitor de processos
+permission_process_monitor_text	Visualizar ou encerrar processos ativos em cada servidor e limpar as pastas temporárias ou de transmissões.
+permission_quick_tools	Usar ferramentas rápidas
+permission_quick_tools_text	Usar ferramentas rápidas para alterar clientes e transmissões.
+permission_radio	Visualizar estações de rádio
+permission_radio_text	Visualizar a lista de estações de rádio.
+permission_reg_userlog	Visualizar registros de revendedores
+permission_reg_userlog_text	Visualizar e limpar os registros de revendedores.
+permission_restream_logs	Visualizar registros de retransmissão
+permission_restream_logs_text	Visualizar a detecção de retransmissões e as tentativas de banimento.
+permission_rtmp	Visualizar IPs RTMP
+permission_rtmp_text	Visualizar a lista de IPs RTMP.
+permission_series	Visualizar séries
+permission_series_text	Visualizar a lista de séries.
+permission_servers	Visualizar servidores
+permission_servers_text	Visualizar a lista de servidores.
+permission_settings	Editar configurações
+permission_settings_text	Editar as configurações gerais, de vídeo, MAG, segurança e XUI.
+permission_stream_errors	Visualizar registros de transmissões
+permission_stream_errors_text	Visualizar e limpar os registros de transmissões.
+permission_stream_tools	Usar ferramentas de transmissão
+permission_stream_tools_text	Usar as ferramentas para substituir DNS e mover transmissões.
+permission_streams	Visualizar transmissões
+permission_streams_text	Visualizar a lista de transmissões.
+permission_subreseller	Configurar sub-revendedor
+permission_subreseller_text	Configurar o acesso de um grupo de sub-revendedores.
+permission_subresellers	Visualizar sub-revendedores
+permission_subresellers_text	Visualizar a lista de grupos de sub-revendedores.
+permission_ticket	Responder a chamados
+permission_ticket_text	Responder como administrador aos chamados de qualquer usuário.
+permission_tprofile	Adicionar perfil de transcodificação
+permission_tprofile_text	Adicionar um perfil de transcodificação com acesso a todas as configurações.
+permission_tprofiles	Visualizar perfis de transcodificação
+permission_tprofiles_text	Visualizar ou adicionar perfis de transcodificação.
+permission_users	Visualizar contas
+permission_users_text	Visualizar a lista de todas as contas.

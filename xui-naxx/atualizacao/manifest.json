@@ -1,0 +1,68 @@
+{
+  "name": "XUI NAXX",
+  "version": "1.5.14",
+  "base_version": "1.5.12",
+  "language_keys": 696,
+  "files": [
+    {
+      "path": "includes/langs/en.ini",
+      "original_sha256": "41669125685bef21478be708420acddc88d5dbb1e6a88da8a7bcd30147c8f15a",
+      "sha256": "2f57a2ad49ab25837bf4b4c6e9e97ccc6680d3377932011c68225132d5cb698f"
+    },
+    {
+      "path": "includes/langs/pt_br.ini",
+      "original_sha256": null,
+      "sha256": "2f57a2ad49ab25837bf4b4c6e9e97ccc6680d3377932011c68225132d5cb698f"
+    },
+    {
+      "path": "admin/naxx-importador.html",
+      "original_sha256": null,
+      "sha256": "dd1f3c48e7e50df7214ba6dee195bf42fe428596c29aca69afd01f69a2d9d214"
+    },
+    {
+      "path": "admin/naxx-importador.php",
+      "original_sha256": null,
+      "sha256": "814d3699c69cd84c3b4d4b787a9645db0914c419c2700d2ecd2540c74c55d822"
+    },
+    {
+      "path": "admin/assets/js/naxx-native-importer.js",
+      "original_sha256": null,
+      "sha256": "9b6fb0052fe21ae0908a3dc76529aaac5046f87a2e9e517e0cd54b355f978ce9"
+    },
+    {
+      "path": "admin/assets/css/naxx-importer.css",
+      "original_sha256": null,
+      "sha256": "eb3631c5daa814311caed8ff39f4383cfbb5e9ebadb96857068876f67be810cc"
+    },
+    {
+      "path": "admin/assets/js/naxx-importer.js",
+      "original_sha256": null,
+      "sha256": "e574af9367c39caf7474a18a9874c41a7d5b9d717ad48f8b7163361ba3a91124"
+    },
+    {
+      "path": "admin/assets/js/naxx-importer-ui.js",
+      "original_sha256": null,
+      "sha256": "7127ad911c429e5f12ee99d13fb20f86b9fc320d0f0850acea8493b31f4e7963"
+    },
+    {
+      "path": "admin/assets/js/naxx-importer-worker.js",
+      "original_sha256": null,
+      "sha256": "47785300868b182e79d8cfb653fce49260e6c226c1a5c7e5c1d258560938dd03"
+    },
+    {
+      "path": "admin/assets/css/app.css",
+      "original_sha256": "2890e556edea5f133f09a91da0e43abf1caa06f82afbb0d3d04ae9efd3574241",
+      "sha256": "14986ad0d024bcd2ced7930872d4607fba60eda4240bea9d1df8529f9a3f1cff"
+    },
+    {
+      "path": "admin/assets/css/app.dark.css",
+      "original_sha256": "df5a9fa22984406d39e50c947e8c2a9fca77a6e01b7e3c083c1f1e78c0d3007e",
+      "sha256": "5c78758938fe40f385c124928f0fb4231a789ae78d649659a34369b4d9307fd7"
+    },
+    {
+      "path": "admin/assets/js/app.min.js",
+      "original_sha256": "dea4629c69875a12653aee417ceba57641391f65e90397447a28ec6fbc33b74f",
+      "sha256": "2e16bf499c5b0ce638e16b03a78d65cacc27939c06443aa5b747fc242159e62b"
+    }
+  ]
+}
