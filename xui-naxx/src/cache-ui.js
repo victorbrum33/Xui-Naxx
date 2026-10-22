@@ -10,7 +10,7 @@
  "Please ensure the cron format is correct, otherwise it won't run.":'Confira o formato da rotina; uma expressão inválida impede a execução.',
  'Minute':'Minuto','Hour':'Hora','Thread Count':'Quantidade de threads','Update Changes Only':'Atualizar somente alterações','Streams':'Canais','Lines':'Contas','Series':'Séries','Time Taken':'Tempo de execução',
  'Disable Cache':'Desativar cache','Enable Cache':'Ativar cache','Regenerate Cache':'Reconstruir cache','Save Cron':'Salvar agendamento',
- 'Server Status':'Estado do servidor','Authentication':'Autenticação','ONLINE':'Ativo','OFFLINE':'Indisponível','VALID PASSWORD':'Autenticação válida','INVALID PASSWORD':'Autenticação inválida',
+ 'Server Status':'Estado do servidor','Authentication':'Autenticação','ONLINE':'Ativo','OFFLINE':'Indisponível','AUTHENTICATED':'Autenticado','VALID PASSWORD':'Autenticação válida','INVALID PASSWORD':'Autenticação inválida',
  'Disable Handler':'Desativar gerenciador','Enable Handler':'Ativar gerenciador','Clear Database':'Limpar dados do Redis','Pros & Cons':'Vantagens e limitações',
  'The handler will allow all connections from clients to load balancers to be verified and managed using Redis rather than through mysql connections.':'O gerenciador valida e administra as conexões dos clientes nos servidores de distribuição usando Redis.',
  'Disabling Redis handler will disconnect all of your active clients, enabling it however should move the live connections from MySQL to Redis without disconnects.':'Desativar o gerenciador Redis desconecta os clientes ativos. Ao ativá-lo, o painel procura transferir as conexões do MySQL para o Redis sem desconectá-las.',

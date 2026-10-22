@@ -13,6 +13,7 @@ Esta atualização reúne os fontes da interface, do importador e da sincroniza�
 - Faixa exclusiva para os três cards, gráficos em áreas próprias e resumo do servidor com linhas adaptadas ao celular, sem sobreposição.
 - Otimização de atualizações do DOM, consultas automáticas com pausa em abas ocultas, leitura M3U/CSV em blocos, revisão em mensagens pequenas e seleção global sem materializar todos os IDs.
 - Perfis de PHP-FPM e compressão HTTP, com backup e restauração, disponíveis pelo instalador e por scripts próprios. Medições e aplicação em `OTIMIZACAO.md`.
+- Compatibilidade Redis local persistente via serviço próprio e estado “Autenticado” em português no teste nativo.
 - Menus de conteúdo e ações organizados em português, com posicionamento fora da rolagem da tabela, teclado e limites da tela.
 - Tema aplicado no CSS inicial e tela de carregamento Naxx antes da exibição do conteúdo.
 - Cache e Redis em português, diagnóstico local de leitura, indicadores, relatório JSON, atualização opcional a cada 30 segundos e perfis de agendamento com validação.

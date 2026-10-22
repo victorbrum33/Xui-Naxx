@@ -50,6 +50,7 @@ Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza 
 - Perfis de agendamento com validação de minuto, hora e threads; os valores são aplicados somente ao salvar.
 - Cards agrupados em Acessos, Canais e Tráfego de rede, menus de ações sem recorte e tema inicial Naxx durante o carregamento.
 - Interface com atualizações parciais, consultas automáticas pausadas em abas ocultas, importador com menos cópias em memória e perfil de serviços proporcional aos recursos do servidor.
+- Compatibilidade local do Redis com o IP usado pelo núcleo, mantendo o serviço em loopback e a autenticação configurada.
 
 Consulte [Otimização](OTIMIZACAO.md) para medições, aplicação dos perfis PHP-FPM/HTTP e restauração dos backups.
 

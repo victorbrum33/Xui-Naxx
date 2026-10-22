@@ -216,6 +216,7 @@ def install_new(bundle):
     run_script(REPO / 'scripts/instalar_atualizador.py', '--install')
     run_script(REPO / 'scripts/otimizar_sistema.py', '--apply')
     run_script(REPO / 'scripts/otimizar_http.py', '--apply')
+    run_script(REPO / 'scripts/redis_local.py', '--install')
     progress = json.loads((stage / 'installation-progress.json').read_text())
     code = progress.get('access_code')
     if code:
@@ -242,6 +243,7 @@ def main():
             run_script(REPO / 'xui-naxx/atualizacao/aplicar.py', '--check')
             run_script(REPO / 'scripts/otimizar_sistema.py', '--check')
             run_script(REPO / 'scripts/otimizar_http.py', '--check')
+            run_script(REPO / 'scripts/redis_local.py', '--check')
             return
         print('Instalação existente: aplicando interface NAXX e manutenção automática.', flush=True)
         run_script(REPO / 'xui-naxx/atualizacao/aplicar.py')
@@ -249,6 +251,7 @@ def main():
         run_script(REPO / 'scripts/instalar_atualizador.py', '--install')
         run_script(REPO / 'scripts/otimizar_sistema.py', '--apply')
         run_script(REPO / 'scripts/otimizar_http.py', '--apply')
+        run_script(REPO / 'scripts/redis_local.py', '--install')
         print('Atualização NAXX aplicada.')
         return
     validate_new_server()

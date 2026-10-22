@@ -29,6 +29,17 @@ São medições locais em cenários controlados. Tempos, memória e capacidade r
 
 O banco e o Redis apresentaram memória disponível, fila e bloqueios sem pressão nessa instalação. Seus parâmetros foram preservados. As recargas do PHP-FPM e nginx mantiveram o mesmo processo de transmissão ativo.
 
+## Compatibilidade Redis local
+
+O núcleo consulta o Redis pelo IP do próprio servidor. Quando o serviço está protegido em `127.0.0.1`, o teste nativo pode indicar indisponibilidade e autenticação inválida mesmo com a senha correta. `redis_local.py` encaminha somente conexões IPv4 do usuário `xui`, destinadas a endereços da própria máquina na porta 6379, para o Redis local. A regra usa `OUTPUT` e mantém os endereços de escuta e a autenticação existentes.
+
+```bash
+sudo python3 scripts/redis_local.py --check
+sudo python3 scripts/redis_local.py --install
+```
+
+O serviço `naxx-redis-local` reaplica a regra ao iniciar o servidor. Para reverter, execute `sudo systemctl disable --now naxx-redis-local`. Configurações que já usam outras interfaces são preservadas. A ferramenta suporta a porta padrão e o acesso local; a configuração de um cluster exige validar os endereços entre servidores.
+
 ## Conferir e aplicar no servidor
 
 O instalador executa os perfis após os serviços estarem ativos. Para aplicar separadamente na raiz do repositório:
