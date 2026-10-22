@@ -10,6 +10,7 @@ Esta atualização reúne os fontes da interface, do importador e da sincroniza�
 - Atualização no menu do perfil substitui Informações da licença.
 - Canal público com arquivos próprios, verificação SHA-256, backup, restauração e instalação automática diária.
 - Três cards na visão geral: Acessos, Canais e Tráfego de rede, preservando os indicadores e links nativos.
+- Faixa exclusiva para os três cards, gráficos em áreas próprias e resumo do servidor com linhas adaptadas ao celular, sem sobreposição.
 - Menus de conteúdo e ações organizados em português, com posicionamento fora da rolagem da tabela, teclado e limites da tela.
 - Tema aplicado no CSS inicial e tela de carregamento Naxx antes da exibição do conteúdo.
 - Cache e Redis em português, diagnóstico local de leitura, indicadores, relatório JSON, atualização opcional a cada 30 segundos e perfis de agendamento com validação.
