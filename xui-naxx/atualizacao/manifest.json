@@ -37,7 +37,7 @@
     {
       "path": "admin/naxx-update.php",
       "original_sha256": null,
-      "sha256": "e7ad09de39452bb635b01b379f6179d9254f2b83e223b7b60a87648a18c36abc"
+      "sha256": "a130355b0adade176f4c9999863ee4cc4daeee5a5a86e27e66547f5021588cb2"
     },
     {
       "path": "admin/naxx-update-page.php",
@@ -92,27 +92,27 @@
     {
       "path": "admin/assets/css/app.css",
       "original_sha256": "2890e556edea5f133f09a91da0e43abf1caa06f82afbb0d3d04ae9efd3574241",
-      "sha256": "9c3a317c1cac9dc8e66db92d312f299a6b6e8575c38951761810d87aac3cee82"
+      "sha256": "025bd11b8731b1b64486bd395ac1f3c31442c8092448bb85095c0c82a3195592"
     },
     {
       "path": "admin/assets/css/app.dark.css",
       "original_sha256": "df5a9fa22984406d39e50c947e8c2a9fca77a6e01b7e3c083c1f1e78c0d3007e",
-      "sha256": "f0be3b4dd7d4b1f6a043e938ffac14e2f8ba85c54071c2be18e253e5ecd43e60"
+      "sha256": "9c785c295019f626dfc31409eeea46895f799f997e3649d96cc58317e9149014"
     },
     {
       "path": "admin/assets/css/naxx-overlay.css",
       "original_sha256": null,
-      "sha256": "e320260bacc672feced5c5b9b1acf9d4df64331be60cabd429ea5f4648504a3e"
+      "sha256": "b55272b4c7ca5d6a9cd45ac3efb6ec83f4e349e954c401b58a2eee51037f60db"
     },
     {
       "path": "admin/assets/css/naxx-overlay.light.css",
       "original_sha256": null,
-      "sha256": "2f783295652fc8f89a1ea5c06274e886a6bb68e8b6e5f2efab321bd1526d6177"
+      "sha256": "da57da352372c325897cdc128dbc5d374f5634fc9ecd2a52a7ebeb515ebc280b"
     },
     {
       "path": "admin/assets/js/naxx-overlay.js",
       "original_sha256": null,
-      "sha256": "84b4864e6af3488a31b1aed3cf3231b0646a841e757ea68c8327b5ffe61ccb53"
+      "sha256": "0fa03a8b48ac230cd3a9b803a17389b86e92a3e2a7b2de783b221cd9bc787559"
     },
     {
       "path": "admin/assets/js/naxx-base.min.js",

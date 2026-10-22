@@ -46,6 +46,9 @@ Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza 
 - Sincronização automática dos IDs de EPG por correspondência única, preservando vínculos existentes e separando casos ambíguos.
 - Menus organizados em **Equipe**, **Clientes**, **Conteúdo** e **Avançado**, com busca nas ferramentas.
 - Configurações gerais e cache traduzidos, favicon e rodapé 2026.
+- Diagnóstico local de Redis com memória, latência, chaves, clientes e taxa de acertos; exportação do relatório e atualização opcional a cada 30 segundos.
+- Perfis de agendamento com validação de minuto, hora e threads; os valores são aplicados somente ao salvar.
+- Cards agrupados em Acessos, Canais e Tráfego de rede, menus de ações sem recorte e tema inicial Naxx durante o carregamento.
 
 ## Atualizações
 
@@ -81,4 +84,3 @@ python3 xui-naxx/build.py
 ```
 
 `1.5.14` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
-

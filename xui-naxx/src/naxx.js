@@ -5,6 +5,7 @@
   var overlayRevision=window.naxxAssetRevision||'/* NAXX_STYLESHEET_VERSION */';
   var overlayAssetBase=overlayScript&&overlayScript.src?new URL('../css/',overlayScript.src):new URL('assets/css/',location.href);
   function loadOverlayStyles(){
+    if(overlayScript&&overlayScript.src&&!/\/(?:naxx-overlay|app\.min)\.js(?:\?|$)/.test(overlayScript.src))return;
     var nativeStyle=document.querySelector('link[rel~="stylesheet"][href*="/app.css"],link[rel~="stylesheet"][href*="/app.dark.css"]');
     if(!nativeStyle)return;
     var light=!/\/app\.dark\.css(?:\?|$)/.test(nativeStyle.href);
@@ -34,6 +35,7 @@
   }
   Object.assign(translations,{'Encoding Queue':'Fila de codificação','Login Logs':'Registros de acesso','On-Demand Scanner':'Verificador sob demanda','Panel Errors':'Erros do painel','Restream Detection':'Detecção de retransmissão','Stream Rank':'Classificação de canais','System Logs':'Registros do sistema','VOD Theft Detection':'Detecção de cópia de VOD','Stream Review':'Revisão de canais'});
   Object.assign(translations,{'No potential issues have been detected!':'Nenhum problema foi detectado.','Online Streams':'Canais ativos','EPG Files':'Guias de programação','Quick Tools':'Ferramentas rápidas','Quality':'Qualidade','Search Streams...':'Pesquisar canais…','All Categories':'Todas as categorias','All Statuses':'Todos os estados','No information available':'Nenhuma informação disponível'});
+  Object.assign(translations,{'Channel Order':'Ordem dos canais',"EPG's":'Guias de programação','Fingerprint':'Marca de identificação','Mass Delete':'Excluir em lote','Mass Edit':'Editar em lote','Stream Tools':'Ferramentas de canais','Export as CSV':'Exportar CSV','Actions':'Ações','ACTIONS':'AÇÕES','Start':'Iniciar','Stop':'Parar','Restart':'Reiniciar','Kill Connections':'Encerrar conexões','Edit':'Editar','Delete':'Excluir'});
   Object.assign(translations,{'CPU Usage':'Uso de CPU','Memory Usage':'Uso de memória','IO Usage':'Uso de disco','Input':'Entrada','Output':'Saída','Unique Users':'Usuários únicos','Total Connections':'Total de conexões','Streams Live':'Canais ativos','Down':'Indisponíveis','Requests/sec':'Requisições/s','User Profile':'Meu perfil','General Settings':'Configurações gerais','Backup Settings':'Configurações de backup','Plex Settings':'Configurações Plex','Watch Settings':'Pastas monitoradas','License Info':'Informações da licença','Logout':'Sair'});
   Object.assign(translations,{'Cache & Redis Settings':'Configurações de cache e Redis','Good Performance':'Bom desempenho','Redis Connection Handler is disabled on your service, if you have a lot of throughput you will see better performance with Redis enabled.':'O Redis está desativado neste servidor. Ativá-lo pode melhorar o desempenho quando há muitas requisições.','If you maintain active connections of over 10,000 for example you should consider this. Below this amount you\'re unlikely to see any benefit.':'Considere ativar o Redis se mantiver mais de 10.000 conexões simultâneas. Abaixo disso, provavelmente não haverá ganho.','XUI Caching System':'Sistema de cache do XUI','Redis Connection Handler':'Gerenciador de conexões Redis','Cache Cron Execution':'Execução da rotina de cache','The default is to run the cron every 5 minutes, but when your Streams and Lines tables grow larger it can take a fair amount of time to grab and cache this data. You can change the time to achieve a better balance between performance and data accuracy.':'Por padrão, a rotina é executada a cada 5 minutos. Quando as tabelas de canais e contas crescem, buscar e armazenar esses dados pode levar mais tempo. Ajuste o intervalo para equilibrar desempenho e precisão.','Please ensure the cron format is correct, otherwise it won\'t run.':'Confira se o formato da rotina está correto; caso contrário, ela não será executada.','Minute':'Minuto','Hour':'Hora','Thread Count':'Quantidade de threads','Update Changes Only':'Atualizar somente alterações','Streams':'Canais','Lines':'Contas','Series':'Séries','Time Taken':'Tempo decorrido','Add EPG':'Adicionar EPG'});
   Object.assign(translations,{'Details':'Detalhes','Sources':'Fontes','Categories':'Categorias','Bouquets':'Listas de canais','Fallback Categories':'Categorias padrão','Fallback Bouquets':'Listas de canais padrão','New Categories:':'Novas categorias:','New Bouquets:':'Novas listas:','Transcoding':'Transcodificação','Options':'Opções','Add Stream':'Adicionar canal','Stream Name':'Nome do canal','Stream Logo':'Logo do canal','Notes':'Observações','Capture Server':'Servidor de captura','Video Input':'Entrada de vídeo','Audio Input':'Entrada de áudio','Generate PTS':'Gerar PTS','Native Frames':'Quadros nativos','Stream All Codecs':'Transmitir todos os codecs','Allow Recording':'Permitir gravação','Direct Source':'Fonte direta','Direct Stream':'Transmissão direta','Restart on FPS Drop':'Reiniciar ao cair o FPS','FPS Threshold %':'Limite de FPS (%)','Custom Channel SID':'SID personalizado do canal','On Demand Probesize':'Tamanho da análise sob demanda','Minute Delay':'Atraso (minutos)','User Agent':'Identificação do cliente','HTTP Proxy':'Proxy HTTP','Cookie':'Cookie HTTP','Headers':'Cabeçalhos','Transcoding Profile':'Perfil de transcodificação','Auto-Restart':'Reinício automático','Adaptive Link':'Link adaptável','Sync Title':'Sincronizar título','Map':'Mapeamento','RTMP Push':'Publicação RTMP','Search EPG':'Buscar EPG','Channel Name':'Nome do canal','EPG Source':'Fonte da EPG','No EPG':'Sem EPG','EPG Channel ID':'ID do canal na EPG','EPG Language':'Idioma da EPG','Minute Offset':'Deslocamento (minutos)','Output RTMP':'Saída RTMP','Server Tree':'Servidores de transmissão','On-Demand Servers':'Servidores sob demanda','Low Latency On-Demand':'Sob demanda com baixa latência','Timeshift Server':'Servidor de replay','Timeshift Days':'Dias de replay','Thumbnail Server':'Servidor de miniaturas','Start Stream Now':'Iniciar canal agora','Quick Search':'Busca rápida','XUI EPG':'EPG do XUI','XMLTV EPG':'EPG XMLTV','Advanced Options':'Opções avançadas','Choose...':'Escolha...','Search':'Pesquisar','M3U':'Lista M3U','Import Streams':'Importar canais','Add Single':'Adicionar canal','Manage Streams':'Gerenciar canais','Stream Info':'Informações do canal','Not scanned':'Ainda não analisado','On Demand':'Sob demanda','Direct':'Direto','Stream':'Canal'});
@@ -545,6 +547,8 @@
     organizeMenu();
     replaceLegacyLogos();
     enhanceModernImages();
+    if(window.NaxxMenus)window.NaxxMenus.enhance();
+    if(window.NaxxDashboard)window.NaxxDashboard.enhance();
     addEpgSyncButton();
     if(document.getElementById('login_button')){
       document.body.classList.add('naxx-login');
@@ -555,6 +559,7 @@
     translateSettingsHelp();
     translateStreamHelp();
     translateCacheSettings();
+    if(window.NaxxCache)window.NaxxCache.enhance();
     versionBrandStylesheets();
     setBrandFavicon();
     enhanceChannelPlayer();
@@ -587,6 +592,7 @@
   }
   function ready() {
     enhance();
+    document.documentElement.classList.add('naxx-ready');
     var pending = false;
     new MutationObserver(function (mutations) {
       if (!mutations.some(function (mutation) { return mutation.addedNodes.length; }) || pending) return;
@@ -603,6 +609,6 @@
     },true);
   }
   // Aguardar inicialização das tabelas e dos plugins da versão original.
-  if (document.readyState === 'complete') ready();
-  else window.addEventListener('load', ready, {once:true});
+  if (document.readyState !== 'loading') ready();
+  else document.addEventListener('DOMContentLoaded', ready, {once:true});
 }());

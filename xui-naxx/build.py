@@ -60,6 +60,8 @@ def build():
     files['admin/naxx-import-url.php'] = (HERE / 'src/naxx-import-url.php').read_text(encoding='utf-8')
     files['admin/naxx-epg-sync.php'] = (HERE / 'src/naxx-epg-sync.php').read_text(encoding='utf-8')
     files['admin/naxx-update.php'] = (HERE / 'src/naxx-update.php').read_text(encoding='utf-8')
+    cache_api=(HERE / 'src/cache-api.php').read_text(encoding='utf-8').split('<?php',1)[1]
+    files['admin/naxx-update.php']=files['admin/naxx-update.php'].replace('/* NAXX_CACHE_ENDPOINT */', "if (($_GET['feature'] ?? '') === 'cache') {\n"+cache_api+"\n}\n")
     files['admin/naxx-update-page.php'] = (HERE / 'src/naxx-update-page.php').read_text(encoding='utf-8')
     files['admin/assets/js/naxx-update-ui.js'] = (HERE / 'src/update-ui.js').read_text(encoding='utf-8')
     files['admin/assets/css/naxx-update.css'] = (HERE / 'src/update.css').read_text(encoding='utf-8')
@@ -79,7 +81,7 @@ def build():
     for name in ('app.css', 'app.dark.css'):
         original = (ORIGINAL / 'admin/assets/css' / name).read_text(encoding='utf-8')
         original = re.sub(r'^@import url\(https://fonts.googleapis.com[^\n]+\n', '', original)
-        files['admin/assets/css/' + name] = original
+        files['admin/assets/css/' + name] = original + '\n' + css + ('\n' + (HERE / 'src/naxx-light.css').read_text(encoding='utf-8') if name == 'app.css' else '')
     files['admin/assets/css/naxx-overlay.css'] = css
     files['admin/assets/css/naxx-overlay.light.css'] = css + '\n' + (HERE / 'src/naxx-light.css').read_text(encoding='utf-8')
     original_js = (ORIGINAL / 'admin/assets/js/app.min.js').read_text(encoding='utf-8')
@@ -87,7 +89,7 @@ def build():
     js = js.replace('/* NAXX_BRAND_ASSET_VERSION */', sha(files['admin/assets/images/naxx-favicon.svg'].encode())[:12])
     stylesheet_version = sha((css + (HERE / 'src/naxx-light.css').read_text(encoding='utf-8')).encode())[:12]
     js = js.replace('/* NAXX_STYLESHEET_VERSION */', stylesheet_version)
-    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + (HERE / 'src/cleanup-tools.js').read_text(encoding='utf-8')
+    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js'))
     files['admin/assets/js/naxx-base.min.js'] = original_js
     # Loader instalado uma vez. O canal público distribui somente as melhorias próprias.
     files['admin/assets/js/app.min.js'] = '''(function(){
@@ -113,9 +115,8 @@ if(document.readyState==='loading'){
     assets.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ORIGINAL / 'admin/assets/css/bootstrap.css', assets / 'bootstrap.css')
     for name in ('app.css','app.dark.css'):
-        overlay = 'naxx-overlay.light.css' if name == 'app.css' else 'naxx-overlay.css'
-        (assets / name).write_text(files['admin/assets/css/'+name]+'\n'+files['admin/assets/css/'+overlay],encoding='utf-8')
-    shutil.copy2(HERE / 'src/naxx.js', assets / 'naxx.js')
+        (assets / name).write_text(files['admin/assets/css/'+name],encoding='utf-8')
+    (assets / 'naxx.js').write_text(files['admin/assets/js/naxx-overlay.js'],encoding='utf-8')
     shutil.copy2(HERE / 'src/importer.css', assets / 'importer.css')
     for source in ('importer.js', 'importer-ui.js', 'importer-worker.js'):
         shutil.copy2(HERE / 'src' / source, assets / source)
