@@ -26,7 +26,7 @@ chmod +x install.sh
 sudo ./install.sh
 ```
 
-O repositório principal é privado; a conta usada pelo Git precisa ter acesso. A instalação baixa os componentes da referência com hashes SHA-256 fixados, prepara os serviços e informa o código de acesso gerado. No primeiro acesso, cadastre o administrador pela tela do painel. Nenhuma senha administrativa padrão é publicada.
+O repositório é público e pode ser clonado sem autenticação. A instalação baixa os componentes da referência com hashes SHA-256 fixados, prepara os serviços e informa o código de acesso gerado. No primeiro acesso, cadastre o administrador pela tela do painel. Nenhuma senha administrativa padrão é publicada.
 
 Para conferir uma instalação existente sem aplicar mudanças:
 
@@ -81,3 +81,4 @@ python3 xui-naxx/build.py
 ```
 
 `1.5.14` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
+
