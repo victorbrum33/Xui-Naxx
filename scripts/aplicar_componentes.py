@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Aplica na VM a correção indicada pelo usuário, com backup do núcleo original."""
+"""Aplica os componentes verificados da referência, com backup do núcleo original."""
 from pathlib import Path
 import argparse
 import datetime
@@ -14,7 +14,7 @@ import time
 import urllib.request
 
 ROOT=Path('/home/xui')
-SOURCE=Path('/home/naxx/naxx-install/patch')
+SOURCE=Path('/var/lib/xui-naxx/install/patch')
 EXPECTED={
     'xui.so':'04f69edb87102ec6710dd1b0274ae0fc557c5eb7389434558600d54ad91d5b19',
     'license':'2f722718511b51ea1a621dfd91a225ee939b52b9682e16e495a434188e829327',
@@ -34,11 +34,11 @@ def verify_http():
             time.sleep(.5)
 
 def main():
-    parser=argparse.ArgumentParser(description='Aplicar a correção comunitária verificada ao laboratório NAXX')
+    parser=argparse.ArgumentParser(description='Aplicar os componentes comunitários verificados ao Xui Naxx')
     parser.add_argument('--check',action='store_true',help='Validar os arquivos sem modificar a instalação')
     args=parser.parse_args()
     if os.geteuid()!=0:raise RuntimeError('Execute com sudo.')
-    if Path('/sys/class/dmi/id/product_name').read_text().strip()!='VirtualBox':raise RuntimeError('Somente a VM de laboratório é aceita.')
+    if not (ROOT/'status').is_file():raise RuntimeError('A instalação XUI esperada não foi encontrada em /home/xui.')
     checks=json.loads((SOURCE/'manifest.json').read_text())
     for filename in ('xui.so','license'):
         if checks.get(filename)!=EXPECTED[filename] or hashlib.sha256((SOURCE/filename).read_bytes()).hexdigest()!=EXPECTED[filename]:raise RuntimeError('Hash da correção não confere: '+filename)

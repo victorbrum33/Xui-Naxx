@@ -1,0 +1,33 @@
+[Unit]
+Description=Serviço de atualizações das melhorias Xui Naxx
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /usr/local/lib/naxx/naxx_update.py --daemon
+Restart=on-failure
+RestartSec=10
+UMask=0077
+RuntimeDirectory=naxx-update
+RuntimeDirectoryMode=0750
+StateDirectory=naxx-updates
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=read-only
+ProtectSystem=strict
+ReadWritePaths=/var/lib/naxx-updates /run/naxx-update /home/xui/admin /home/xui/includes/langs
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+MemoryMax=256M
+TasksMax=16
+
+[Install]
+WantedBy=multi-user.target

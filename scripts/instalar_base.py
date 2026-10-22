@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Instala a base XUI na VM própria; instalar_na_vm.py aplica a correção comunitária."""
+"""Instala a base XUI em um servidor Ubuntu 20.04 novo."""
 import argparse
 import hashlib
 import json
@@ -33,15 +33,14 @@ def put(path, content, mode=0o644):
     path.write_text(content,encoding='utf-8');path.chmod(mode)
 
 def main():
-    parser=argparse.ArgumentParser(description='Instalação completa XUI NAXX em VM Ubuntu 20.04 nova')
+    parser=argparse.ArgumentParser(description='Instalação completa Xui Naxx em servidor Ubuntu 20.04 novo')
     parser.add_argument('--check',action='store_true')
     args=parser.parse_args()
-    if os.geteuid()!=0: raise RuntimeError('Execute com sudo python3 vm/instalar_linux.py')
+    if os.geteuid()!=0: raise RuntimeError('Execute com sudo python3 scripts/instalar_base.py')
     release=dict(line.strip().split('=',1) for line in Path('/etc/os-release').read_text().splitlines() if '=' in line)
     if release.get('ID','').strip('"')!='ubuntu' or release.get('VERSION_ID','').strip('"')!='20.04':
-        raise RuntimeError('Este pacote de laboratório foi preparado para Ubuntu 20.04, conforme a base original.')
-    product=Path('/sys/class/dmi/id/product_name').read_text().strip()
-    if product!='VirtualBox': raise RuntimeError('Este instalador só aceita uma VM VirtualBox nova.')
+        raise RuntimeError('A instalação completa aceita Ubuntu 20.04 x86_64, conforme o ambiente validado.')
+    if os.uname().machine!='x86_64':raise RuntimeError('A base exige arquitetura x86_64.')
     if not any(len(fields:=line.split())>1 and fields[1]=='/' for line in Path('/etc/fstab').read_text().splitlines() if line.strip() and not line.lstrip().startswith('#')):
         raise RuntimeError('A montagem raiz está ausente em /etc/fstab. Restaure o arquivo antes de instalar para garantir a próxima inicialização.')
     package=HERE.parent / 'original'
@@ -56,8 +55,8 @@ def main():
     progress=json.loads(progress_path.read_text()) if progress_path.exists() else {}
     if ROOT.exists() and not progress.get('owns_installation'):
         raise RuntimeError('/home/xui já existe. A instalação foi interrompida para preservar os dados.')
-    if shutil.disk_usage('/').free<5*1024**3: raise RuntimeError('São necessários pelo menos 5 GB livres na VM.')
-    print('VM Ubuntu 20.04 e pacote original verificados.',flush=True)
+    if shutil.disk_usage('/').free<5*1024**3: raise RuntimeError('São necessários pelo menos 5 GB livres no servidor.')
+    print('Ubuntu 20.04 x86_64 e pacote original verificados.',flush=True)
     if args.check:return
     def mark(step):
         progress[step]=True;put(progress_path,json.dumps(progress,indent=2),0o600)
@@ -88,8 +87,8 @@ def main():
             tar.extractall(str(ROOT),members=members)
         mark('extracted')
     if not progress.get('database'):
-        print('Configurando o banco de dados do laboratório...',flush=True)
-        put(Path('/etc/mysql/mariadb.conf.d/99-naxx-lab.cnf'),'[mysqld]\nbind-address=127.0.0.1\nmax_connections=128\ninnodb_buffer_pool_size=256M\ninnodb_flush_log_at_trx_commit=2\nmax_allowed_packet=64M\nsql_mode=NO_ENGINE_SUBSTITUTION\n')
+        print('Configurando o banco de dados do painel...',flush=True)
+        put(Path('/etc/mysql/mariadb.conf.d/99-naxx.cnf'),'[mysqld]\nbind-address=127.0.0.1\nmax_connections=128\ninnodb_buffer_pool_size=256M\ninnodb_flush_log_at_trx_commit=2\nmax_allowed_packet=64M\nsql_mode=NO_ENGINE_SUBSTITUTION\n')
         run('systemctl','enable','--now','mariadb');run('systemctl','restart','mariadb')
         exists=subprocess.check_output(['mysql','-N','-u','root','-e',"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME IN ('xui','xui_migrate');"]).strip()
         if exists and not progress.get('owns_database'):raise RuntimeError('Banco xui já existe. Nenhum banco existente foi apagado.')
@@ -109,8 +108,8 @@ def main():
         redis=original['rRedisConfig'].replace('bind *','bind 127.0.0.1').replace('#PASSWORD#',redis_password).replace('maxclients 655350','maxclients 4096')
         put(ROOT/'bin/redis/redis.conf',redis,0o600)
         for folder in ('content/streams','tmp','signals','backups'):(ROOT/folder).mkdir(parents=True,exist_ok=True)
-        # Limites adequados a uma VM de 2 GB; nenhum tmpfs de 6 GB é criado.
-        unit=original['rSystemd'].replace('Restart=always','Restart=on-failure').replace('ExecRestart=/bin/bash /home/xui/service restart\n','')+'\n[Service]\nLimitNOFILE=65535\n'
+        # Limites iniciais moderados; não é criado um tmpfs maior que a memória disponível.
+        unit=original['rSystemd'].replace('Restart=always','Restart=on-failure').replace('ExecRestart=/bin/bash /home/xui/service restart\n','')+'\n[Service]\nLimitNOFILE=65535\nReadOnlyPaths=/etc/fstab /etc/hosts\n'
         put(Path('/etc/systemd/system/xuione.service'),unit)
         run('systemctl','daemon-reload');run('systemctl','enable','xuione')
         code='naxx'+secrets.token_hex(4)
@@ -141,8 +140,8 @@ def main():
         raise RuntimeError('O serviço iniciou, mas a porta HTTP não respondeu. Consulte journalctl -u xuione.')
     mark('installed')
     print('Arquivos, banco, tema e serviços instalados.',flush=True)
-    print('Acesso local no Windows: http://127.0.0.1/'+progress['access_code']+'/')
-    print('Base instalada. O instalador Windows aplica a correção comunitária em seguida; no primeiro acesso, conclua o setup do XUI.')
+    print('Acesso local no servidor: http://127.0.0.1/'+progress['access_code']+'/')
+    print('Base instalada. No primeiro acesso, conclua a configuração do administrador pelo painel.')
 
 if __name__=='__main__':
     try:main()

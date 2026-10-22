@@ -1,115 +1,83 @@
-# PAINEL NAXX · edição 1.5.14
+# Xui Naxx · 1.5.14
 
-Interface em português brasileiro para a base XUI 1.5.12, com temas claro e escuro, navegação adaptada a telas menores e importador de canais, filmes e séries integrado ao menu **Conteúdo**.
+Painel em português brasileiro, com identidade azul, temas claro e escuro, interface adaptada a dispositivos móveis e ferramentas para canais, filmes e séries.
 
-**1.5.14 identifica esta edição NAXX. O núcleo distribuído continua sendo a base XUI 1.5.12.**
+## 🏆 Sistemas operacionais
 
-## Recursos
-
-- Importação de M3U/M3U8, CSV e JSON, com revisão, categorias editáveis e identificação de séries e episódios.
-- Leitura de listas em um processo do navegador separado da interface, sem um limite fixo de 10 MB ou de quantidade de itens.
-- Envio ao painel em lotes sequenciais, com progresso, pausa, retomada e cancelamento dos próximos lotes.
-- Ações em **Ferramentas rápidas** para apagar canais, filmes, séries ou todo o conteúdo, sem selecionar os itens nas tabelas.
-- Configurações traduzidas e recursos avançados agrupados no menu.
-- Manutenção nativa do banco instalada como serviço, com backup antes de atualizar o esquema.
-- Prévia local para Windows e scripts para criar uma VM de teste no VirtualBox.
-
-Listas grandes continuam dependendo da memória disponível no navegador, do espaço em disco e da capacidade do servidor. A importação de séries usa a fila nativa do XUI; a aceitação do lote não significa que todos os episódios já terminaram de processar.
-
-## Sistemas atendidos
-
-| Uso | Suporte implementado |
+| Sistema | Instalação completa |
 | --- | --- |
-| Instalação completa | VM VirtualBox nova, Ubuntu 20.04, x86_64 |
-| Atualização da interface | Instalação compatível com XUI 1.5.12 em `/home/xui`, validada pelo aplicador |
-| Laboratório no Windows | Python 3, VirtualBox e OpenSSH; criação de ISO requer `pycdlib` |
-| Prévia visual no Windows | Python 3; dados simulados |
+| Ubuntu 20.04 x86_64 | ✅ Ambiente validado |
+| Ubuntu 18.04 | ⏳ Não validado |
+| Ubuntu 22.04 | ⏳ Não validado |
+| Ubuntu 24.04 | ⏳ Não validado |
 
-O instalador completo verifica Ubuntu 20.04 e VirtualBox antes de continuar. Ubuntu 22.04, Ubuntu 24.04 e instalação direta em VPS não foram validados por este projeto.
+O instalador completo aceita Ubuntu 20.04 x86_64 em um servidor novo, com pelo menos 5 GB livres. As demais versões exigem adaptação e testes das dependências do núcleo.
 
-## Instalação e atualização pelo Git
+## 💡 Instalação
+
+Execute no servidor Linux:
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y git python3 ca-certificates
-git clone https://github.com/victorbrum33/PAINELNAX.git
-cd PAINELNAX
+git clone https://github.com/victorbrum33/Xui-Naxx.git
+cd Xui-Naxx
 chmod +x install.sh
 sudo ./install.sh
 ```
 
-O repositório é privado. A conta usada para clonar precisa ter acesso. Use a autenticação do Git/SSH ou `gh auth login`; não coloque tokens em comandos ou endereços de download.
+O repositório principal é privado; a conta usada pelo Git precisa ter acesso. A instalação baixa os componentes da referência com hashes SHA-256 fixados, prepara os serviços e informa o código de acesso gerado. No primeiro acesso, cadastre o administrador pela tela do painel. Nenhuma senha administrativa padrão é publicada.
 
-Se `/home/xui` já existir, `install.sh` aplica os arquivos da interface com backup e instala a manutenção automática do banco. O aplicador interrompe a atualização se encontrar arquivos incompatíveis ou alterações que não reconhece.
-
-Em uma VM nova, o instalador baixa o pacote XUI 1.5.12 e os componentes comunitários da referência original. Os hashes SHA-256 esperados estão fixados em `scripts/instalar.py`. Ele extrai apenas os arquivos necessários e recusa um download diferente da base conhecida.
-
-Também é possível usar um pacote completo NAXX fornecido pelo mantenedor. O hash deve corresponder a `releases/v1.5.14/SHA256SUMS` deste commit:
+Para conferir uma instalação existente sem aplicar mudanças:
 
 ```bash
-sudo ./install.sh --bundle /caminho/XUI-NAXX-COMPLETO.zip
+sudo ./install.sh --check
 ```
 
-Depois da instalação, use o endereço e o código gerados para a sua VM. No primeiro acesso, conclua o cadastro do administrador pela tela do próprio painel. O projeto não publica uma senha administrativa padrão.
+Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza a interface com backup e instala os serviços de manutenção e atualização automática.
 
-## Laboratório no Windows
+## Recursos
 
-1. Instale Python 3, VirtualBox e o cliente OpenSSH.
-2. Instale a dependência da ISO: `py -3 -m pip install pycdlib`.
-3. Execute `BAIXAR-PACOTE.bat` para baixar os componentes originais com verificação de hash. Para usar um pacote NAXX já baixado, execute `BAIXAR-PACOTE.bat --bundle "C:\caminho\XUI-NAXX-COMPLETO.zip"`.
-4. Execute `xui-naxx\CRIAR-VM.bat` e aguarde a primeira inicialização do Ubuntu.
-5. Execute `xui-naxx\INSTALAR-NA-VM.bat`.
-6. Abra `xui-naxx\ABRIR-PAINEL-REAL.bat`.
+- Importador em **Conteúdo**, por arquivo ou URL, com revisão de categorias, canais, filmes, séries e episódios.
+- Análise em processo separado e envio em lotes sequenciais, com pausa, retomada e progresso. Sem o antigo limite fixo de 10 MB; o processamento depende dos recursos do servidor e do navegador.
+- Ferramentas rápidas para excluir conteúdo por tipo ou apagar todo o conteúdo, sem seleção individual.
+- Player integrado com visual azul, reprodução HLS, mensagens em português e layout para dispositivos móveis.
+- Logos SVG, WebP e AVIF, com miniaturas proporcionais nas tabelas.
+- Sincronização automática dos IDs de EPG por correspondência única, preservando vínculos existentes e separando casos ambíguos.
+- Menus organizados em **Equipe**, **Clientes**, **Conteúdo** e **Avançado**, com busca nas ferramentas.
+- Configurações gerais e cache traduzidos, favicon e rodapé 2026.
 
-O diretório padrão da VM é `F:\virtualbox\XUI-NAXX-LAB`, com 1 CPU, 2 GB de RAM e disco dinâmico de 32 GB. Para escolher outro diretório, execute os scripts Python com `--base-dir` e `--config` correspondentes; o lançador `iniciar_vm.py` atualmente usa o diretório padrão. Cada instalação gera sua própria chave SSH e seu código de acesso.
+## Atualizações
 
-Se você extraiu o pacote completo fornecido pelo mantenedor, o núcleo e os componentes já estão presentes: comece pela criação da VM, sem executar a etapa `BAIXAR-PACOTE.bat`. Os arquivos do instalador Linux com download verificado ficam no clone Git.
+Abra **perfil → Atualização** para consultar versões, verificar e instalar manualmente, ativar a instalação automática diária ou restaurar o último backup. O serviço instala somente os arquivos próprios permitidos, verifica o SHA-256 e mantém backup antes da aplicação. O núcleo, as credenciais e o banco de dados ficam fora desse pacote.
 
-Para ver somente a interface com dados simulados, execute `xui-naxx\INICIAR-PAINEL.bat`. Essa prévia não administra o XUI real.
+O canal público está em [Xui-Naxx-Updates](https://github.com/victorbrum33/Xui-Naxx-Updates). Ele distribui o pacote de melhorias sem exigir token do GitHub no painel.
 
-## Atualização visual manual
+Para instalar o serviço de atualização separadamente:
 
-Confira a compatibilidade antes de aplicar:
+```bash
+sudo python3 scripts/instalar_atualizador.py --install
+```
+
+Para aplicar a interface manualmente:
 
 ```bash
 sudo python3 xui-naxx/atualizacao/aplicar.py --check
 sudo python3 xui-naxx/atualizacao/aplicar.py
 ```
 
-No pacote leve de atualização, a pasta `atualizacao` fica na raiz: use `sudo python3 atualizacao/aplicar.py --check` e `sudo python3 atualizacao/aplicar.py` depois de extrair o ZIP.
-
-O aplicador informa o diretório do backup criado em `/home/xui/.naxx-backups/`. Para restaurá-lo, informe o caminho que foi gerado:
+O aplicador informa o backup criado em `/home/xui/.naxx-backups/`. Para restaurar:
 
 ```bash
 sudo python3 xui-naxx/atualizacao/aplicar.py --restore /home/xui/.naxx-backups/SEU-BACKUP
 ```
 
-Para instalar a rotina automática de manutenção separadamente:
+## Desenvolvimento
+
+`xui-naxx/src/` contém os fontes das melhorias. Para regenerar os arquivos da interface com as referências presentes em `xui-original/`:
 
 ```bash
-sudo python3 xui-naxx/vm/atualizar_banco.py --install
+python3 xui-naxx/build.py
 ```
 
-A rotina executa o atualizador nativo `/home/xui/status` na inicialização. Ela registra o estado em `/var/lib/xui-naxx/` e guarda backups em `/var/backups/xui-naxx/`. Isso atualiza o esquema local; não baixa versões novas do projeto pelo GitHub.
-
-## Estrutura
-
-```text
-install.sh                   Entrada do instalador Linux
-scripts/instalar.py           Download verificado e preparação da instalação
-BAIXAR-PACOTE.bat             Prepara os arquivos grandes no Windows
-xui-naxx/src/                Código da interface e do importador
-xui-naxx/previa/             Prévia local com dados simulados
-xui-naxx/atualizacao/        Payload, manifesto e aplicador com backup
-xui-naxx/vm/                 Scripts da VM e manutenção do banco
-xui-original/                Referências mínimas para regenerar a interface
-releases/v1.5.14/SHA256SUMS   Hashes dos pacotes NAXX preparados
-```
-
-O núcleo original é grande e fica fora do histórico Git. O instalador usa os arquivos da referência original com hashes fixos; um pacote completo NAXX pode ser disponibilizado pelo mantenedor separadamente. Depois de alterar os fontes, execute `python3 xui-naxx/build.py` para regenerar o payload da atualização.
-
-## Origem
-
-O fluxo `git clone` → `chmod +x install.sh` → `./install.sh` foi organizado seguindo a referência [PabloServers/xui.one](https://github.com/PabloServers/xui.one). A base e os componentes comunitários foram obtidos a partir dessa referência e de [amidevous/xui.one](https://github.com/amidevous/xui.one).
-
-Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Este repositório não atribui uma nova licença ao núcleo XUI ou aos componentes de terceiros.
+`1.5.14` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.

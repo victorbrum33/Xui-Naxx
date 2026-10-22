@@ -1,0 +1,14 @@
+[Unit]
+Description=Verificação automática das melhorias Xui Naxx
+Requires=naxx-update.service
+After=naxx-update.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/bin/python3 /usr/local/lib/naxx/naxx_update.py --automatic
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+RestrictAddressFamilies=AF_UNIX

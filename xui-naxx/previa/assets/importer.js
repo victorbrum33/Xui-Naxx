@@ -93,7 +93,8 @@
       seen.add(url);
       var category = String(options.category || record.category || record.categoria || record.group || '').trim();
       var type = inferType(name, category, url, options.type || record.type || record.tipo);
-      var logo = sourceURL(record.logo);
+      // Preserve a imagem original; SVG/WebP e URLs sem extensão são lidos pelo navegador.
+      var logo = sourceURL(record.logo || record['tvg-logo'] || record.stream_icon || record.cover || record.movie_image);
       items.push(Object.assign({id:'import-' + index, name:name.slice(0,300), url:url, category:category.slice(0,200) || 'Sem categoria', type:type, tvgId:String(record.tvgId || record['tvg-id'] || '').slice(0,200), logo:logo && /^https?:/.test(logo) ? logo : ''}, type === 'series' ? episodeInfo(name) : {}));
     }
     function finish() {

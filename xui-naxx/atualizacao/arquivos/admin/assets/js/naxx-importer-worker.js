@@ -1,7 +1,7 @@
 /* Analisa listas fora da interface; M3U é lido por blocos sem copiar o arquivo inteiro. */
 'use strict';
 var nativeAssets = self.location.pathname.split('/').pop().indexOf('naxx-') === 0;
-importScripts((nativeAssets ? 'naxx-' : '') + 'importer.js?v=e574af9367c3');
+importScripts((nativeAssets ? 'naxx-' : '') + 'importer.js?v=409a5efdad98');
 
 self.onmessage = async function (event) {
   var file = event.data && event.data.file;

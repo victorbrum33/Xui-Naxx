@@ -176,7 +176,8 @@
           var response = await fetch('post.php?action=' + def.action + '&referer=' + encodeURIComponent(route(active.mode)),{method:'POST',body:data,credentials:'same-origin',headers:ajaxHeaders});
           if (!response.ok || /\/(login|license)(?:[?/]|$)/.test(response.url)) throw new Error('O painel recusou a operação. Verifique sua sessão.');
           var result = await readJson(response,'após solicitar a exclusão de '+def.label,true);
-          if ((!result.location && !(result.result === true && Number(result.status) === 1)) || /(?:^|\/)(?:login|license)(?:[?.]|$)/.test(result.location || '')) throw new Error('O painel recusou a exclusão (código ' + result.status + ').');
+          var destination=typeof result.location==='string'?result.location.trim():'';
+          if ((result.location!=null&&typeof result.location!=='string') || (!destination && !(result.result === true && Number(result.status) === 1)) || /(?:^|\/)(?:login|license)(?:[?.#]|$)/i.test(destination)) throw new Error('O painel recusou a exclusão (código ' + result.status + ').');
           sent += batch.length;
           var removed = new Set(batch);markSelection(job.type,ids(job.type).filter(function (id) {return !removed.has(id);}));
           await delay(250);

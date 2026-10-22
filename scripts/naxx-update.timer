@@ -1,0 +1,12 @@
+[Unit]
+Description=Atualização diária das melhorias Xui Naxx
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1d
+RandomizedDelaySec=30min
+Persistent=true
+Unit=naxx-update-check.service
+
+[Install]
+WantedBy=timers.target

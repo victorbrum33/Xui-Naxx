@@ -20,7 +20,7 @@ EDITION = '1.5.14'
 TAG = 'v' + EDITION
 ASSET = 'XUI-NAXX-COMPLETO.zip'
 PATCH_FILES = ('xui.so', 'license', 'manifest.json')
-EXTRACTION = ('xui.tar.gz',) + tuple('xui-naxx/vm/community-patch/' + name for name in PATCH_FILES)
+EXTRACTION = ('xui.tar.gz',) + tuple('scripts/community-patch/' + name for name in PATCH_FILES)
 UPSTREAM = 'https://github.com/amidevous/xui.one/releases/download/test/'
 CORE_ZIP_HASH = 'f88bfcd81552432d4858d0a6395eea02dd191151371ea51745a86b919b31003f'
 CORE_TAR_HASH = 'c5c0668194b75bd35ff391ee82cf42793eb26ef8043f4cbadb6c99666c3e328f'
@@ -65,7 +65,7 @@ def extract_selected(bundle, destination, names=EXTRACTION):
     with zipfile.ZipFile(bundle) as archive:
         entries = archive.infolist()
         for relative in names:
-            matches = [entry for entry in entries if entry.filename == relative]
+            matches = [entry for entry in entries if entry.filename == relative or (relative.startswith('scripts/community-patch/') and entry.filename.endswith('/community-patch/' + relative.rsplit('/', 1)[-1]))]
             if len(matches) != 1:
                 raise RuntimeError('Entrada ausente ou repetida no pacote: ' + relative)
             info = matches[0]
@@ -132,7 +132,7 @@ def prepare_components(destination, bundle=None):
         core = download_verified('XUI_1.5.12.zip', CORE_ZIP_HASH)
         extract_selected(core, destination, names=('xui.tar.gz',))
         correction = download_verified('xui_crack.tar.gz', PATCH_ARCHIVE_HASH)
-        patch = destination / 'xui-naxx/vm/community-patch'
+        patch = destination / 'scripts/community-patch'
         try:
             patch.resolve().relative_to(destination.resolve())
         except ValueError:
@@ -160,7 +160,7 @@ def prepare_components(destination, bundle=None):
     if digest(destination / 'xui.tar.gz') != CORE_TAR_HASH:
         raise RuntimeError('O núcleo extraído não corresponde à base original fixada.')
     for filename, expected in PATCH_HASHES.items():
-        if digest(destination / 'xui-naxx/vm/community-patch' / filename) != expected:
+        if digest(destination / 'scripts/community-patch' / filename) != expected:
             raise RuntimeError('O componente comunitário extraído não confere: ' + filename)
 
 
@@ -173,29 +173,27 @@ def require_root():
         raise RuntimeError('A instalação do painel deve ser executada no Linux como root: sudo ./install.sh')
 
 
-def validate_new_vm():
+def validate_new_server():
     release = {}
     for line in Path('/etc/os-release').read_text().splitlines():
         if '=' in line:
             key, value = line.split('=', 1)
             release[key] = value.strip('"')
     if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') != '20.04' or platform.machine() != 'x86_64':
-        raise RuntimeError('A instalação completa exige Ubuntu 20.04 x86_64 em uma VM nova.')
-    product = Path('/sys/class/dmi/id/product_name')
-    if not product.is_file() or product.read_text().strip() != 'VirtualBox':
-        raise RuntimeError('A instalação completa exige uma VM VirtualBox nova.')
+        raise RuntimeError('A instalação completa exige Ubuntu 20.04 x86_64 em um servidor novo.')
 
 
 def install_new(bundle):
-    # O aplicador comunitário e os scripts Windows usam este diretório de preparação.
-    stage = Path('/home/naxx/naxx-install')
+    # A preparação pertence ao instalador deste servidor.
+    stage = Path('/var/lib/xui-naxx/install')
     if stage.is_symlink():
         raise RuntimeError('Diretório de preparação simbólico recusado.')
     marker = stage / '.painelnax-stage'
     if stage.exists() and any(stage.iterdir()) and not marker.is_file():
-        raise RuntimeError('O diretório /home/naxx/naxx-install já contém dados. Use os scripts da instalação que o criou.')
-    stage.mkdir(parents=True, exist_ok=True)
-    marker.write_text('PAINELNAX ' + EDITION + '\n', encoding='utf-8')
+        raise RuntimeError('O diretório /var/lib/xui-naxx/install já contém dados. Use os scripts da instalação que o criou.')
+    stage.mkdir(parents=True, mode=0o700, exist_ok=True)
+    stage.chmod(0o700)
+    marker.write_text('Xui Naxx ' + EDITION + '\n', encoding='utf-8')
     marker.chmod(0o600)
     data = stage / 'release-data'
     prepare_components(data, bundle)
@@ -205,42 +203,54 @@ def install_new(bundle):
     shutil.copyfile(REPO / 'xui-original/install', original / 'install')
     manifest = {name: digest(original / name) for name in ('xui.tar.gz', 'install')}
     (original / 'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
-    (stage / 'vm').mkdir(exist_ok=True)
-    for filename in ('instalar_linux.py', 'aplicar_comunidade.py', 'atualizar_banco.py', 'naxx-maintenance.service'):
-        shutil.copyfile(REPO / 'xui-naxx/vm' / filename, stage / 'vm' / filename)
+    (stage / 'scripts').mkdir(exist_ok=True)
+    for filename in ('instalar_base.py', 'aplicar_componentes.py', 'atualizar_banco.py', 'naxx-maintenance.service'):
+        shutil.copyfile(REPO / 'scripts' / filename, stage / 'scripts' / filename)
     (stage / 'patch').mkdir(exist_ok=True)
     for filename in PATCH_FILES:
-        shutil.copyfile(data / 'xui-naxx/vm/community-patch' / filename, stage / 'patch' / filename)
+        shutil.copyfile(data / 'scripts/community-patch' / filename, stage / 'patch' / filename)
     shutil.copytree(REPO / 'xui-naxx/atualizacao', stage / 'atualizacao', dirs_exist_ok=True)
-    run_script(stage / 'vm/instalar_linux.py')
-    run_script(stage / 'vm/aplicar_comunidade.py')
-    run_script(stage / 'vm/atualizar_banco.py', '--install')
+    run_script(stage / 'scripts/instalar_base.py')
+    run_script(stage / 'scripts/aplicar_componentes.py')
+    run_script(stage / 'scripts/atualizar_banco.py', '--install')
+    run_script(REPO / 'scripts/instalar_atualizador.py', '--install')
     progress = json.loads((stage / 'installation-progress.json').read_text())
     code = progress.get('access_code')
     if code:
-        print('Acesso dentro da VM: http://127.0.0.1/' + code + '/')
+        print('Acesso local ao servidor: http://127.0.0.1/' + code + '/')
     print('Instalação concluída. Acesse o painel e finalize o cadastro do administrador pelo setup.')
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--bundle', type=Path, help='ZIP completo da release v1.5.14 já baixado')
-    parser.add_argument('--prepare-only', action='store_true', help='Preparar núcleo e componentes para os BAT do Windows sem instalar o painel')
+    parser.add_argument('--check', action='store_true', help='Conferir ambiente e compatibilidade sem instalar')
+    parser.add_argument('--prepare-only', action='store_true', help='Preparar os componentes verificados sem instalar o painel')
     args = parser.parse_args()
     if args.prepare_only:
         prepare_components(REPO, args.bundle)
-        print('Pacote preparado. Execute xui-naxx/CRIAR-VM.bat e depois xui-naxx/INSTALAR-NA-VM.bat.')
+        print('Componentes verificados preparados. Execute sudo ./install.sh no servidor para instalar.')
         return
     require_root()
+    os.umask(0o077)
     if Path('/home/xui').exists():
         if not Path('/home/xui/status').is_file():
             raise RuntimeError('/home/xui existe, mas não parece conter o painel esperado.')
+        if args.check:
+            run_script(REPO / 'xui-naxx/atualizacao/aplicar.py', '--check')
+            return
         print('Instalação existente: aplicando interface NAXX e manutenção automática.', flush=True)
         run_script(REPO / 'xui-naxx/atualizacao/aplicar.py')
-        run_script(REPO / 'xui-naxx/vm/atualizar_banco.py', '--install')
+        run_script(REPO / 'scripts/atualizar_banco.py', '--install')
+        run_script(REPO / 'scripts/instalar_atualizador.py', '--install')
         print('Atualização NAXX aplicada.')
         return
-    validate_new_vm()
+    validate_new_server()
+    if args.check:
+        if shutil.disk_usage('/').free < 5 * 1024 ** 3:
+            raise RuntimeError('São necessários pelo menos 5 GB livres para preparar a instalação.')
+        print('Ubuntu 20.04 x86_64 e espaço livre conferidos. Nenhum componente foi instalado.')
+        return
     install_new(args.bundle)
 
 

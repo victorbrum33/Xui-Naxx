@@ -12,6 +12,7 @@ ExecStart=/usr/bin/python3 /usr/local/sbin/naxx-atualizar-banco
 TimeoutStartSec=180
 UMask=0077
 Nice=10
+ReadOnlyPaths=/etc/fstab /etc/hosts
 
 [Install]
 WantedBy=multi-user.target
