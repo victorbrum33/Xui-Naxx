@@ -49,6 +49,9 @@ Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza 
 - Diagnóstico local de Redis com memória, latência, chaves, clientes e taxa de acertos; exportação do relatório e atualização opcional a cada 30 segundos.
 - Perfis de agendamento com validação de minuto, hora e threads; os valores são aplicados somente ao salvar.
 - Cards agrupados em Acessos, Canais e Tráfego de rede, menus de ações sem recorte e tema inicial Naxx durante o carregamento.
+- Interface com atualizações parciais, consultas automáticas pausadas em abas ocultas, importador com menos cópias em memória e perfil de serviços proporcional aos recursos do servidor.
+
+Consulte [Otimização](OTIMIZACAO.md) para medições, aplicação dos perfis PHP-FPM/HTTP e restauração dos backups.
 
 ## Atualizações
 

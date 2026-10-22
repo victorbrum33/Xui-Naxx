@@ -4,11 +4,13 @@
   var labels = {channel:'Canal', movie:'Filme', series:'Episódio'};
   function mount(root, options) {
     options = options || {};
-    var result = null, selected = new Set(), input = null, page = 0, pageSize = 100, busy = false, worker = null, analysisId = 0, cancelAnalysis = null, downloadController = null, sourceMode = 'file';
+    var result = null, selectionExceptions = new Set(), selectAll = true, categoryCounts = [], input = null, page = 0, pageSize = 100, busy = false, worker = null, analysisId = 0, cancelAnalysis = null, downloadController = null, sourceMode = 'file';
     root.innerHTML = '<div class="card"><div class="card-body"><div class="naxx-step"><span>01</span><div><h2 class="header-title">Escolha a origem da lista</h2><p class="text-muted mb-0">M3U, M3U8, CSV ou JSON · sem limite fixo de tamanho ou itens</p></div></div><fieldset class="naxx-source-picker"><legend>Como deseja carregar a lista?</legend><label><input type="radio" name="naxx-import-source" value="file" checked><span>Enviar arquivo</span></label><label><input type="radio" name="naxx-import-source" value="url"><span>Importar por URL</span></label></fieldset><div data-file-source><label class="naxx-dropzone" for="catalog-file"><span class="naxx-upload-icon">↥</span><strong>Selecionar lista de conteúdo</strong><span class="text-muted" id="file-description">O arquivo é processado neste navegador.</span><input id="catalog-file" type="file" accept=".m3u,.m3u8,.csv,.json" class="mt-3"></label></div><div data-url-source class="naxx-url-source" hidden><label for="catalog-url">URL da lista</label><input id="catalog-url" class="form-control" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://servidor.com/lista.m3u" aria-describedby="catalog-url-help"><p id="catalog-url-help" class="text-muted">Cole o link direto da lista M3U, M3U8, CSV ou JSON. A URL pode incluir os parâmetros de acesso do seu provedor.</p><div class="naxx-url-actions"><div><label for="catalog-url-format">Formato da lista</label><select id="catalog-url-format" class="custom-select"><option value="">Detectar automaticamente</option><option value="m3u">M3U / M3U8</option><option value="csv">CSV</option><option value="json">JSON</option></select></div><button class="btn btn-primary" data-load-url type="button">Carregar URL</button></div><p class="text-muted naxx-url-privacy">O link é usado nesta sessão e não é salvo no navegador.</p></div><details class="naxx-format-help"><summary>Como preparar o arquivo</summary><p>Em M3U, use EXTINF com nome e group-title, seguido da URL. Filmes são identificados pelo grupo Filmes ou pela extensão do vídeo; episódios por Série, S01E01 ou 1x01 no nome. Revise a classificação antes de importar.</p><p>CSV: <code>name,url,type,category</code>. JSON: lista de objetos com essas mesmas propriedades. Os tipos são <code>channel</code>, <code>movie</code> e <code>series</code>.</p><button class="btn btn-light" type="button" data-example>Usar arquivo de exemplo</button></details><div class="row mt-3"><div class="col-md-6"><label for="import-type">Tipo de conteúdo</label><select id="import-type" class="custom-select"><option value="">Detectar automaticamente</option><option value="channel">Todos são canais</option><option value="movie">Todos são filmes</option><option value="series">Todos são episódios de séries</option></select></div><div class="col-md-6"><label for="import-category">Categoria (opcional)</label><input id="import-category" class="form-control" maxlength="200" placeholder="Manter as categorias do arquivo"></div></div><div class="mt-3 d-flex flex-wrap" style="gap:10px"><button class="btn btn-primary" data-analyze type="button" disabled>Analisar lista</button><span class="text-muted align-self-center" data-file-status>Nenhum arquivo selecionado</span></div><div data-message role="status" aria-live="polite" class="mt-3"></div></div></div><div class="card" data-review hidden><div class="card-body"><div class="naxx-step"><span>02</span><div><h2 class="header-title">Revise e importe</h2><p class="text-muted mb-0">Selecione os conteúdos que deseja incluir.</p></div></div><div data-summary class="naxx-import-summary"></div><div class="table-responsive"><table class="table"><thead><tr><th><input type="checkbox" data-check-all aria-label="Selecionar todos os conteúdos" checked></th><th>Conteúdo</th><th>Tipo</th><th>Categoria</th><th>Fonte</th></tr></thead><tbody data-items></tbody></table></div><p data-truncated class="text-muted mt-2"></p><div data-issues></div><div class="d-flex flex-wrap mt-3" style="gap:10px"><button class="btn btn-primary" data-commit type="button">' + (options.onImport ? 'Importar no catálogo de teste' : 'Baixar M3U revisado') + '</button><button class="btn btn-light" data-export-json type="button">Baixar JSON</button><button class="btn btn-light" data-export-split type="button">Separar por tipo</button></div><p class="text-muted mt-3 mb-0">' + (options.onImport ? 'Os itens serão salvos apenas na prévia deste navegador.' : 'Esta ferramenta prepara arquivos. A gravação no banco do XUI deve ser feita pelo importador nativo da instalação. Nenhum dado é enviado ao servidor aqui.') + '</p></div></div>';
     function query(selector) {return root.querySelector(selector);}
     function message(text, error) {query('[data-message]').innerHTML = '<div class="alert ' + (error ? 'alert-danger' : 'alert-info') + '">' + escape(text) + '</div>';}
-    function resetReview() {result = null; selected.clear(); query('[data-review]').hidden = true;}
+    function resetReview() {result = null; selectionExceptions.clear(); selectAll = true; categoryCounts = []; query('[data-items]').textContent = ''; query('[data-category-editor]').textContent = ''; query('[data-review]').hidden = true;}
+    function isSelected(id) {return selectAll ? !selectionExceptions.has(id) : selectionExceptions.has(id);}
+    function selectionCount() {return result ? (selectAll ? result.items.length - selectionExceptions.size : selectionExceptions.size) : 0;}
     var cancelButton=document.createElement('button');cancelButton.type='button';cancelButton.className='btn btn-light';cancelButton.textContent='Cancelar análise';cancelButton.hidden=true;query('[data-analyze]').after(cancelButton);
     function byteSize(bytes){if(bytes<1024)return bytes+' B';if(bytes<1024*1024)return (bytes/1024).toFixed(1)+' KB';if(bytes<1024*1024*1024)return (bytes/1024/1024).toFixed(1)+' MB';return (bytes/1024/1024/1024).toFixed(2)+' GB';}
     function readyStatus(){query('[data-file-status]').textContent=input?byteSize(input.size)+' · pronto para analisar':(sourceMode==='url'?'Cole uma URL e clique em Carregar URL':'Nenhum arquivo selecionado');}
@@ -123,10 +125,22 @@
     });
     function analyzeFile(file,settings){return new Promise(function(resolve,reject){
       if(!window.Worker){reject(new Error('Este navegador não oferece análise em segundo plano. Atualize o navegador para importar listas.'));return;}
-      cancelAnalysis=reject;worker=new Worker(options.workerURL||'assets/importer-worker.js?v=1.5.14-4');var currentWorker=worker;
-      worker.onmessage=function(event){if(worker!==currentWorker)return;var data=event.data;if(data.type==='progress'){query('[data-file-status]').textContent='Analisando… '+Math.floor(data.bytes/Math.max(1,data.total)*100)+'%';}else if(data.type==='result'){worker.terminate();worker=null;cancelAnalysis=null;resolve(data.result);}else if(data.type==='error'){worker.terminate();worker=null;cancelAnalysis=null;reject(new Error(data.message));}};
+      cancelAnalysis=reject;worker=new Worker(options.workerURL||'assets/importer-worker.js?v=1.5.14-5');var currentWorker=worker;
+      var collectedItems=[],collectedIssues=[],counts={channel:0,movie:0,series:0},categoriesMap=new Map();
+      worker.onmessage=function(event){
+        if(worker!==currentWorker)return;var data=event.data;
+        if(data.type==='progress'){query('[data-file-status]').textContent='Analisando… '+Math.floor(data.bytes/Math.max(1,data.total)*100)+'%';}
+        else if(data.type==='items'||data.type==='issues'){
+          var records=data.records||[],target=data.type==='items'?collectedItems:collectedIssues;
+          for(var i=0;i<records.length;i++){var record=records[i];target.push(record);if(data.type==='items'){counts[record.type]++;categoriesMap.set(record.category,(categoriesMap.get(record.category)||0)+1);}}
+          query('[data-file-status]').textContent='Preparando revisão… '+collectedItems.length+' conteúdos';
+        }else if(data.type==='result'){
+          if(data.result.streamed){data.result.items=collectedItems;data.result.issues=collectedIssues;data.result.counts=counts;data.result.categories=Array.from(categoriesMap);}
+          worker.terminate();worker=null;cancelAnalysis=null;resolve(data.result);
+        }else if(data.type==='error'){worker.terminate();worker=null;cancelAnalysis=null;reject(new Error(data.message));}
+      };
       worker.onerror=function(){if(worker!==currentWorker)return;if(worker)worker.terminate();worker=null;cancelAnalysis=null;reject(new Error('Não foi possível analisar o arquivo. Verifique se o formato é válido.'));};
-      worker.postMessage({file:file,options:settings});
+      worker.postMessage({file:file,options:settings,streamResult:true});
     });}
     async function read(file) {
       if(busy)return;
@@ -150,8 +164,10 @@
       try {
         result=await analyzeFile(input,{type:query('#import-type').value,category:query('#import-category').value,existing:options.existing?options.existing():[]});
         if(id!==analysisId)return;
-        selected=new Set(result.items.map(function(item){return item.id;}));
-        var counts={channel:0,movie:0,series:0};result.items.forEach(function(item){counts[item.type]++;});
+        selectAll=true;selectionExceptions.clear();
+        var counts=result.counts||{channel:0,movie:0,series:0}, categoriesMap=new Map();
+        if(!result.counts)result.items.forEach(function(item){counts[item.type]++;categoriesMap.set(item.category,(categoriesMap.get(item.category)||0)+1);});
+        categoryCounts=result.categories||Array.from(categoriesMap);categoryPage=0;
         query('[data-summary]').innerHTML='<span><b>'+counts.channel+'</b> canais</span><span><b>'+counts.movie+'</b> filmes</span><span><b>'+counts.series+'</b> episódios</span><span><b>'+result.duplicates+'</b> duplicados ignorados</span><span><b>'+result.issues.length+'</b> inválidos</span>';
         page=0;renderPage();query('[data-check-all]').checked=true;query('[data-check-all]').indeterminate=false;
         query('[data-issues]').innerHTML=result.issues.length?'<details><summary>'+result.issues.length+' itens inválidos ignorados</summary><ul>'+result.issues.slice(0,20).map(function(issue){return '<li>Linha '+issue.line+': '+escape(issue.reason)+'</li>';}).join('')+'</ul></details>':'';
@@ -163,19 +179,20 @@
     });
     var categories=document.createElement('details'),categoryPage=0;categories.className='naxx-categories-review';categories.innerHTML='<summary>Categorias da lista <span data-category-count></span></summary><p class="text-muted">Os grupos serão mantidos no painel. Renomeie uma categoria antes de importar, se necessário.</p><div data-category-editor></div><div class="d-flex" style="gap:10px"><button type="button" class="btn btn-light" data-cat-prev>Anterior</button><span data-cat-page class="text-muted align-self-center"></span><button type="button" class="btn btn-light" data-cat-next>Próxima</button></div>';
     query('[data-summary]').after(categories);
-    function renderCategories(){var counts=new Map();result.items.forEach(function(item){counts.set(item.category,(counts.get(item.category)||0)+1);});categoryPage=Math.min(categoryPage,Math.max(0,Math.ceil(counts.size/50)-1));query('[data-category-count]').textContent='('+counts.size+')';query('[data-category-editor]').innerHTML=Array.from(counts).slice(categoryPage*50,(categoryPage+1)*50).map(function(entry,index){return '<div class="naxx-category-row"><label for="naxx-category-'+index+'">'+escape(entry[0])+' <small class="text-muted">'+entry[1]+' itens</small></label><input id="naxx-category-'+index+'" class="form-control" data-original-category="'+escape(entry[0])+'" value="'+escape(entry[0])+'" maxlength="200" aria-label="Renomear categoria '+escape(entry[0])+'"></div>';}).join('');query('[data-cat-prev]').disabled=categoryPage===0;query('[data-cat-next]').disabled=(categoryPage+1)*50>=counts.size;query('[data-cat-page]').textContent=counts.size?'Página '+(categoryPage+1)+' de '+Math.ceil(counts.size/50):'';query('[data-cat-page]').parentElement.hidden=counts.size<=50;}
+    function renderCategories(){var count=categoryCounts.length;categoryPage=Math.min(categoryPage,Math.max(0,Math.ceil(count/50)-1));query('[data-category-count]').textContent='('+count+')';query('[data-category-editor]').innerHTML=categoryCounts.slice(categoryPage*50,(categoryPage+1)*50).map(function(entry,index){return '<div class="naxx-category-row"><label for="naxx-category-'+index+'">'+escape(entry[0])+' <small class="text-muted">'+entry[1]+' itens</small></label><input id="naxx-category-'+index+'" class="form-control" data-original-category="'+escape(entry[0])+'" value="'+escape(entry[0])+'" maxlength="200" aria-label="Renomear categoria '+escape(entry[0])+'"></div>';}).join('');query('[data-cat-prev]').disabled=categoryPage===0;query('[data-cat-next]').disabled=(categoryPage+1)*50>=count;query('[data-cat-page]').textContent=count?'Página '+(categoryPage+1)+' de '+Math.ceil(count/50):'';query('[data-cat-page]').parentElement.hidden=count<=50;}
     query('[data-cat-prev]').addEventListener('click',function(){if(categoryPage>0){categoryPage--;renderCategories();}});query('[data-cat-next]').addEventListener('click',function(){categoryPage++;renderCategories();});
-    categories.addEventListener('change',function(event){if(!event.target.matches('[data-original-category]')||!result)return;var before=event.target.dataset.originalCategory,after=event.target.value.trim()||'Sem categoria';result.items.forEach(function(item){if(item.category===before)item.category=after;});renderCategories();renderPage();});
+    categories.addEventListener('change',function(event){if(!event.target.matches('[data-original-category]')||!result||busy)return;var before=event.target.dataset.originalCategory,after=event.target.value.trim()||'Sem categoria';if(before===after){event.target.value=after;return;}result.items.forEach(function(item){if(item.category===before)item.category=after;});var counts=new Map();categoryCounts.forEach(function(entry){var name=entry[0]===before?after:entry[0];counts.set(name,(counts.get(name)||0)+entry[1]);});categoryCounts=Array.from(counts);renderCategories();renderPage();});
     function sync() {
-      query('[data-check-all]').checked = selected.size === result.items.length;
-      query('[data-check-all]').indeterminate = selected.size > 0 && selected.size < result.items.length;
-      ['[data-commit]','[data-export-json]','[data-export-split]'].forEach(function (selector) {query(selector).disabled = !selected.size;});
+      var count = selectionCount();
+      query('[data-check-all]').checked = count === result.items.length;
+      query('[data-check-all]').indeterminate = count > 0 && count < result.items.length;
+      ['[data-commit]','[data-export-json]','[data-export-split]'].forEach(function (selector) {query(selector).disabled = !count;});
     }
     var pager=document.createElement('div');pager.className='d-flex flex-wrap align-items-center';pager.style.gap='10px';pager.innerHTML='<button type="button" class="btn btn-light" data-prev-page>Anterior</button><span data-page-label class="text-muted"></span><button type="button" class="btn btn-light" data-next-page>Próxima</button>';
     query('[data-truncated]').after(pager);
     function renderPage(){
       var list=result.items.slice(page*pageSize,(page+1)*pageSize);
-      query('[data-items]').innerHTML=list.map(function(item){return '<tr><td><input type="checkbox" data-item="'+escape(item.id)+'" aria-label="Selecionar '+escape(item.name)+'" '+(selected.has(item.id)?'checked':'')+'></td><td><div class="naxx-import-content">'+(item.logo?'<img class="naxx-import-logo" data-import-logo src="'+escape(item.logo)+'" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">':'')+'<div><strong>'+escape(item.name)+'</strong>'+(item.season!==undefined?'<small class="d-block text-muted">Temporada '+item.season+' · episódio '+item.episode+'</small>':'')+'</div></div></td><td><span class="badge badge-info">'+labels[item.type]+'</span></td><td>'+escape(item.category)+'</td><td><span class="naxx-source" title="'+escape(item.url)+'">'+escape(new URL(item.url).hostname)+'</span></td></tr>';}).join('');
+      query('[data-items]').innerHTML=list.map(function(item){return '<tr><td><input type="checkbox" data-item="'+escape(item.id)+'" aria-label="Selecionar '+escape(item.name)+'" '+(isSelected(item.id)?'checked':'')+'></td><td><div class="naxx-import-content">'+(item.logo?'<img class="naxx-import-logo" data-import-logo src="'+escape(item.logo)+'" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">':'')+'<div><strong>'+escape(item.name)+'</strong>'+(item.season!==undefined?'<small class="d-block text-muted">Temporada '+item.season+' · episódio '+item.episode+'</small>':'')+'</div></div></td><td><span class="badge badge-info">'+labels[item.type]+'</span></td><td>'+escape(item.category)+'</td><td><span class="naxx-source" title="'+escape(item.url)+'">'+escape(new URL(item.url).hostname)+'</span></td></tr>';}).join('');
       query('[data-truncated]').textContent=result.items.length?'Itens '+(page*pageSize+1)+' a '+Math.min((page+1)*pageSize,result.items.length)+' de '+result.items.length+'. Selecionar todos inclui a lista inteira.':'Nenhum item válido.';
       pager.hidden=result.items.length<=pageSize;query('[data-prev-page]').disabled=page===0;query('[data-next-page]').disabled=(page+1)*pageSize>=result.items.length;query('[data-page-label]').textContent='Página '+(page+1)+' de '+Math.ceil(result.items.length/pageSize);
     }
@@ -183,16 +200,16 @@
     query('[data-next-page]').addEventListener('click',function(){if((page+1)*pageSize<result.items.length){page++;renderPage();}});
     query('[data-check-all]').addEventListener('change', function (event) {
       if (!result) return;
-      selected = new Set(event.target.checked ? result.items.map(function (item) {return item.id;}) : []);
+      selectAll = event.target.checked; selectionExceptions.clear();
       root.querySelectorAll('[data-item]').forEach(function (checkbox) {checkbox.checked = event.target.checked;}); sync();
     });
     query('[data-items]').addEventListener('change', function (event) {
       if (!event.target.matches('[data-item]')) return;
-      if (event.target.checked) selected.add(event.target.dataset.item); else selected.delete(event.target.dataset.item);
+      if (event.target.checked === selectAll) selectionExceptions.delete(event.target.dataset.item); else selectionExceptions.add(event.target.dataset.item);
       sync();
     });
     query('[data-items]').addEventListener('error',function(event){if(event.target.matches('[data-import-logo]'))event.target.hidden=true;},true);
-    function selectedItems() {return result ? result.items.filter(function (item) {return selected.has(item.id);}) : [];}
+    function selectedItems() {if(!result)return [];return selectAll&&!selectionExceptions.size?result.items:result.items.filter(function(item){return isSelected(item.id);});}
     function download(filename, text, mime) {
       var url = URL.createObjectURL(new Blob([text], {type:mime + ';charset=utf-8'})), link=document.createElement('a');
       link.href=url; link.download=filename; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(function () {URL.revokeObjectURL(url);},1000);

@@ -60,10 +60,13 @@
     }
     async function commit(items){
       var modeControl=document.getElementById('naxx-mode'),channelMode=modeControl.value;
-      done=0;total=items.length;paused=false;stopped=false;running=true;modeControl.disabled=true;details.setAttribute('inert','');details.classList.add('naxx-options-busy');pause.disabled=false;stop.disabled=false;pause.textContent='Pausar após este lote';var groups={channel:[],movie:[],series:[]};items.forEach(function(i){if(committed.has(i.url))done++;else groups[i.type].push(i);});
+      done=0;total=items.length;paused=false;stopped=false;running=true;modeControl.disabled=true;details.setAttribute('inert','');details.classList.add('naxx-options-busy');pause.disabled=false;stop.disabled=false;pause.textContent='Pausar após este lote';
+      // Uma única referência por item pendente; evita copiar todos por tipo e depois categoria.
+      var groups={channel:new Map(),movie:new Map(),series:new Map()};
+      items.forEach(function(item){if(committed.has(item.url)){done++;return;}var group=groups[item.type],list=group.get(item.category);if(!list){list=[];group.set(item.category,list);}list.push(item);});
       try{
         for(var type of ['channel','movie','series']){
-          if(!groups[type].length)continue;
+          if(!groups[type].size)continue;
           await checkpoint();
           var action={channel:'stream',movie:'movie',series:'serie'}[type];
           say('Importando '+({channel:'canais',movie:'filmes',series:'séries'}[type])+'… '+done+' de '+items.length+' processados.');
@@ -83,8 +86,7 @@
             if(!configuredServers.length)throw new Error('Escolha um servidor na árvore Online das configurações avançadas para importar canais sob demanda.');
             data.delete('on_demand[]');configuredServers.forEach(function(node){data.append('on_demand[]',String(node.id));});
           }
-          var byCategory=new Map(),available=categoryMap(native.doc);
-          groups[type].forEach(function(item){if(!byCategory.has(item.category))byCategory.set(item.category,[]);byCategory.get(item.category).push(item);});
+          var byCategory=groups[type],available=categoryMap(native.doc);
           for(var entry of byCategory){
             var category=entry[0],list=entry[1],key=category.toLocaleLowerCase('pt-BR');
             for(var offset=0;offset<list.length;offset+=100){
@@ -95,19 +97,22 @@
               else{payload.append('category_id[]',category);if(!newCategories.includes(category))newCategories.push(category);}
               payload.set('category_create_list',JSON.stringify(newCategories));
               payload.set('m3u_file',new File([NaxxImporter.toM3U(batch)],'naxx-'+type+'.m3u',{type:'audio/x-mpegurl'}));
-              await post(action,payload);batch.forEach(function(i){committed.add(i.url);});done+=batch.length;
+              var sentAt=Date.now();await post(action,payload);var requestTime=Date.now()-sentAt;
+              batch.forEach(function(i){committed.add(i.url);});done+=batch.length;
               say(done+' conteúdos enviados.');
-              if(done<total)await delay(600);
+              // Um servidor mais lento recebe um intervalo maior; nunca há POSTs paralelos.
+              if(done<total)await delay(Math.min(5000,Math.max(600,requestTime)));
               if(offset+100<list.length&&!categoryId){available=categoryMap((await nativeForm(action+'?import=1')).doc);if(!available.has(key))throw new Error('A categoria "'+category+'" ainda não foi confirmada pelo painel. Aguarde o processamento e tente novamente.');}
             }
           }
+          groups[type].clear();
         }
         say('Importação concluída: '+done+' conteúdos enviados aos importadores do painel. Consulte Canais, Filmes e Séries para acompanhar o processamento.');
         return {message:'Importação concluída. '+done+' conteúdos enviados ao painel.'};
       }catch(error){throw new Error((done?'Lotes anteriores enviados: '+done+'. Ao tentar novamente, eles serão ignorados nesta sessão. ':'')+error.message);}
       finally{running=false;modeControl.disabled=false;details.removeAttribute('inert');details.classList.remove('naxx-options-busy');pause.disabled=true;stop.disabled=true;}
     }
-    NaxxImporterUI.mount(root,{urlEndpoint:'naxx-import-url.php',workerURL:'assets/js/naxx-importer-worker.js?v=1.5.14-4',onImport:commit,commitLabel:'Importar no painel',commitHelp:'As categorias serão vinculadas pelos formulários do painel. A importação avança em lotes e pode ser pausada ou interrompida.'});
+    NaxxImporterUI.mount(root,{urlEndpoint:'naxx-import-url.php',workerURL:'assets/js/naxx-importer-worker.js?v=1.5.14-5',onImport:commit,commitLabel:'Importar no painel',commitHelp:'As categorias serão vinculadas pelos formulários do painel. A importação avança em lotes e pode ser pausada ou interrompida.'});
   }
-  if(document.readyState==='complete')start();else window.addEventListener('load',start,{once:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 }());

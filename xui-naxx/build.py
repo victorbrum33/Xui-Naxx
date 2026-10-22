@@ -73,9 +73,9 @@ def build():
         files['admin/assets/js/naxx-' + source] = (HERE / 'src' / source).read_text(encoding='utf-8')
     # Cada mudança recebe uma URL nova para evitar assets antigos em cache.
     worker_key = 'admin/assets/js/naxx-importer-worker.js'
-    files[worker_key] = files[worker_key].replace('importer.js?v=1.5.14-4', 'importer.js?v=' + sha(files['admin/assets/js/naxx-importer.js'].encode())[:12])
+    files[worker_key] = re.sub(r'importer\.js\?v=1\.5\.14-\d+', 'importer.js?v=' + sha(files['admin/assets/js/naxx-importer.js'].encode())[:12], files[worker_key])
     native_key = 'admin/assets/js/naxx-native-importer.js'
-    files[native_key] = files[native_key].replace('naxx-importer-worker.js?v=1.5.14-4', 'naxx-importer-worker.js?v=' + sha(files[worker_key].encode())[:12])
+    files[native_key] = re.sub(r'naxx-importer-worker\.js\?v=1\.5\.14-\d+', 'naxx-importer-worker.js?v=' + sha(files[worker_key].encode())[:12], files[native_key])
     for relative in ('assets/css/naxx-importer.css', 'assets/js/naxx-importer.js', 'assets/js/naxx-importer-ui.js', 'assets/js/naxx-native-importer.js'):
         files['admin/naxx-importador.php'] = files['admin/naxx-importador.php'].replace(relative + '?v=1.5.14-4', relative + '?v=' + sha(files['admin/' + relative].encode())[:12])
     for name in ('app.css', 'app.dark.css'):
@@ -89,7 +89,7 @@ def build():
     js = js.replace('/* NAXX_BRAND_ASSET_VERSION */', sha(files['admin/assets/images/naxx-favicon.svg'].encode())[:12])
     stylesheet_version = sha((css + (HERE / 'src/naxx-light.css').read_text(encoding='utf-8')).encode())[:12]
     js = js.replace('/* NAXX_STYLESHEET_VERSION */', stylesheet_version)
-    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js'))
+    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('performance-ui.js','menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js'))
     files['admin/assets/js/naxx-base.min.js'] = original_js
     # Loader instalado uma vez. O canal público distribui somente as melhorias próprias.
     files['admin/assets/js/app.min.js'] = '''(function(){

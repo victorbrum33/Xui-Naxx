@@ -13,8 +13,10 @@
     return 'channel';
   }
   function sourceURL(value) {
+    var text = String(value || '').trim();
+    if (!text) return null;
     try {
-      var url = new URL(String(value || '').trim());
+      var url = new URL(text);
       if (!/^(https?|rtmp|rtmps|rtsp):$/.test(url.protocol) || !url.hostname) return null;
       return url.href;
     } catch (_) { return null; }
@@ -49,39 +51,67 @@
       }
     };
   }
-  function parseM3U(text) {
-    var records = [], readLine = createM3UReader(function (record) {records.push(record);});
-    text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(readLine);
-    return records;
-  }
-  function parseCSV(text) {
-    var rows = [], row = [], cell = '', quoted = false;
-    var first = text.split(/\r?\n/, 1)[0];
-    var delimiter = first.indexOf(';') >= 0 && first.indexOf(',') < 0 ? ';' : ',';
-    for (var i = 0; i < text.length; i++) {
-      var char = text[i];
-      if (char === '"') {
-        if (quoted && text[i+1] === '"') {cell += '"'; i++;}
-        else quoted = !quoted;
-      } else if (char === delimiter && !quoted) {row.push(cell.trim()); cell = '';}
-      else if ((char === '\n' || char === '\r') && !quoted) {
-        if (char === '\r' && text[i+1] === '\n') i++;
-        row.push(cell.trim()); if (row.some(Boolean)) rows.push(row); row = []; cell = '';
-      } else cell += char;
+  // CSV incremental: somente a linha atual fica em memória antes da validação.
+  // Aspas, aspas escapadas e CRLF podem atravessar qualquer bloco do arquivo.
+  function createCSVReader(add) {
+    var row = [], cell = '', quoted = false, quotePending = false, skipLF = false;
+    var headers = null, delimiter = '', headerProbe = '', line = 1;
+    function finishRow() {
+      row.push(cell.trim()); cell = '';
+      if (row.some(Boolean)) {
+        if (!headers) {
+          headers = row.map(normalize);
+          if (!headers.some(function (header) {return /^(url|source|fonte)$/.test(header);})) throw new Error('O CSV precisa das colunas name (ou nome) e url.');
+        } else {
+          var record = {line:line};
+          headers.forEach(function (header, position) {record[header] = row[position] || '';});
+          add(record);
+        }
+        line++;
+      }
+      row = [];
     }
-    if (quoted) throw new Error('CSV inválido: há uma coluna com aspas não fechadas.');
-    row.push(cell.trim()); if (row.some(Boolean)) rows.push(row);
-    var headers = (rows.shift() || []).map(normalize);
-    if (!headers.some(function (header) {return /^(url|source|fonte)$/.test(header);})) throw new Error('O CSV precisa das colunas name (ou nome) e url.');
-    return rows.map(function (values, index) {
-      var record = {line:index+2};
-      headers.forEach(function (header, position) {record[header] = values[position] || '';});
-      return record;
-    });
+    function consume(text) {
+      for (var i = 0; i < text.length; i++) {
+        var char = text[i];
+        if (skipLF) {skipLF = false; if (char === '\n') continue;}
+        if (quotePending) {
+          quotePending = false;
+          if (char === '"') {cell += '"'; continue;}
+          quoted = false;
+        }
+        if (char === '"') {
+          if (quoted) quotePending = true;
+          else quoted = true;
+        } else if (char === delimiter && !quoted) {row.push(cell.trim()); cell = '';}
+        else if ((char === '\n' || char === '\r') && !quoted) {
+          skipLF = char === '\r'; finishRow();
+        } else cell += char;
+      }
+    }
+    return function (text, final) {
+      text = String(text || '');
+      if (!delimiter) {
+        headerProbe += text;
+        var end = headerProbe.search(/[\r\n]/);
+        if (end < 0 && !final) return;
+        var first = (end < 0 ? headerProbe : headerProbe.slice(0, end)).replace(/^\uFEFF/, '');
+        delimiter = first.indexOf(';') >= 0 && first.indexOf(',') < 0 ? ';' : ',';
+        text = headerProbe.replace(/^\uFEFF/, ''); headerProbe = '';
+      }
+      consume(text);
+      if (final) {
+        if (quotePending) {quotePending = false; quoted = false;}
+        if (quoted) throw new Error('CSV inválido: há uma coluna com aspas não fechadas.');
+        finishRow();
+        if (!headers) throw new Error('O CSV precisa das colunas name (ou nome) e url.');
+      }
+    };
   }
   function createSession(options) {
     options = options || {};
-    var existing = new Set((options.existing || []).map(function (item) {return sourceURL(item.url);}));
+    var existing = new Set();
+    (options.existing || []).forEach(function (item) {var url = sourceURL(item.url); if (url) existing.add(url);});
     var seen = new Set(), items = [], issues = [], duplicates = 0, total = 0;
     function add(record) {
       var index = total++;
@@ -105,15 +135,18 @@
   }
   function parse(text, filename, options) {
     text = String(text).replace(/^\uFEFF/, '');
-    var raw;
+    var session = createSession(options);
     if (/\.json$/i.test(filename) || /^[\[{]/.test(text.trim())) {
       var json = JSON.parse(text);
-      raw = Array.isArray(json) ? json : json.items;
+      var raw = Array.isArray(json) ? json : json.items;
       if (!Array.isArray(raw)) throw new Error('O JSON precisa ser uma lista de itens ou um objeto com a propriedade items.');
-    } else if (/\.csv$/i.test(filename)) raw = parseCSV(text);
-    else raw = parseM3U(text);
-    var session = createSession(options);
-    raw.forEach(session.add);
+      raw.forEach(session.add);
+    } else if (/\.csv$/i.test(filename)) createCSVReader(session.add)(text, true);
+    else {
+      var readLine = createM3UReader(session.add), start = 0, newline;
+      while ((newline = text.indexOf('\n', start)) !== -1) {readLine(text.slice(start, newline)); start = newline + 1;}
+      if (start < text.length) readLine(text.slice(start));
+    }
     return session.finish();
   }
   function cleanAttribute(value) {return String(value || '').replace(/["\r\n]/g, ' ').trim();}
@@ -122,5 +155,5 @@
       return '#EXTINF:-1 tvg-id="' + cleanAttribute(item.tvgId) + '" tvg-logo="' + cleanAttribute(item.logo) + '" group-title="' + cleanAttribute(item.category) + '",' + cleanAttribute(item.name) + '\n' + item.url;
     }).join('\n') + '\n';
   }
-  global.NaxxImporter = {parse:parse, createSession:createSession, createM3UReader:createM3UReader, toM3U:toM3U, sourceURL:sourceURL, inferType:inferType};
+  global.NaxxImporter = {parse:parse, createSession:createSession, createM3UReader:createM3UReader, createCSVReader:createCSVReader, toM3U:toM3U, sourceURL:sourceURL, inferType:inferType};
 }(typeof window !== 'undefined' ? window : globalThis));

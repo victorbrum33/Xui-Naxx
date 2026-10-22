@@ -16,7 +16,14 @@
     if(link.href!==href.href)link.href=href.href;
   }
   loadOverlayStyles();
-  new MutationObserver(loadOverlayStyles).observe(document.head,{childList:true,subtree:true,attributes:true,attributeFilter:['href']});
+  // Os gráficos também inserem estilos no head. Só mudanças nos links de CSS
+  // precisam conferir o tema, sem reexaminar o painel a cada animação.
+  new MutationObserver(function(mutations){
+    if(mutations.some(function(mutation){
+      if(mutation.type==='attributes')return mutation.target.matches('link[rel~="stylesheet"]');
+      return Array.from(mutation.addedNodes).concat(Array.from(mutation.removedNodes)).some(function(node){return node.nodeType===1&&node.matches('link[rel~="stylesheet"]');});
+    })){versionBrandStylesheets();loadOverlayStyles();}
+  }).observe(document.head,{childList:true,subtree:true,attributes:true,attributeFilter:['href']});
   document.documentElement.lang = 'pt-BR';
   var viewport = document.querySelector('meta[name="viewport"]');
   if (!viewport) {
@@ -33,6 +40,14 @@
   function translate(element) {
     Array.from(element.childNodes).forEach(function(node){if(node.nodeType!==3)return;var key=node.textContent.trim(),value=translations[key],duration=key.match(/^(\d+) (Hours?|Days?)$/);if(!value&&duration)value=duration[1]+' '+(duration[2].startsWith('Hour')?(duration[1]==='1'?'hora':'horas'):(duration[1]==='1'?'dia':'dias'));if(value)node.textContent=node.textContent.replace(key,value);});
   }
+  var translationSelector='.navigation-menu a,.page-title,.header-title,.cta-box p,.card h1,.card h2,.card h3,.card h4,.card h5,.card h6,.card p,.topnav-menu a,.dropdown-item,.dropdown-item span,.nav-tabs a,.nav-tabs a span,.nav-pills a,.nav-pills a span,.nav-link,.next a,.previous a,button,label,th,option,.jstree-anchor,.select2-selection__placeholder,.apexcharts-legend-text,.timeline-item-info strong,.bootstrap-select .filter-option-inner-inner,.bootstrap-select .text,.select2-selection__rendered,.jBox-content,.jBox-title,.tooltip-inner,.popover-body';
+  var translatedAttributes=['placeholder','title','data-original-title','data-content'];
+  function within(root,selector){
+    var elements=Array.from(root.querySelectorAll(selector));
+    if(root.nodeType===1&&root.matches(selector))elements.unshift(root);
+    return elements;
+  }
+  function containsFeature(root,selector){return root===document||(root.nodeType===1&&root.matches(selector))||Boolean(root.querySelector(selector));}
   Object.assign(translations,{'Encoding Queue':'Fila de codificação','Login Logs':'Registros de acesso','On-Demand Scanner':'Verificador sob demanda','Panel Errors':'Erros do painel','Restream Detection':'Detecção de retransmissão','Stream Rank':'Classificação de canais','System Logs':'Registros do sistema','VOD Theft Detection':'Detecção de cópia de VOD','Stream Review':'Revisão de canais'});
   Object.assign(translations,{'No potential issues have been detected!':'Nenhum problema foi detectado.','Online Streams':'Canais ativos','EPG Files':'Guias de programação','Quick Tools':'Ferramentas rápidas','Quality':'Qualidade','Search Streams...':'Pesquisar canais…','All Categories':'Todas as categorias','All Statuses':'Todos os estados','No information available':'Nenhuma informação disponível'});
   Object.assign(translations,{'Channel Order':'Ordem dos canais',"EPG's":'Guias de programação','Fingerprint':'Marca de identificação','Mass Delete':'Excluir em lote','Mass Edit':'Editar em lote','Stream Tools':'Ferramentas de canais','Export as CSV':'Exportar CSV','Actions':'Ações','ACTIONS':'AÇÕES','Start':'Iniciar','Stop':'Parar','Restart':'Reiniciar','Kill Connections':'Encerrar conexões','Edit':'Editar','Delete':'Excluir'});
@@ -65,10 +80,10 @@
   var settingsHelpTranslations = {};
   Object.assign(settingsHelpTranslations,{"server_name": "Nome do seu serviço de transmissão.", "default_timezone": "Fuso horário padrão das interfaces de administração e revenda. É usado por todos os usuários até que escolham outro fuso no próprio perfil.", "message_of_day": "Mensagem exibida na API do player. Alguns aplicativos Android usam essa informação.", "default_entries": "Quantidade de itens exibidos por página nas tabelas das interfaces de administração e revenda.", "fails_per_time": "Período, em segundos, usado para contar as falhas na página de transmissões: falhas a cada X segundos.", "date_format": "Formato padrão das datas. Consulte os códigos de formatação de datas do PHP antes de alterar.", "datetime_format": "Formato padrão de data e hora. Consulte os códigos de formatação de datas do PHP antes de alterar.", "streams_grouped": "Agrupa os servidores de uma mesma transmissão em uma única linha, reduzindo a quantidade de linhas da tabela.", "js_navigate": "Usa JavaScript para carregar páginas sem recarregar toda a interface. Esse recurso fica desativado em dispositivos móveis.", "show_tickets": "Exibe o ícone de chamados no canto superior direito do menu. Ao desativar, os chamados ficam no menu de gerenciamento.", "hide_failures": "Oculta o contador de reinicializações ao lado do tempo de atividade da transmissão.", "cleanup": "Remove automaticamente arquivos desnecessários em segundo plano. Opção recomendada.", "check_vod": "Verifica periodicamente se os arquivos de VOD existem. Se não existirem, marca o conteúdo como não codificado. Não é recomendado para acervos muito grandes.", "show_images": "Exibe os logos dos canais e as imagens de VOD nas páginas de gerenciamento.", "group_buttons": "Agrupa os botões de ação em um menu nas páginas compatíveis.", "modal_edit": "Abre a edição em uma janela sobre a página atual, sem sair dela.", "mysql_sleep_kill": "Tempo permitido para uma conexão MySQL permanecer ociosa, no estado Sleep, antes de ser encerrada. Use 0 para desativar.", "dashboard_stats": "Exibe gráficos de recursos do sistema, rede e conexões na visão geral.", "dashboard_map": "Exibe o mapa das conexões na visão geral.", "dashboard_display_alt": "Troca os cartões dos servidores entre os formatos largo e quadrado na visão geral.", "header_stats_sh": "Exibe as estatísticas dos servidores no menu do cabeçalho.", "dashboard_status": "Exibe avisos conforme as estatísticas dos servidores.", "threshold_cpu": "Quando o uso de CPU ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_mem": "Quando o uso de memória ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_disk": "Quando o uso de disco ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_network": "Quando o uso da rede ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_clients": "Exibe um aviso quando a quantidade de clientes, em relação ao máximo permitido pelo servidor, ultrapassar esta porcentagem.", "enable_search": "Exibe a pesquisa no canto superior direito do cabeçalho e permite que o mecanismo de cache grave as consultas de pesquisa no banco de dados.", "search_items": "Quantidade de resultados exibidos na pesquisa. O máximo é 100.", "disable_trial": "Desativa temporariamente a criação de testes para todas as contas.", "reseller_ssl_domain": "Usa HTTPS nos downloads de listas quando o servidor principal tem SSL ativo e o revendedor usa um DNS personalizado.", "debug_show_errors": "Ativa a exibição de erros para diagnosticar problemas no painel. As mensagens podem incluir detalhes técnicos do sistema.", "auto_send_logs": "Envia automaticamente os registros de erros do painel para análise e verificação pela equipe do XUI.", "recaptcha_v2_site_key": "Acesse https://google.com/recaptcha/admin para obter as chaves do reCAPTCHA.", "recaptcha_v2_secret_key": "Acesse https://google.com/recaptcha/admin para obter as chaves do reCAPTCHA.", "http_proxy": "Formato: IP:porta.", "cookie": "Formato: chave=valor;", "headers": "Cabeçalhos enviados pelo parâmetro -headers do FFmpeg.", "probesize_ondemand": "Tamanho da análise inicial das transmissões sob demanda. Ajuste se houver problemas de ausência de áudio.", "ip_subnet_match": "Aceita mudanças de IP dentro da mesma sub-rede /24, mantendo a verificação de segurança menos restritiva. Por exemplo, 159.55.26.0 e 159.55.26.255 serão considerados equivalentes.", "ip_logout": "Encerra a sessão se o IP mudar durante o uso, ajudando a proteger contra o uso indevido de cookies.", "restrict_same_ip": "Vincula as conexões HLS ao endereço IP de origem. Desative se isso causar problemas com IPs dinâmicos.", "rtmp_random": "Usa um IP aleatório nas conexões RTMP.", "disallow_2nd_ip_con": "Impede uma conexão de outro IP enquanto a conta já estiver em uso.", "disallow_2nd_ip_max": "A restrição ao segundo IP só se aplica às contas cujo limite de conexões seja menor ou igual a este valor. Por exemplo, com 3, contas com limite de até 3 conexões serão desconectadas ao conectar por outro IP.", "restream_deny_unauthorised": "Nega conexões de contas sem permissão de retransmissão que tentem usar o XUI para retransmitir conteúdo.", "detect_restream_block_user": "Bane contas sem permissão de retransmissão que tentem usar o XUI para retransmitir conteúdo.", "block_streaming_servers": "Bloqueia automaticamente servidores identificados como pertencentes a provedores de hospedagem. Não afeta retransmissores autorizados.", "block_proxies": "Bloqueia automaticamente proxies e VPNs conforme o ASN. Não afeta retransmissores autorizados.", "flood_limit": "Quantidade de tentativas antes de bloquear o IP. Use 0 para desativar a detecção de excesso de requisições.", "flood_seconds": "Período, em segundos, usado para contar as requisições.", "auth_flood_limit": "Quantidade de requisições válidas antes de aplicar uma pausa. Use 0 para desativar.<br/><br/>Este limite se aplica apenas a clientes autenticados. Por exemplo, após 30 conexões em 10 segundos, as próximas requisições podem aguardar 1 segundo durante o período de controle.", "auth_flood_seconds": "Período, em segundos, usado para contar as requisições autenticadas.", "auth_flood_sleep": "Tempo de espera aplicado ao atingir o limite de requisições autenticadas. A requisição continua após a pausa.", "flood_ips_exclude": "Separe os endereços IP por vírgulas.", "bruteforce_mac_attempts": "Detecta e bloqueia automaticamente IPs com tentativas de força bruta contra dispositivos MAG ou Enigma. Use 0 tentativas para desativar.", "bruteforce_username_attempts": "Detecta e bloqueia automaticamente IPs com tentativas de força bruta contra contas. Use 0 tentativas para desativar.", "bruteforce_frequency": "Período usado para contar as tentativas de força bruta por MAC e usuário: X tentativas a cada X segundos.", "login_flood": "Quantidade de tentativas de login permitidas antes de bloquear o IP. Use 0 para não limitar, por exemplo, ao utilizar reCAPTCHA ou código de acesso como proteção.", "max_simultaneous_downloads": "Máximo de downloads simultâneos de EPG e listas por usuário. Não afeta retransmissores. Requisições excedentes recebem o erro HTTP 429. Use 0 para desativar o limite.", "tmdb_api_key": "Obtenha sua chave de API em <a href='https://www.themoviedb.org/settings/api'>https://www.themoviedb.org/settings/api</a>.", "tmdb_language": "Idioma padrão das consultas ao TMDb. Pode ser alterado individualmente em cada filme ou série.", "download_images": "Baixa para o servidor principal as imagens obtidas de serviços como o TMDb.", "api_redirect": "Redireciona as requisições de transmissão da API usando tokens criptografados com AES, em vez de URLs com usuário e senha. Pode permanecer desativado se seus aplicativos não utilizarem esse recurso.", "movie_year_append": "Adiciona automaticamente o ano ao título do filme ao usar o TMDb ou as pastas monitoradas.", "api_container": "Formato de saída padrão usado em aplicativos Android e Smart TVs.", "cache_playlists": "Quando maior que 0, mantém as listas baixadas pelos clientes em cache por esta quantidade de segundos. Reduz o processamento, mas pode ocupar bastante disco com muitos clientes.", "playlist_from_mysql": "Lê as transmissões diretamente do MySQL em vez do cache local. Pode ser mais rápido quando há uma grande quantidade de transmissões.", "force_epg_timezone": "Gera o EPG e os horários das APIs em UTC. Também informa UTC como fuso na API do player para sincronizar os aplicativos.", "keep_protocol": "Mantém nas listas e transmissões o protocolo solicitado pelo cliente: HTTP ou HTTPS.", "parse_type": "Escolhe entre GuessIt e PTN para interpretar nomes de arquivos nas pastas monitoradas e em outros recursos. O GuessIt costuma ser mais preciso, mas usa mais recursos.", "cloudflare": "Permite conexões dos IPs da Cloudflare e o encaminhamento do IP real do cliente para o XUI.", "legacy_get": "Redireciona requisições de get.php para a nova URL de listas.", "legacy_xmltv": "Redireciona requisições de xmltv.php para a nova URL do EPG.", "legacy_panel_api": "Redireciona requisições de panel_api.php para a nova API do player do XUI.", "show_category_duplicates": "Repete o conteúdo em cada categoria à qual ele pertence para melhorar a compatibilidade com aplicativos antigos. Como consequência, o mesmo item pode aparecer várias vezes na pesquisa ou na categoria Todos.", "enable_epg_api": "Ativa a API do guia de programação na interface de administração.", "epg_api_extended": "Acrescenta informações aos dados de EPG recebidos, como o nome do programa.", "epg_api_days_fetch": "Quantidade de dias buscados ao obter os dados de EPG.", "epg_api_days_keep": "Quantidade de dias de EPG mantidos no armazenamento.", "allowed_ips_admin": "IPs autorizados a acessar transmissões com a senha de transmissão administrativa. Separe os IPs por vírgulas.", "api_ips": "IPs autorizados a acessar a API administrativa do XUI. Separe os IPs por vírgulas.", "api_password": "Senha necessária para acessar a API administrativa do XUI. Deixe em branco para usar somente a lista de IPs autorizados.", "disable_xmltv": "Impede o download do guia de programação no formato XMLTV para contas comuns.", "disable_xmltv_restreamer": "Impede o download do guia de programação no formato XMLTV para retransmissores.", "disable_playlist": "Impede que contas comuns baixem listas HLS ou listas para dispositivos.", "disable_playlist_restreamer": "Impede que retransmissores baixem listas HLS ou listas para dispositivos.", "disable_player_api": "Impede o acesso à API por aplicativos Android e Smart TVs.", "disable_enigma2": "Impede a conexão de dispositivos Enigma.", "disable_ministra": "Impede a conexão de dispositivos MAG pela API Ministra.", "verify_host": "Confere os domínios e IPs com os endereços autorizados no banco de dados, incluindo IPs de servidores, domínios e DNS dos revendedores.", "enable_isp_lock": "Ativa ou desativa globalmente o bloqueio por provedor de internet.", "block_svp": "Ativa ou desativa globalmente o bloqueio por ASN.", "disable_ts": "Desativa a saída MPEG-TS para todos os clientes e dispositivos.", "disable_ts_allow_restream": "Permite que retransmissores continuem usando MPEG-TS mesmo com essa saída desativada.", "disable_hls": "Desativa a saída HLS para todos os clientes e dispositivos.", "disable_hls_allow_restream": "Permite que retransmissores continuem usando HLS mesmo com essa saída desativada.", "disable_rtmp": "Desativa a saída RTMP para todos os clientes e dispositivos.", "disable_rtmp_allow_restream": "Permite que retransmissores continuem usando RTMP mesmo com essa saída desativada.", "case_sensitive_line": "Diferencia letras maiúsculas e minúsculas no usuário e na senha das contas.", "county_override_1st": "Usa o país identificado na primeira conexão da conta.", "encrypt_hls": "Criptografa as transmissões HLS com AES-256 durante a reprodução. Aumenta o uso de CPU e protege o conteúdo dos pacotes.", "disallow_empty_user_agents": "Bloqueia conexões de clientes que não informam o agente de usuário.", "vod_bitrate_plus": "Buffer adicional usado na transmissão de VOD.", "vod_limit_perc": "Aplica o limite de velocidade após transmitir esta porcentagem do VOD. Use 0 para limitar desde o início ou 100 para desativar a limitação.", "user_auto_kick_hours": "Desconecta automaticamente clientes que permanecerem conectados por mais que esta quantidade de horas.", "use_mdomain_in_lists": "Usa o nome de domínio nas listas.", "encrypt_playlist": "Criptografa as credenciais das contas nos arquivos de listas.", "encrypt_playlist_restreamer": "Criptografa as credenciais nos arquivos de listas dos retransmissores.", "restrict_playlists": "Verifica agente de usuário, IP, provedor e país antes de permitir downloads de listas ou EPG. Ao desativar, os downloads podem ser feitos de qualquer IP; as restrições das transmissões continuam valendo.", "ignore_invalid_users": "Encerra rapidamente conexões com usuário ou senha incorretos, sem carregar as funções do XUI nem acionar o limite de requisições. Pode reduzir o uso de CPU em servidores com muitas requisições.", "client_prebuffer": "Quantidade de dados, em segundos de reprodução, enviada inicialmente ao cliente quando ele se conecta à transmissão. Valores maiores aumentam o buffer inicial.", "restreamer_prebuffer": "Quantidade de dados, em segundos de reprodução, enviada inicialmente ao retransmissor quando ele se conecta à transmissão. Valores maiores aumentam o buffer inicial.", "split_by": "Critério preferido para distribuir conexões entre os servidores.", "restreamer_bypass_proxy": "Encaminha retransmissores diretamente aos balanceadores, sem passar pelos proxies quando o serviço de proxy estiver ativo.", "channel_number_type": "Critério preferido para ordenar os canais nas listas e nos aplicativos.", "vod_sort_newest": "Ordena o VOD pela data de inclusão, do mais recente para o mais antigo. Para funcionar corretamente, o tipo de ordenação dos canais deve estar definido como Lista de canais.", "use_buffer": "Ativa o buffer do proxy para a conexão. Ao desativar, as respostas são enviadas sem esse buffer; ao ativar, a resposta pode ser armazenada temporariamente pelo proxy.", "show_isps": "Obtém o provedor de internet de cada cliente conectado e armazena essa informação no banco de dados.", "online_capacity_interval": "Intervalo de verificação da atividade dos servidores para calcular os limites de conexões.", "monitor_connection_status": "Verifica connection_status() do PHP durante a transmissão de canais e VOD. Encerra a conexão quando o estado retornado deixa de ser CONNECTION_NORMAL.", "restart_php_fpm": "Executa uma rotina que reinicia o PHP-FPM quando ele falha e são encontrados erros.", "kill_rogue_ffmpeg": "Verifica a cada minuto os processos FFmpeg de transmissões que deveriam estar paradas e os encerra. Também faz essa limpeza antes de iniciar uma transmissão.", "create_expiration": "Validade, em segundos, do redirecionamento do servidor principal para um balanceador. Aumente se houver muitos erros TOKEN_EXPIRED nos registros.", "read_native_hls": "Ativa a leitura nativa em todas as transmissões HLS. Desative para configurar individualmente em cada transmissão compatível.", "read_buffer_size": "Tamanho do buffer usado para ler arquivos em blocos.", "connection_sync_timer": "Intervalo entre execuções da rotina de sincronização das conexões do Redis.", "allow_cdn_access": "Aceita o IP real encaminhado pelo cabeçalho X-Forwarded-For e usa tokens no lugar da criptografia do caminho das transmissões.<br/>Exige configurar os IPs autorizados para encaminhamento. Recurso de uso avançado.", "stop_failures": "Quantidade de falhas antes de encerrar o monitor da transmissão. Com 3, o monitor para após três falhas e pode ser reiniciado pela rotina de transmissões no minuto seguinte. Use 0 para continuar tentando indefinidamente.", "on_demand_instant_off": "Ao desconectar um cliente de uma transmissão sob demanda, verifica se ainda há espectadores e desliga a transmissão se não houver nenhum.", "on_demand_failure_exit": "Se a transmissão sob demanda falhar ao iniciar, encerra a tentativa e desconecta o cliente. Uma nova conexão fará outra tentativa, evitando tentativas contínuas que ocupem a fonte.", "on_demand_wait_time": "Tempo de espera para iniciar uma transmissão sob demanda. Ao esgotar esse tempo, a conexão é encerrada. Também se aplica a transmissões comuns enquanto iniciam ou estão indisponíveis.", "request_prebuffer": "Solicita um buffer inicial ao provedor para iniciar a reprodução mais rapidamente. Requer um provedor XUI e pode deixar o conteúdo cerca de 10 segundos atrasado.<br/><br/>Pela URL: adiciona ?prebuffer=1. Pelo cabeçalho: envia a solicitação em um cabeçalho, aceito pelo XUI a partir da versão 1.4.4.", "ondemand_balance_equal": "Trata servidores sob demanda como servidores já ativos no balanceamento. Assim, um servidor sob demanda pode ser iniciado mesmo que outro servidor já transmita o mesmo conteúdo.", "on_demand_checker": "Analisa periodicamente o estado, a resolução, os codecs, o FPS e o tempo de resposta das transmissões sob demanda. Registra os erros no banco e verifica uma transmissão por vez em cada servidor.", "on_demand_scan_time": "Intervalo, em segundos, entre as verificações de uma transmissão.", "on_demand_max_probe": "Tempo máximo, em segundos, de análise da transmissão antes de cancelar.", "on_demand_scan_keep": "Tempo de retenção dos registros, em segundos. Afeta as estatísticas de disponibilidade da página de registros. O padrão é 604800 segundos, equivalente a uma semana.", "max_encode_movies": "Máximo de filmes codificados simultaneamente por servidor. Use um valor compatível com a capacidade do servidor; valores maiores são adequados quando todo o conteúdo usa links simbólicos.", "max_encode_cc": "Máximo de canais criados codificados simultaneamente por servidor. Recomenda-se 1, exceto quando todos usam links simbólicos.", "queue_loop": "Intervalo entre as verificações da fila. Se o conteúdo usar links simbólicos, recomenda-se 1 segundo.", "seg_time": "Duração de cada segmento HLS. Os quadros-chave podem impedir a duração exata, mas o valor deve funcionar na maioria das transmissões.", "seg_list_size": "Quantidade de segmentos mantidos na lista HLS.", "seg_delete_threshold": "Quantidade de segmentos antigos mantidos ao gerar a lista HLS. Valores menores economizam RAM, mas mantenha um buffer suficiente para novos clientes. Por exemplo, 30 segundos de buffer precisam de três segmentos de 10 segundos.", "segment_wait_time": "Tempo máximo, em segundos, de espera por um novo segmento. Ao esgotar esse tempo sem novos dados, a conexão do cliente é encerrada.", "stream_max_analyze": "Tempo de análise da transmissão. Um tempo maior melhora a precisão da amostra. 5.000.000 de microssegundos equivalem a 5 segundos.", "probesize": "Quantidade de dados analisados, em bytes.", "ffmpeg_cpu": "Versão do FFmpeg usada para filmes, canais criados e transmissões comuns.<br/><br/>v4.0: versão antiga, de 2018, fornecida originalmente com o XUI.<br/>v4.3.2 e v4.4: versões compiladas pelo XUI com mais bibliotecas e suporte a DASH e NVENC.", "segment_type": "Escolhe -f segment ou -f hls no processamento. A opção hls foi criada para HLS e tende a funcionar melhor. A opção segment desativa o limite de exclusão e é usada por padrão nas transmissões sob demanda para agilizar o início.", "ffmpeg_warnings": "Grava também os avisos do FFmpeg na tabela de erros das transmissões. Ao desativar, grava somente erros.", "ignore_keyframes": "Permite iniciar segmentos fora dos quadros-chave. Pode ajudar alguns players quando o intervalo entre quadros-chave varia, mas prejudicar outros ou causar tela preta no início até o vídeo começar.", "dts_legacy_ffmpeg": "Usa automaticamente o FFmpeg v4.0 em transmissões com áudio DTS. Pode corrigir falhas de sincronização do áudio. A opção de gerar PTS deve estar desativada.", "php_loopback": "Usa o PHP para ler diretamente as transmissões de retorno e gerar HLS, sem passar pelo FFmpeg.", "audio_restart_loss": "Reinicia periodicamente a transmissão se não houver áudio detectado.", "priority_backup": "Retorna à primeira fonte quando ela voltar a funcionar.", "probe_extra_wait": "Tempo de espera adicional após a duração de análise antes de cancelar a verificação da transmissão.", "stream_fail_sleep": "Tempo de espera, em segundos, após uma falha ao iniciar a transmissão antes de tentar novamente.", "fps_delay": "Tempo de espera, em segundos, antes de verificar se o FPS caiu abaixo do limite.", "fps_check_type": "Escolhe entre usar as informações de progresso após o atraso inicial ou analisar um segmento e usar avg_frame_rate para determinar o FPS.", "api_probe": "Usa chamadas de API para analisar as fontes a partir dos servidores XUI.", "show_not_on_air_video": "Exibe este vídeo quando a transmissão estiver fora do ar.", "show_banned_video": "Exibe este vídeo quando uma conta banida tentar acessar uma transmissão.", "show_expired_video": "Exibe este vídeo quando uma conta expirada tentar acessar uma transmissão.", "show_expiring_video": "Exibe este vídeo uma vez por dia durante os sete dias anteriores ao vencimento da conta.", "show_connected_video": "Exibe este vídeo quando o cliente for bloqueado por já estar conectado por outro IP.", "show_all_category_mag": "Exibe a categoria Todos nos dispositivos MAG.", "always_enabled_subtitles": "Mantém as legendas sempre ativadas.", "playback_limit": "Exibe um aviso e interrompe a transmissão após esta quantidade de horas de reprodução contínua.", "tv_channel_default_aspect": "Define a proporção de imagem padrão das transmissões. A opção Ajustar é recomendada.", "mag_default_type": "Define se novos dispositivos usam o tema moderno ou o tema antigo por padrão.", "stalker_theme": "Tema padrão do Ministra usado pelos dispositivos MAG.", "mag_legacy_redirect": "Redireciona /c para a pasta do Ministra com links simbólicos, permitindo o endereço antigo em dispositivos legados. Exige acesso de administrador do servidor e é aplicado pela rotina do minuto seguinte. Não é recomendado por segurança.", "mag_keep_extension": "Mantém a extensão nas URLs de canais ao vivo, conteúdo com deslocamento de tempo e VOD. Alguns dispositivos antigos dependem dela para escolher como reproduzir.", "mag_disable_ssl": "Força os dispositivos MAG a usarem URLs sem SSL. Considere a compatibilidade dos aparelhos antigos antes de desativar a proteção das conexões.", "mag_load_all_channels": "Carrega todos os canais ao iniciar, em vez de aguardar a seleção de uma categoria. Pode ajudar dispositivos antigos que não seguem os padrões do Ministra.", "disable_mag_token": "Desativa a verificação do token MAG durante a reprodução. Pode melhorar a compatibilidade, mas reduz a segurança.", "test_download_url": "URL do arquivo baixado durante o teste de velocidade dos dispositivos MAG.", "mag_message": "Mensagem exibida em Informações, na aba Minha conta. Aceita HTML; quebras de linha são convertidas em &lt;br/&gt;.", "player_allow_playlist": "Permite que os clientes gerem URLs de listas pelo player web.", "player_allow_bouquet": "Permite que os clientes alterem a ordem das suas listas de canais pelo player web.", "player_hide_incompatible": "Oculta transmissões incompatíveis com a maioria dos navegadores, priorizando formatos como H.264 e AV1. Também oculta canais e filmes indisponíveis.", "player_allow_hevc": "Considera HEVC compatível no player web. O suporte depende do navegador, do sistema e dos codecs disponíveis no dispositivo.", "player_blur": "Intensidade do desfoque das imagens de fundo, em pixels.", "player_opacity": "Opacidade das imagens de fundo. O padrão é 10%.", "extract_subtitles": "Extrai automaticamente as legendas de filmes e episódios durante o processamento, permitindo seu uso no player web.", "save_closed_connection": "Tempo de retenção dos registros de atividade, gravados quando uma conexão ativa é encerrada. Eles ajudam no acompanhamento do serviço, mas podem ocupar bastante espaço com muitas conexões.", "client_logs_save": "Tempo de retenção dos registros de clientes. Manter o histórico ajuda a investigar problemas, mas aumenta o espaço usado no banco.", "save_login_logs": "Tempo de retenção dos registros de login. Manter o histórico ajuda a acompanhar os acessos, mas aumenta o espaço usado no banco.", "stream_logs_save": "Tempo de retenção dos registros de erros das transmissões. Manter o histórico ajuda no diagnóstico, mas aumenta o espaço usado no banco.", "save_restart_logs": "Tempo de retenção dos registros de reinicialização das transmissões. Manter o histórico ajuda no diagnóstico, mas aumenta o espaço usado no banco."});
   translations['Importing Series using this method will parse your M3U or folder and push the individual episodes through Watch Folder. If you have category and bouquet allocation set up in Watch Folder Settings then they will be used here too.']='O painel processa a lista M3U ou a pasta e encaminha os episódios pela rotina de pastas monitoradas. As categorias e listas configuradas nessa rotina também serão usadas.';
-  function translateSettingsHelp() {
+  function translateSettingsHelp(root) {
     if (!/\/settings(?:\.php)?$/.test(location.pathname)) return;
     var jq = window.jQuery;
-    document.querySelectorAll('label[for]').forEach(function (label) {
+    within(root,'label[for]').forEach(function (label) {
       var key = label.getAttribute('for');
       // O formulário original repete for="api_ips" no campo de senha.
       if (key === 'api_ips' && /^(Senha da API|API Password)$/.test(label.textContent.trim())) key = 'api_password';
@@ -99,10 +114,10 @@
       }
     });
   }
-  function translateStreamHelp() {
+  function translateStreamHelp(root) {
     if (!/\/stream(?:\.php)?$/.test(location.pathname) || new URLSearchParams(location.search).has('import')) return;
     var jq = window.jQuery;
-    document.querySelectorAll('label[for]').forEach(function (label) {
+    within(root,'label[for]').forEach(function (label) {
       var help = streamHelpTranslations[label.getAttribute('for')];
       if (!help) return;
       label.querySelectorAll('.tooltip,.tooltip-left,.tooltip-right').forEach(function (icon) {
@@ -139,8 +154,8 @@
       } catch (error) {}
     });
   }
-  function replaceLegacyLogos() {
-    document.querySelectorAll('img[src="assets/images/logo.png"],img[src$="/assets/images/logo.png"]').forEach(function (image) {
+  function replaceLegacyLogos(root) {
+    within(root,'img[src="assets/images/logo.png"],img[src$="/assets/images/logo.png"]').forEach(function (image) {
       var brand = image.parentElement;
       if (!brand) return;
       brand.classList.add('logo');
@@ -156,10 +171,10 @@
       return /^(https?:)$/.test(url.protocol)&&/\.(?:svg|webp|avif)$/i.test(url.pathname)?url.href:'';
     }catch(error){return '';}
   }
-  function enhanceModernImages() {
+  function enhanceModernImages(root) {
     var contentList=/\/(?:streams|movies|series)(?:\.php)?$/.test(location.pathname);
     if(contentList)document.body.classList.add('naxx-content-list');
-    document.querySelectorAll('img[src]').forEach(function(image){
+    within(root,'img[src]').forEach(function(image){
       if(contentList&&image.closest('table tbody'))image.classList.add('naxx-content-logo');
       var source=modernImageURL(image.getAttribute('src'));
       if(!source)return;
@@ -180,8 +195,8 @@
       openModernImage.naxxModern=true;window.openImage=openModernImage;
     }
   }
-  function removeKnowledgebaseLinks() {
-    document.querySelectorAll('a').forEach(function (link) {
+  function removeKnowledgebaseLinks(root) {
+    within(root,'a').forEach(function (link) {
       var label = (link.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
       var href = (link.getAttribute('href') || '').toLowerCase();
       if (label !== 'xui knowledgebase' && label !== 'documentação xui' && !/knowledgebase|docs\.xui/.test(href)) return;
@@ -207,9 +222,9 @@
     link.append(icon,document.createTextNode('Atualização'));
     if(!license)settings.after(link);
   }
-  function translateCacheSettings() {
+  function translateCacheSettings(root) {
     if (!/\/cache(?:\.php)?$/.test(location.pathname)) return;
-    document.querySelectorAll('.container-fluid p,.card p').forEach(function (paragraph) {
+    within(root,'.container-fluid p,.card p').forEach(function (paragraph) {
       var text = (paragraph.textContent || '').replace(/\s+/g, ' ').trim();
       var match = text.match(/^Your last cron execution was at (.+?)\. If it takes longer to run a cron than the time between executions, you will have issues as the caching will be cut off before completion\.$/);
       if (!match) return;
@@ -353,11 +368,16 @@
       overlay.hidden=false;
       var state=card.querySelector('.naxx-player-state');if(state)state.textContent='Indisponível';
     }
+    var bindTimer=0,bindGeneration=0;
+    frame.__naxxStopMonitor=function(){bindGeneration+=1;window.clearTimeout(bindTimer);bindTimer=0;};
     var bindEvents = function () {
+      frame.__naxxStopMonitor();
+      var generation=bindGeneration;
       var attempts = 0;
       frame.__naxxRepairAttempted=false;
       var bind = function () {
-        if (!frame.isConnected || attempts++ >= 40) return;
+        bindTimer=0;
+        if(generation!==bindGeneration||!frame.isConnected||attempts++>=40)return;
         try {
           var playerWindow = frame.contentWindow;
           var jwplayer = playerWindow && playerWindow.jwplayer;
@@ -409,9 +429,9 @@
             }
           }
         } catch (error) { return; }
-        window.setTimeout(bind, 250);
+        bindTimer=window.setTimeout(bind, 250);
       };
-      window.setTimeout(bind, 0);
+      bindTimer=window.setTimeout(bind, 0);
     };
     frame.addEventListener('load', bindEvents);
     bindEvents();
@@ -448,7 +468,7 @@
               });
             }
           },
-          beforeClose:function(){var frame=this.content&&this.content.find('iframe.mfp-iframe')[0];if(frame&&frame.__naxxPlayerInstance){try{frame.__naxxPlayerInstance.stop();}catch(error){}}}
+          beforeClose:function(){var frame=this.content&&this.content.find('iframe.mfp-iframe')[0];if(frame&&frame.__naxxStopMonitor)frame.__naxxStopMonitor();if(frame&&frame.__naxxPlayerInstance){try{frame.__naxxPlayerInstance.stop();}catch(error){}}}
         }
       });
     };
@@ -540,40 +560,45 @@
     if(menu){var item=document.createElement('li'),link=document.createElement('a');link.href='naxx-importador.php';link.textContent='Importador';link.dataset.naxxImportLink='';item.appendChild(link);menu.appendChild(item);}
     nav.querySelectorAll(':scope > li').forEach(function(li){li.classList.remove('last-elements');});Array.from(nav.children).slice(-2).forEach(function(li){li.classList.add('last-elements');});
   }
-  function enhance() {
-    loadOverlayStyles();
-    removeKnowledgebaseLinks();
-    addUpdateMenuLink();
-    organizeMenu();
-    replaceLegacyLogos();
-    enhanceModernImages();
-    if(window.NaxxMenus)window.NaxxMenus.enhance();
-    if(window.NaxxDashboard)window.NaxxDashboard.enhance();
-    addEpgSyncButton();
-    if(document.getElementById('login_button')){
+  function enhance(root) {
+    root=root||document;
+    if(window.NaxxPerformance&&typeof window.NaxxPerformance.enhance==='function')window.NaxxPerformance.enhance();
+    var full=root===document;
+    var navigation=containsFeature(root,'.navigation-menu,.topnav-menu,.dropdown-menu');
+    var pageTools=containsFeature(root,'.page-title-box,table');
+    var dashboard=containsFeature(root,'.card-body.active-connections,.card-body.online-users,.card-body.active-streams,.card-body.offline-streams,.card-body.input-flow,.card-body.output-flow,[id^="s_"][id$="_conns"]');
+    removeKnowledgebaseLinks(root);
+    if(navigation){addUpdateMenuLink();organizeMenu();}
+    replaceLegacyLogos(root);
+    enhanceModernImages(root);
+    if(window.NaxxMenus&&(navigation||pageTools))window.NaxxMenus.enhance();
+    if(window.NaxxDashboard&&dashboard)window.NaxxDashboard.enhance();
+    if(full||containsFeature(root,'.page-title-box'))addEpgSyncButton();
+    if(containsFeature(root,'#login_button')&&document.getElementById('login_button')){
       document.body.classList.add('naxx-login');
       if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.5.14';document.querySelector('#login_button').after(note);}
     }
-    document.querySelectorAll('.navigation-menu a,.page-title,.header-title,.cta-box p,.card h1,.card h2,.card h3,.card h4,.card h5,.card h6,.card p,.topnav-menu a,.dropdown-item,.dropdown-item span,.nav-tabs a,.nav-tabs a span,.nav-pills a,.nav-pills a span,.nav-link,.next a,.previous a,button,label,th,option,.jstree-anchor,.select2-selection__placeholder,.apexcharts-legend-text,.timeline-item-info strong,.bootstrap-select .filter-option-inner-inner,.bootstrap-select .text,.select2-selection__rendered,.jBox-content,.jBox-title,.tooltip-inner,.popover-body').forEach(translate);
-    document.querySelectorAll('[placeholder],[title],[data-original-title],[data-content]').forEach(function(element){['placeholder','title','data-original-title','data-content'].forEach(function(attribute){var value=element.getAttribute(attribute);if(value&&translations[value])element.setAttribute(attribute,translations[value]);});});
-    translateSettingsHelp();
-    translateStreamHelp();
-    translateCacheSettings();
-    if(window.NaxxCache)window.NaxxCache.enhance();
-    versionBrandStylesheets();
-    setBrandFavicon();
+    within(root,translationSelector).forEach(translate);
+    within(root,'[placeholder],[title],[data-original-title],[data-content]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute);if(value&&translations[value])element.setAttribute(attribute,translations[value]);});});
+    translateSettingsHelp(root);
+    translateStreamHelp(root);
+    translateCacheSettings(root);
+    if(window.NaxxCache&&(full||containsFeature(root,'.page-title-box,#datatable-cache,#minute,.jBox-container,.jq-toast-wrap')||(root.nodeType===1&&root.closest('.jBox-container,.jq-toast-wrap'))))window.NaxxCache.enhance();
+    if(full){versionBrandStylesheets();setBrandFavicon();}
     enhanceChannelPlayer();
-    if(/\/settings(?:\.php)?$/.test(location.pathname))document.title=document.title.replace(/\|\s*Settings$/,'| Configurações gerais');
-    if(/\/stream(?:\.php)?$/.test(location.pathname) && !new URLSearchParams(location.search).has('import'))document.title=document.title.replace(/\|\s*Stream$/,'| Adicionar canal');
-    document.querySelectorAll('input[placeholder],input[type="submit"]').forEach(function(input){if(translations[input.placeholder])input.placeholder=translations[input.placeholder];if(translations[input.value])input.value=translations[input.value];});
-    document.querySelectorAll('.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.5.14';});
-    document.title=document.title.replace(/^XUI(?:\.one)?\s*\|/, 'XUI NAXX |');
-    var titleParts=document.title.split('|');if(titleParts.length===2&&translations[titleParts[1].trim()])document.title=titleParts[0].trim()+' | '+translations[titleParts[1].trim()];
+    var pageTitle=document.title;
+    if(/\/settings(?:\.php)?$/.test(location.pathname))pageTitle=pageTitle.replace(/\|\s*Settings$/,'| Configurações gerais');
+    if(/\/stream(?:\.php)?$/.test(location.pathname) && !new URLSearchParams(location.search).has('import'))pageTitle=pageTitle.replace(/\|\s*Stream$/,'| Adicionar canal');
+    within(root,'input[placeholder],input[type="submit"]').forEach(function(input){if(translations[input.placeholder])input.placeholder=translations[input.placeholder];if(translations[input.value])input.value=translations[input.value];});
+    within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.5.14';});
+    pageTitle=pageTitle.replace(/^XUI(?:\.one)?\s*\|/, 'XUI NAXX |');
+    var titleParts=pageTitle.split('|');if(titleParts.length===2&&translations[titleParts[1].trim()])pageTitle=titleParts[0].trim()+' | '+translations[titleParts[1].trim()];
+    if(document.title!==pageTitle)document.title=pageTitle;
     if(location.search.includes('naxx_embed=1'))document.body.classList.add('naxx-embedded');
-    document.querySelectorAll('.logo').forEach(function (logo) {
-      logo.setAttribute('aria-label', 'XUI NAXX — página inicial');
+    within(root,'.logo').forEach(function (logo) {
+      if(logo.getAttribute('aria-label')!=='XUI NAXX — página inicial')logo.setAttribute('aria-label', 'XUI NAXX — página inicial');
     });
-    document.querySelectorAll('table.table').forEach(function (table) {
+    within(root,'table.table').forEach(function (table) {
       // DataTables com scroll próprio conserva seus contêineres e alinhamento.
       if (table.closest('.table-responsive, .xui-table-scroll, .dataTables_scroll')) return;
       var wrapper = document.createElement('div');
@@ -584,7 +609,7 @@
       table.parentNode.insertBefore(wrapper, table);
       wrapper.appendChild(table);
     });
-    document.querySelectorAll('.navbar-toggle').forEach(function (toggle) {
+    within(root,'.navbar-toggle').forEach(function (toggle) {
       toggle.setAttribute('aria-label', 'Abrir ou fechar menu');
       toggle.setAttribute('aria-controls', 'navigation');
       toggle.setAttribute('aria-expanded', String(toggle.classList.contains('open')));
@@ -593,12 +618,51 @@
   function ready() {
     enhance();
     document.documentElement.classList.add('naxx-ready');
-    var pending = false;
-    new MutationObserver(function (mutations) {
-      if (!mutations.some(function (mutation) { return mutation.addedNodes.length; }) || pending) return;
-      pending = true;
-      window.requestAnimationFrame(function () { pending = false; enhance(); });
-    }).observe(document.body, {childList:true, subtree:true});
+    var pendingRoots=new Set(),frame=0,hiddenDirty=false;
+    function enqueue(root){
+      if(!root||root.nodeType!==1||root.namespaceURI!=='http://www.w3.org/1999/xhtml'||!root.isConnected)return;
+      pendingRoots.add(root);
+      if(!frame&&!document.hidden)frame=window.requestAnimationFrame(flush);
+    }
+    function flush(){
+      frame=0;
+      if(document.hidden)return;
+      var roots=Array.from(pendingRoots).filter(function(root){return root.isConnected;});pendingRoots.clear();
+      // O DataTables adiciona muitas linhas de uma vez. Cada trecho só passa
+      // pelas melhorias uma vez, sem voltar a procurar no documento inteiro.
+      var rootSet=new Set(roots);
+      roots.filter(function(root){var parent=root.parentElement;while(parent){if(rootSet.has(parent))return false;parent=parent.parentElement;}return true;}).forEach(enhance);
+    }
+    function textChanged(node){
+      var parent=node.parentElement;if(!parent)return;
+      var key=(node.nodeValue||'').trim();
+      if((translations[key]||/^\d+ (?:Hours?|Days?)$/.test(key))&&parent.matches(translationSelector)){enqueue(parent);return;}
+      // Os textos extensos e avisos do cache têm tradução própria no módulo.
+      if(/\/cache(?:\.php)?$/.test(location.pathname)&&parent.closest('.jBox-container,.jq-toast-wrap'))enqueue(parent);
+      else if(/^Your last cron execution was at /.test(key))enqueue(parent);
+    }
+    var bodyObserver=new MutationObserver(function(mutations){
+      if(document.hidden){hiddenDirty=true;return;}
+      mutations.forEach(function(mutation){
+        if(mutation.type==='characterData'){textChanged(mutation.target);return;}
+        if(mutation.type==='attributes'){
+          if(mutation.attributeName==='src'){if(mutation.target.matches('img'))enqueue(mutation.target);}
+          else if(translations[mutation.target.getAttribute(mutation.attributeName)])enqueue(mutation.target);
+          return;
+        }
+        var elements=[];
+        Array.from(mutation.addedNodes).forEach(function(node){
+          if(node.nodeType===3)textChanged(node);
+          else if(node.nodeType===1&&node.namespaceURI==='http://www.w3.org/1999/xhtml')elements.push(node);
+        });
+        if(elements.length>8)enqueue(mutation.target);else elements.forEach(enqueue);
+      });
+    });
+    bodyObserver.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['src','placeholder','title','data-original-title','data-content']});
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden){if(frame)window.cancelAnimationFrame(frame);frame=0;}
+      else{if(hiddenDirty){hiddenDirty=false;pendingRoots.clear();enqueue(document.body);}else if(pendingRoots.size&&!frame)frame=window.requestAnimationFrame(flush);}
+    });
     document.addEventListener('click', function (event) {
       var importer=event.target.closest('[data-naxx-import-link],[data-naxx-update-link]');
       if(importer&&!event.ctrlKey&&!event.metaKey){event.preventDefault();event.stopImmediatePropagation();window.location.assign(importer.href);return;}
@@ -611,6 +675,81 @@
   // Aguardar inicialização das tabelas e dos plugins da versão original.
   if (document.readyState !== 'loading') ready();
   else document.addEventListener('DOMContentLoaded', ready, {once:true});
+}());
+
+/* Reduz consultas automáticas, sem interferir em reprodução, importações ou ações. */
+(function(){
+ 'use strict';
+ if(window.NaxxPerformance)return;
+ var later=window.setTimeout.bind(window),cancel=window.clearTimeout.bind(window),pending=new Map(),handles=new Map(),statsMarker={};
+ var policy={headerStats:10000,getStats:3000,getGraphStats:60000,refreshInformation:10000};
+ function key(callback){
+  if(typeof callback!=='function')return null;
+  var name=callback.name;
+  return Object.prototype.hasOwnProperty.call(policy,name)&&window[name]===callback?name:null;
+ }
+ function current(item){return item.name==='headerStats'||item.page===window.rCurrentPage;}
+ function remove(item){
+  if(item.timer!==null)cancel(item.timer);
+  if(pending.get(item.name)===item)pending.delete(item.name);
+  handles.delete(item.handle);
+ }
+ function schedule(name,callback,args,delay){
+  var previous=pending.get(name);if(previous)remove(previous);
+  var item={name:name,callback:callback,args:args,page:window.rCurrentPage,timer:null,handle:null,waiting:false};
+  pending.set(name,item);
+  item.timer=later(function(){run(item);},delay);
+  // O handle que o código nativo recebeu continua válido durante a pausa e
+  // após reagendar o timer físico, inclusive para killTimeouts().
+  item.handle=item.timer;handles.set(item.handle,item);
+  return item.handle;
+ }
+ function run(item){
+  if(pending.get(item.name)!==item)return;
+  item.timer=null;
+  if(!current(item)){remove(item);return;}
+  if(document.hidden){item.waiting=true;return;}
+  remove(item);item.callback.apply(window,item.args);
+ }
+ window.setTimeout=function(callback,delay){
+  var name=key(callback),args=Array.prototype.slice.call(arguments,2);
+  if(!name)return later.apply(window,arguments);
+  return schedule(name,callback,args,Math.max(Number(delay)||0,policy[name]));
+ };
+ window.clearTimeout=function(id){
+  var item=handles.get(id);if(item)remove(item);
+  return cancel(id);
+ };
+ function enhance(){
+  var native=window.getStats;
+  if(typeof native!=='function'||native.naxxPerformance===statsMarker)return;
+  var page=window.rCurrentPage,lastStarted=-Infinity;
+  function getStats(){
+   var args=Array.prototype.slice.call(arguments);
+   // auto=false é a consulta manual nativa: mantém argumentos e retorno.
+   if(args[0]===false)return native.apply(this,args);
+   if(page!==window.rCurrentPage)return;
+   var wait=Math.max(0,policy.getStats-(Date.now()-lastStarted));
+   // A resposta lenta nativa chama getStats() diretamente, fora dos timers.
+   // Essa entrada também respeita a pausa e o intervalo mínimo.
+   if(document.hidden||wait>0){schedule('getStats',getStats,args,wait);return;}
+   lastStarted=Date.now();return native.apply(this,args);
+  }
+  getStats.naxxPerformance=statsMarker;
+  window.getStats=getStats;
+  var item=pending.get('getStats');
+  if(item){if(item.callback===native)item.callback=getStats;else remove(item);}
+ }
+ document.addEventListener('visibilitychange',function(){
+  if(document.hidden)return;
+  pending.forEach(function(item){
+   if(!current(item)){remove(item);return;}
+   if(item.timer!==null)cancel(item.timer);
+   item.waiting=false;item.timer=later(function(){run(item);},0);
+  });
+ });
+ window.NaxxPerformance={pollingIntervals:Object.freeze(Object.assign({},policy)),enhance:enhance};
+ enhance();
 }());
 
 /* Menus nativos: mantém os links e as ações; abre fora da área rolável da tabela. */

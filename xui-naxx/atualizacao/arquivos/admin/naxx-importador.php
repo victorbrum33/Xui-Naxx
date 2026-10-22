@@ -6,6 +6,6 @@ $_GET['import'] = '1';
 require __DIR__ . '/stream.php';
 ?>
 <link rel="stylesheet" href="assets/css/naxx-importer.css?v=366fdc41d69c">
-<script src="assets/js/naxx-importer.js?v=409a5efdad98"></script>
-<script src="assets/js/naxx-importer-ui.js?v=a8913b6ab7a6"></script>
-<script src="assets/js/naxx-native-importer.js?v=5644897863d4"></script>
+<script src="assets/js/naxx-importer.js?v=e293088d47aa"></script>
+<script src="assets/js/naxx-importer-ui.js?v=71f70a17907e"></script>
+<script src="assets/js/naxx-native-importer.js?v=bbcaaf74e6ae"></script>
