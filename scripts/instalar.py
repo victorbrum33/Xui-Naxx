@@ -211,6 +211,7 @@ def install_new(bundle):
         shutil.copyfile(data / 'scripts/community-patch' / filename, stage / 'patch' / filename)
     shutil.copytree(REPO / 'xui-naxx/atualizacao', stage / 'atualizacao', dirs_exist_ok=True)
     run_script(stage / 'scripts/instalar_base.py')
+    run_script(REPO / 'scripts/proteger_inicializacao.py', '--apply')
     run_script(stage / 'scripts/aplicar_componentes.py')
     run_script(stage / 'scripts/atualizar_banco.py', '--install')
     run_script(REPO / 'scripts/instalar_atualizador.py', '--install')
@@ -240,12 +241,14 @@ def main():
         if not Path('/home/xui/status').is_file():
             raise RuntimeError('/home/xui existe, mas não parece conter o painel esperado.')
         if args.check:
+            run_script(REPO / 'scripts/proteger_inicializacao.py', '--check')
             run_script(REPO / 'xui-naxx/atualizacao/aplicar.py', '--check')
             run_script(REPO / 'scripts/otimizar_sistema.py', '--check')
             run_script(REPO / 'scripts/otimizar_http.py', '--check')
             run_script(REPO / 'scripts/redis_local.py', '--check')
             return
         print('Instalação existente: aplicando interface NAXX e manutenção automática.', flush=True)
+        run_script(REPO / 'scripts/proteger_inicializacao.py', '--apply')
         run_script(REPO / 'xui-naxx/atualizacao/aplicar.py')
         run_script(REPO / 'scripts/atualizar_banco.py', '--install')
         run_script(REPO / 'scripts/instalar_atualizador.py', '--install')

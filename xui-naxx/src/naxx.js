@@ -42,6 +42,8 @@
   }
   var translationSelector='.navigation-menu a,.page-title,.header-title,.cta-box p,.card h1,.card h2,.card h3,.card h4,.card h5,.card h6,.card p,.topnav-menu a,.dropdown-item,.dropdown-item span,.nav-tabs a,.nav-tabs a span,.nav-pills a,.nav-pills a span,.nav-link,.next a,.previous a,button,label,th,option,.jstree-anchor,.select2-selection__placeholder,.apexcharts-legend-text,.timeline-item-info strong,.bootstrap-select .filter-option-inner-inner,.bootstrap-select .text,.select2-selection__rendered,.jBox-content,.jBox-title,.tooltip-inner,.popover-body';
   var translatedAttributes=['placeholder','title','data-original-title','data-content'];
+  translationSelector+=',.table a[href*="server_view"],.table small';
+  translations['No Category']='Sem categoria';
   function within(root,selector){
     var elements=Array.from(root.querySelectorAll(selector));
     if(root.nodeType===1&&root.matches(selector))elements.unshift(root);
@@ -368,8 +370,16 @@
       overlay.hidden=false;
       var state=card.querySelector('.naxx-player-state');if(state)state.textContent='Indisponível';
     }
-    var bindTimer=0,bindGeneration=0;
-    frame.__naxxStopMonitor=function(){bindGeneration+=1;window.clearTimeout(bindTimer);bindTimer=0;};
+    var bindTimer=0,bindGeneration=0,controlsObserver=null,controlsFrame=0,controlsDocument=null,escapeHandler=null,repairController=null,bindings=[];
+    frame.__naxxStopMonitor=function(){
+      bindGeneration+=1;window.clearTimeout(bindTimer);bindTimer=0;
+      if(controlsObserver)controlsObserver.disconnect();controlsObserver=null;
+      if(controlsFrame)cancelAnimationFrame(controlsFrame);controlsFrame=0;
+      if(controlsDocument&&escapeHandler)controlsDocument.removeEventListener('keydown',escapeHandler,true);
+      controlsDocument=null;escapeHandler=null;
+      if(repairController)repairController.abort();repairController=null;
+      bindings.forEach(function(binding){if(typeof binding[0].off==='function')binding[0].off(binding[1],binding[2]);});bindings=[];
+    };
     var bindEvents = function () {
       frame.__naxxStopMonitor();
       var generation=bindGeneration;
@@ -386,7 +396,6 @@
             var instance = jwplayer();
             var config=instance&&typeof instance.getConfig==='function'&&instance.getConfig();
             if (instance && typeof instance.on === 'function' && config && config.playlist && config.playlist.length) {
-              if (frame.__naxxPlayerInstance === instance) return;
               frame.__naxxPlayerInstance = instance;
               var card=frame.closest('.naxx-player-card'),overlay=card&&card.querySelector('.naxx-player-error');
               var state=card&&card.querySelector('.naxx-player-state');
@@ -401,30 +410,35 @@
                 if(!/^\/admin\/live(?:\.php)?$/.test(original.pathname)||!original.searchParams.has('uitoken')||original.origin===origin.origin)return Promise.resolve(false);
                 target.protocol=origin.protocol;target.host=origin.host;
                 if(state)state.textContent='Conectando…';
-                var controller=new AbortController();var timeout=window.setTimeout(function(){controller.abort();},12000);
+                var controller=new AbortController();repairController=controller;var timeout=window.setTimeout(function(){controller.abort();},12000);
                 return fetch(target.href,{credentials:'same-origin',signal:controller.signal,cache:'no-store'}).then(function(response){if(!response.ok)return '';return response.text();}).then(function(manifest){
-                  if(!frame.isConnected||manifest.trim().indexOf('#EXTM3U')!==0)return false;
+                  if(generation!==bindGeneration||!frame.isConnected||manifest.trim().indexOf('#EXTM3U')!==0)return false;
                   if(overlay)overlay.hidden=true;
                   instance.load([{file:target.href,type:'hls'}]);instance.play();return true;
-                }).catch(function(){return false;}).finally(function(){window.clearTimeout(timeout);});
+                }).catch(function(){return false;}).finally(function(){window.clearTimeout(timeout);if(repairController===controller)repairController=null;});
               }
               function reportError(error){
-                repairOrigin().then(function(repaired){if(!repaired)showPlayerError(Number(error&&error.code)===232404?'O canal não respondeu. Verifique a fonte ou tente novamente.':'Não foi possível reproduzir este canal. Confira a conexão e tente novamente.');});
+                repairOrigin().then(function(repaired){if(generation!==bindGeneration||!frame.isConnected)return;if(!repaired)showPlayerError(Number(error&&error.code)===232404?'O canal não respondeu. Verifique a fonte ou tente novamente.':'Não foi possível reproduzir este canal. Confira a conexão e tente novamente.');});
               }
-              instance.on('error',reportError);
-              instance.on('setupError',reportError);
-              instance.on('play',function(){if(overlay)overlay.hidden=true;if(state)state.textContent='Reproduzindo';});
-              instance.on('buffer',function(){if(state)state.textContent='Carregando…';});
-              instance.on('pause',function(){if(state)state.textContent='Pausado';});
+              function on(name,handler){instance.on(name,handler);bindings.push([instance,name,handler]);}
+              on('error',reportError);
+              on('setupError',reportError);
+              on('play',function(){if(overlay)overlay.hidden=true;if(state)state.textContent='Reproduzindo';});
+              on('buffer',function(){if(state)state.textContent='Carregando…';});
+              on('pause',function(){if(state)state.textContent='Pausado';});
+              on('autostartNotAllowed',function(){if(state)state.textContent='Toque para reproduzir';});
               var playerDocument=playerWindow.document;
               playerDocument.documentElement.lang='pt-BR';
               if(!playerDocument.getElementById('naxx-player-style')){
                 var style=playerDocument.createElement('style');style.id='naxx-player-style';style.textContent='html,body{margin:0!important;background:#05080d!important}body .jwplayer{font-family:system-ui,sans-serif}body .jw-progress,body .jw-knob{background:#4b8df7}body .jw-button-color:hover{color:#79b8ff}body .jw-controlbar{background:linear-gradient(transparent,#070e1deb)}';playerDocument.head.appendChild(style);
               }
-              var labels={'Play':'Reproduzir','Pause':'Pausar','Mute':'Silenciar','Unmute':'Ativar som','Fullscreen':'Tela cheia','Exit Fullscreen':'Sair da tela cheia','Settings':'Configurações','Volume':'Volume','Live':'Ao vivo','Playback rate':'Velocidade','Quality':'Qualidade'};
-              function translateControls(){playerDocument.querySelectorAll('.jw-text,[aria-label],[title]').forEach(function(element){['aria-label','title'].forEach(function(attribute){var value=element.getAttribute(attribute);if(labels[value])element.setAttribute(attribute,labels[value]);});if(element.classList.contains('jw-text')&&labels[element.textContent.trim()])element.textContent=labels[element.textContent.trim()];});}
-              translateControls();instance.on('ready',translateControls);instance.on('play',translateControls);
-              if(instance.getState&&instance.getState()==='error')reportError({code:232404});
+              var labels={'Play':'Reproduzir','Pause':'Pausar','Mute':'Silenciar','Unmute':'Ativar som','Fullscreen':'Tela cheia','Exit Fullscreen':'Sair da tela cheia','Settings':'Configurações','Volume':'Volume','Live':'Ao vivo','Playback rate':'Velocidade','Playback Rate':'Velocidade','Quality':'Qualidade','Closed Captions':'Legendas','Audio Tracks':'Faixas de áudio','Off':'Desativado','Stop':'Parar'};
+              function translateControls(){controlsFrame=0;if(generation!==bindGeneration)return;playerDocument.querySelectorAll('.jw-text,.jw-text-live,[aria-label],[title]').forEach(function(element){['aria-label','title'].forEach(function(attribute){var value=element.getAttribute(attribute);if(labels[value])element.setAttribute(attribute,labels[value]);});if((element.classList.contains('jw-text')||element.classList.contains('jw-text-live'))&&labels[element.textContent.trim()])element.textContent=labels[element.textContent.trim()];});}
+              translateControls();on('ready',translateControls);on('play',translateControls);
+              controlsObserver=new MutationObserver(function(changes){if(controlsFrame)return;var changed=changes.some(function(change){if(change.type==='attributes')return !!labels[change.target.getAttribute(change.attributeName)];if(change.type==='characterData')return !!labels[change.target.nodeValue.trim()];return Array.from(change.addedNodes).some(function(node){return node.nodeType===1&&node.namespaceURI==='http://www.w3.org/1999/xhtml'||node.nodeType===3&&labels[node.nodeValue.trim()];});});if(changed)controlsFrame=requestAnimationFrame(translateControls);});
+              controlsObserver.observe(playerDocument.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['aria-label','title']});
+              controlsDocument=playerDocument;escapeHandler=function(event){if(event.key==='Escape'&&!playerDocument.fullscreenElement&&!playerDocument.webkitFullscreenElement&&frame.isConnected){event.preventDefault();event.stopImmediatePropagation();window.jQuery.magnificPopup.close();}};playerDocument.addEventListener('keydown',escapeHandler,true);
+              var currentState=instance.getState&&instance.getState();if(currentState==='error')reportError({code:232404});else if(state)state.textContent={playing:'Reproduzindo',paused:'Pausado',buffering:'Carregando…',idle:'Toque para reproduzir',complete:'Reprodução encerrada'}[currentState]||'Conectando…';
               return;
             }
           }
@@ -584,6 +598,7 @@
     translateStreamHelp(root);
     translateCacheSettings(root);
     if(window.NaxxCache&&(full||containsFeature(root,'.page-title-box,#datatable-cache,#minute,.jBox-container,.jq-toast-wrap')||(root.nodeType===1&&root.closest('.jBox-container,.jq-toast-wrap'))))window.NaxxCache.enhance();
+    if(window.NaxxAccessibility)window.NaxxAccessibility.enhance(root);
     if(full){versionBrandStylesheets();setBrandFavicon();}
     enhanceChannelPlayer();
     var pageTitle=document.title;

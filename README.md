@@ -54,6 +54,26 @@ Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza 
 
 Consulte [Otimização](OTIMIZACAO.md) para medições, aplicação dos perfis PHP-FPM/HTTP e restauração dos backups.
 
+## Revisão de qualidade
+
+O painel inclui identificação dos botões de ícones, navegação por teclado nas chaves de configuração, atalho para o conteúdo e melhorias no foco e na tradução do player. Confira o escopo e os testes em [Acessibilidade e usabilidade](ACESSIBILIDADE.md).
+
+O instalador também valida e protege `/etc/fstab`, evitando que uma rotina legada esvazie a montagem raiz e impeça o banco de iniciar após reiniciar a máquina. A proteção mantém o conteúdo do arquivo e salva uma cópia privada ao ser aplicada pela primeira vez.
+
+Para conferir a proteção:
+
+```bash
+sudo python3 scripts/proteger_inicializacao.py --check
+```
+
+Antes de editar manualmente as montagens do sistema, libere o arquivo e reaplique a proteção após validar as alterações:
+
+```bash
+sudo python3 scripts/proteger_inicializacao.py --unprotect
+# Edite e valide /etc/fstab
+sudo python3 scripts/proteger_inicializacao.py --apply
+```
+
 ## Atualizações
 
 Abra **perfil → Atualização** para consultar versões, verificar e instalar manualmente, ativar a instalação automática diária ou restaurar o último backup. O serviço instala somente os arquivos próprios permitidos, verifica o SHA-256 e mantém backup antes da aplicação. O núcleo, as credenciais e o banco de dados ficam fora desse pacote.

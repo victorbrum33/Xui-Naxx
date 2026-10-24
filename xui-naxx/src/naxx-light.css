@@ -1,8 +1,8 @@
 /* Paleta clara da edição NAXX. Mantém a escolha de tema do perfil. */
-:root {--naxx-bg:#f3f6fa;--naxx-surface:#ffffff;--naxx-raised:#eef3f8;--naxx-border:#d8e1eb;--naxx-text:#172b43;--naxx-muted:#52657c;--naxx-accent:#2563eb;--naxx-blue:#175caa;color-scheme:light;}
+:root {--naxx-bg:#f3f6fa;--naxx-surface:#ffffff;--naxx-raised:#eef3f8;--naxx-border:#d8e1eb;--naxx-control-border:#78899d;--naxx-text:#172b43;--naxx-muted:#52657c;--naxx-accent:#2563eb;--naxx-blue:#175caa;color-scheme:light;}
 #topnav,.navbar-custom,.topbar-dark .navbar-custom,.menubar-light #topnav{background:#fff!important;box-shadow:0 3px 18px #172b4308;}
 a:hover{color:#084281}.text-danger{color:#a9223b!important}.text-warning{color:#805000!important}
-.form-control,.custom-select,.input-group-text,.select2-container--default .select2-selection--single,.select2-container--default .select2-selection--multiple,.select2-dropdown,.select2-search__field{background:#fff!important;border-color:#b9c9da!important;}
+.form-control,.custom-select,.input-group-text,.select2-container--default .select2-selection--single,.select2-container--default .select2-selection--multiple,.select2-dropdown,.select2-search__field{background:#fff!important;border-color:var(--naxx-control-border)!important;}
 .form-control::placeholder{color:#65788e}.form-control:disabled,.form-control[readonly]{background:#eaf0f6!important;color:#52657c!important}
 .select2-container--default .select2-selection--multiple .select2-selection__choice{background:#e5effc;color:#124f98;border-color:#c2d8f6}
 .select2-container--default .select2-results__option[aria-selected=true]{background:#eaf0f6}

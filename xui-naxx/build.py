@@ -89,7 +89,7 @@ def build():
     js = js.replace('/* NAXX_BRAND_ASSET_VERSION */', sha(files['admin/assets/images/naxx-favicon.svg'].encode())[:12])
     stylesheet_version = sha((css + (HERE / 'src/naxx-light.css').read_text(encoding='utf-8')).encode())[:12]
     js = js.replace('/* NAXX_STYLESHEET_VERSION */', stylesheet_version)
-    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('performance-ui.js','menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js'))
+    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('performance-ui.js','accessibility-ui.js','menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js'))
     files['admin/assets/js/naxx-base.min.js'] = original_js
     # Loader instalado uma vez. O canal público distribui somente as melhorias próprias.
     files['admin/assets/js/app.min.js'] = '''(function(){
