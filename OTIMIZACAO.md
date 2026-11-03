@@ -42,6 +42,37 @@ O serviço `naxx-redis-local` reaplica a regra ao iniciar o servidor. Para rever
 
 ## Conferir e aplicar no servidor
 
+### Início dos canais sob demanda
+
+O perfil opcional abaixo reduz a duração solicitada dos segmentos de 10 para 2 segundos.
+Preserva as janelas de conteúdo: a lista de 6 segmentos de 10 segundos passa para 30 de
+2 segundos; o limite de exclusão de 4 passa para 20. Configurações que já usam segmentos
+menores são preservadas. O perfil atualiza apenas esses três campos no banco e no cache
+nativo, salva um backup e não reinicia canais ou serviços.
+
+```bash
+sudo python3 scripts/otimizar_ondemand.py --check
+sudo python3 scripts/otimizar_ondemand.py --apply
+sudo python3 scripts/otimizar_ondemand.py --restore CAMINHO_DO_BACKUP
+```
+
+Os processos existentes passam a usar os novos segmentos no próximo início. Para validar
+sem interferir em espectadores, reinicie pelo painel somente um canal que esteja sem
+conexões. Aplique o perfil separadamente da atualização visual.
+
+Em 03/11/2026, um teste local com vídeo H.264/AAC e quadros-chave a cada 2 segundos reduziu
+a mediana até o primeiro segmento fechado de 10,325 para 2,244 segundos. No canal existente
+do laboratório, um reinício pelo API nativo passou de 17,510 para 9,493 segundos até o
+primeiro segmento; o manifesto e o segmento da prévia responderam HTTP 200. Esse canal
+estava em modo contínuo: a medição valida o início frio e a entrega HLS, sem medir o
+acionamento por espectador ou o primeiro quadro no aplicativo. A fonte forneceu segmentos
+de cerca de 8 segundos mesmo com a solicitação de 2 segundos.
+
+O corte ainda depende dos quadros-chave da fonte, conforme a
+[documentação do FFmpeg](https://ffmpeg.org/ffmpeg-formats.html#segment_002c-stream_005fsegment_002c-ssegment).
+O perfil preserva os parâmetros de análise e os cortes em quadros-chave para manter áudio
+e vídeo decodificáveis.
+
 O instalador executa os perfis após os serviços estarem ativos. Para aplicar separadamente na raiz do repositório:
 
 ```bash

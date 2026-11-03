@@ -370,14 +370,13 @@
       overlay.hidden=false;
       var state=card.querySelector('.naxx-player-state');if(state)state.textContent='Indisponível';
     }
-    var bindTimer=0,bindGeneration=0,controlsObserver=null,controlsFrame=0,controlsDocument=null,escapeHandler=null,repairController=null,bindings=[];
+    var bindTimer=0,bindGeneration=0,controlsObserver=null,controlsFrame=0,controlsDocument=null,escapeHandler=null,bindings=[];
     frame.__naxxStopMonitor=function(){
       bindGeneration+=1;window.clearTimeout(bindTimer);bindTimer=0;
       if(controlsObserver)controlsObserver.disconnect();controlsObserver=null;
       if(controlsFrame)cancelAnimationFrame(controlsFrame);controlsFrame=0;
       if(controlsDocument&&escapeHandler)controlsDocument.removeEventListener('keydown',escapeHandler,true);
       controlsDocument=null;escapeHandler=null;
-      if(repairController)repairController.abort();repairController=null;
       bindings.forEach(function(binding){if(typeof binding[0].off==='function')binding[0].off(binding[1],binding[2]);});bindings=[];
     };
     var bindEvents = function () {
@@ -399,26 +398,40 @@
               frame.__naxxPlayerInstance = instance;
               var card=frame.closest('.naxx-player-card'),overlay=card&&card.querySelector('.naxx-player-error');
               var state=card&&card.querySelector('.naxx-player-state');
+              var originRepairVersion=0,originRepairInProgress=false;
+              function playerState(){try{return instance.getState&&instance.getState();}catch(error){return '';}}
               function repairOrigin(){
-                if(frame.__naxxRepairAttempted)return Promise.resolve(false);
-                frame.__naxxRepairAttempted=true;
-                var item=instance.getPlaylistItem&&instance.getPlaylistItem();
-                var source=item&&item.sources&&item.sources[0]&&item.sources[0].file;
-                if(!source)source=config.playlist[0].sources&&config.playlist[0].sources[0]&&config.playlist[0].sources[0].file;
-                var original=new URL(source,frame.src),target=new URL(original.href),origin=new URL(frame.src);
-                // Só recupera a rota autenticada de prévia do próprio painel.
-                if(!/^\/admin\/live(?:\.php)?$/.test(original.pathname)||!original.searchParams.has('uitoken')||original.origin===origin.origin)return Promise.resolve(false);
-                target.protocol=origin.protocol;target.host=origin.host;
-                if(state)state.textContent='Conectando…';
-                var controller=new AbortController();repairController=controller;var timeout=window.setTimeout(function(){controller.abort();},12000);
-                return fetch(target.href,{credentials:'same-origin',signal:controller.signal,cache:'no-store'}).then(function(response){if(!response.ok)return '';return response.text();}).then(function(manifest){
-                  if(generation!==bindGeneration||!frame.isConnected||manifest.trim().indexOf('#EXTM3U')!==0)return false;
+                if(frame.__naxxRepairAttempted||generation!==bindGeneration||!frame.isConnected)return Promise.resolve(false);
+                try{
+                  var currentState=playerState();
+                  if(currentState==='playing'||currentState==='paused')return Promise.resolve(false);
+                  var item=instance.getPlaylistItem&&instance.getPlaylistItem();
+                  var source=item&&item.sources&&item.sources[0]&&item.sources[0].file;
+                  if(!source)source=config.playlist[0].sources&&config.playlist[0].sources[0]&&config.playlist[0].sources[0].file;
+                  if(typeof source!=='string'||!source)return Promise.resolve(false);
+                  var original=new URL(source,frame.src),target=new URL(original.href),origin=new URL(frame.src);
+                  // Só recupera a rota autenticada de prévia do próprio painel.
+                  if(!/^\/admin\/live(?:\.php)?$/.test(original.pathname)||!original.searchParams.has('uitoken')||original.origin===origin.origin)return Promise.resolve(false);
+                  target.protocol=origin.protocol;target.host=origin.host;
+                  frame.__naxxRepairAttempted=true;originRepairVersion+=1;originRepairInProgress=true;
+                  if(state)state.textContent='Conectando…';
                   if(overlay)overlay.hidden=true;
-                  instance.load([{file:target.href,type:'hls'}]);instance.play();return true;
-                }).catch(function(){return false;}).finally(function(){window.clearTimeout(timeout);if(repairController===controller)repairController=null;});
+                  // O JWPlayer busca o manifesto; uma consulta prévia duplicava essa espera.
+                  instance.load([{file:target.href,type:'hls'}]);instance.play();
+                  return Promise.resolve(true);
+                }catch(error){return Promise.resolve(false);}
+                finally{originRepairInProgress=false;}
               }
               function reportError(error){
-                repairOrigin().then(function(repaired){if(generation!==bindGeneration||!frame.isConnected)return;if(!repaired)showPlayerError(Number(error&&error.code)===232404?'O canal não respondeu. Verifique a fonte ou tente novamente.':'Não foi possível reproduzir este canal. Confira a conexão e tente novamente.');});
+                if(originRepairInProgress)return;
+                var repairVersion=originRepairVersion;
+                repairOrigin().then(function(repaired){
+                  if(generation!==bindGeneration||!frame.isConnected||repaired||repairVersion!==originRepairVersion)return;
+                  var currentState=playerState();
+                  // Um erro da tentativa anterior pode chegar depois da troca de origem.
+                  if(currentState==='playing'||currentState==='paused'||(frame.__naxxRepairAttempted&&currentState&&currentState!=='error'))return;
+                  showPlayerError(Number(error&&error.code)===232404?'O canal não respondeu. Verifique a fonte ou tente novamente.':'Não foi possível reproduzir este canal. Confira a conexão e tente novamente.');
+                });
               }
               function on(name,handler){instance.on(name,handler);bindings.push([instance,name,handler]);}
               on('error',reportError);
@@ -438,7 +451,8 @@
               controlsObserver=new MutationObserver(function(changes){if(controlsFrame)return;var changed=changes.some(function(change){if(change.type==='attributes')return !!labels[change.target.getAttribute(change.attributeName)];if(change.type==='characterData')return !!labels[change.target.nodeValue.trim()];return Array.from(change.addedNodes).some(function(node){return node.nodeType===1&&node.namespaceURI==='http://www.w3.org/1999/xhtml'||node.nodeType===3&&labels[node.nodeValue.trim()];});});if(changed)controlsFrame=requestAnimationFrame(translateControls);});
               controlsObserver.observe(playerDocument.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['aria-label','title']});
               controlsDocument=playerDocument;escapeHandler=function(event){if(event.key==='Escape'&&!playerDocument.fullscreenElement&&!playerDocument.webkitFullscreenElement&&frame.isConnected){event.preventDefault();event.stopImmediatePropagation();window.jQuery.magnificPopup.close();}};playerDocument.addEventListener('keydown',escapeHandler,true);
-              var currentState=instance.getState&&instance.getState();if(currentState==='error')reportError({code:232404});else if(state)state.textContent={playing:'Reproduzindo',paused:'Pausado',buffering:'Carregando…',idle:'Toque para reproduzir',complete:'Reprodução encerrada'}[currentState]||'Conectando…';
+              repairOrigin();
+              var currentState=playerState();if(currentState==='error')reportError({code:232404});else if(state)state.textContent={playing:'Reproduzindo',paused:'Pausado',buffering:'Carregando…',idle:'Toque para reproduzir',complete:'Reprodução encerrada'}[currentState]||'Conectando…';
               return;
             }
           }
