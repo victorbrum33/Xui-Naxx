@@ -74,7 +74,7 @@
     adaptive_link:'Agrupa canais para que o cliente escolha uma fonte adequada à largura de banda ao solicitar HLS. A seleção não depende das listas do usuário; MPEG-TS reproduz o canal normalmente.',
     title_sync:'Sincroniza o título com um provedor de canais configurado no XUI. O título é atualizado pela rotina automática do painel.',
     rtmp_output:'Envia o canal ao servidor RTMP para distribuição a clientes RTMP.',
-    llod:'A transmissão sob demanda de baixa latência reduz o atraso. As opções disponíveis variam conforme o protocolo de entrada; os modos avançados têm limitações de compatibilidade.'
+    llod:'NAXX Automático analisa as fontes ao salvar e escolhe um modo compatível validado. A decisão aparece abaixo do campo. Após alterar a fonte, analise novamente. Os modos manuais continuam disponíveis.'
   };
   var brandAssetVersion = '/* NAXX_BRAND_ASSET_VERSION */';
   var stylesheetVersion = '/* NAXX_STYLESHEET_VERSION */';

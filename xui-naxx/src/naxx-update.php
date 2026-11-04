@@ -1,4 +1,5 @@
 <?php
+/* NAXX_ONDEMAND_ENDPOINT */
 /* NAXX_CACHE_ENDPOINT */
 // Interface autenticada do serviço local de atualização Xui Naxx.
 ini_set('display_errors', '0');

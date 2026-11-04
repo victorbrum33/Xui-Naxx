@@ -37,7 +37,7 @@
     {
       "path": "admin/naxx-update.php",
       "original_sha256": null,
-      "sha256": "a130355b0adade176f4c9999863ee4cc4daeee5a5a86e27e66547f5021588cb2"
+      "sha256": "80b8118c4bddfd23fba17001e3d96de4b9d0bd9cc0406dc5a65406620cbf4bea"
     },
     {
       "path": "admin/naxx-update-page.php",
@@ -112,7 +112,7 @@
     {
       "path": "admin/assets/js/naxx-overlay.js",
       "original_sha256": null,
-      "sha256": "278b794672521152cda1a3df23e601a5df828842fbca62822f5923edc54427d8"
+      "sha256": "c0cf42f86fa6849b5759d0bed3d7aaea0677f430e24338b2c2f1c46bd4b646f3"
     },
     {
       "path": "admin/assets/js/naxx-base.min.js",

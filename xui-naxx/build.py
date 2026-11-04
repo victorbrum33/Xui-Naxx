@@ -60,6 +60,10 @@ def build():
     files['admin/naxx-import-url.php'] = (HERE / 'src/naxx-import-url.php').read_text(encoding='utf-8')
     files['admin/naxx-epg-sync.php'] = (HERE / 'src/naxx-epg-sync.php').read_text(encoding='utf-8')
     files['admin/naxx-update.php'] = (HERE / 'src/naxx-update.php').read_text(encoding='utf-8')
+    ondemand_policy = (HERE / 'src/ondemand-policy.php').read_text(encoding='utf-8').split('<?php', 1)[1]
+    ondemand_api = (HERE / 'src/ondemand-api.php').read_text(encoding='utf-8').split('<?php', 1)[1]
+    files['admin/naxx-update.php'] = files['admin/naxx-update.php'].replace('/* NAXX_ONDEMAND_ENDPOINT */',
+        "if (($_GET['feature'] ?? '') === 'ondemand') {\n" + ondemand_policy + "\n" + ondemand_api + "\n}\n")
     cache_api=(HERE / 'src/cache-api.php').read_text(encoding='utf-8').split('<?php',1)[1]
     files['admin/naxx-update.php']=files['admin/naxx-update.php'].replace('/* NAXX_CACHE_ENDPOINT */', "if (($_GET['feature'] ?? '') === 'cache') {\n"+cache_api+"\n}\n")
     files['admin/naxx-update-page.php'] = (HERE / 'src/naxx-update-page.php').read_text(encoding='utf-8')
@@ -89,7 +93,7 @@ def build():
     js = js.replace('/* NAXX_BRAND_ASSET_VERSION */', sha(files['admin/assets/images/naxx-favicon.svg'].encode())[:12])
     stylesheet_version = sha((css + (HERE / 'src/naxx-light.css').read_text(encoding='utf-8')).encode())[:12]
     js = js.replace('/* NAXX_STYLESHEET_VERSION */', stylesheet_version)
-    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('performance-ui.js','accessibility-ui.js','menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js'))
+    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('performance-ui.js','accessibility-ui.js','menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js','ondemand-ui.js'))
     files['admin/assets/js/naxx-base.min.js'] = original_js
     # Loader instalado uma vez. O canal público distribui somente as melhorias próprias.
     files['admin/assets/js/app.min.js'] = '''(function(){
