@@ -1,4 +1,4 @@
-# Xui Naxx · 1.5.14
+# Xui Naxx · 1.5.14.1
 
 Painel em português brasileiro, com identidade azul, temas claro e escuro, interface adaptada a dispositivos móveis e ferramentas para canais, filmes e séries.
 
@@ -38,6 +38,7 @@ Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza 
 
 ## Recursos
 
+- **NAXX Automático:** escolha do modo de baixa latência ao salvar um canal, com análise das fontes, combinação validada e retorno aos modos manuais. Consulte [uso, testes e limites](NAXX-AUTOMATICO.md).
 - Importador em **Conteúdo**, por arquivo ou URL, com revisão de categorias, canais, filmes, séries e episódios.
 - Análise em processo separado e envio em lotes sequenciais, com pausa, retomada e progresso. Sem o antigo limite fixo de 10 MB; o processamento depende dos recursos do servidor e do navegador.
 - Ferramentas rápidas para excluir conteúdo por tipo ou apagar todo o conteúdo, sem seleção individual.

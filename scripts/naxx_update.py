@@ -171,8 +171,14 @@ def download(url, kind, limit):
 def validate_manifest(value):
     if not isinstance(value, dict) or type(value.get('schema')) is not int or value['schema'] != 1:
         raise UpdateError('Formato de atualização não suportado.')
-    if not re.fullmatch(r'\d{1,5}\.\d{1,5}\.\d{1,5}', str(value.get('version', ''))):
+    if not re.fullmatch(r'\d{1,5}(?:\.\d{1,5}){2,3}', str(value.get('version', ''))):
         raise UpdateError('A versão da atualização é inválida.')
+    if 'release_version' in value:
+        release = value['release_version']
+        if (not isinstance(release, str) or not re.fullmatch(r'\d{1,5}(?:\.\d{1,5}){2,3}', release)
+                or version_key(release)[:3] != version_key(value['version'])[:3]
+                or version_key(release) < version_key(value['version'])):
+            raise UpdateError('A edição da atualização é incompatível com a versão anunciada.')
     archive = value.get('archive')
     if not isinstance(archive, dict):
         raise UpdateError('O manifesto não informa o pacote da atualização.')
@@ -196,7 +202,14 @@ def validate_manifest(value):
 
 
 def version_key(value):
-    return tuple(int(part) for part in value.split('.'))
+    if not isinstance(value, str) or not re.fullmatch(r'\d{1,5}(?:\.\d{1,5}){2,3}', value):
+        raise UpdateError('A versão da atualização é inválida.')
+    parts = tuple(int(part) for part in value.split('.'))
+    return parts + (0,) * (4 - len(parts))
+
+
+def manifest_version(value):
+    return value.get('release_version', value['version'])
 
 
 class Manager:
@@ -303,11 +316,16 @@ class Manager:
         if not isinstance(repository, dict) or repository.get('private') is not False or str(repository.get('full_name', '')).lower() != REPOSITORY.lower():
             raise UpdateError('O canal de atualização precisa ser um repositório público permitido.')
         manifest = validate_manifest(strict_json(download('https://raw.githubusercontent.com/' + REPOSITORY + '/main/latest.json', 'manifest', MAX_MANIFEST)))
-        if version_key(manifest['version']) < version_key(self.installed['version']):
+        if version_key(manifest_version(manifest)) < version_key(self.installed['version']):
             raise UpdateError('O canal oferece uma versão anterior à instalada. Atualização interrompida.')
         changed = manifest['archive']['sha256'] != self.installed.get('archive_sha256')
+        if not changed and self.installed['version'] != manifest_version(manifest):
+            # Um serviço legado pode ter instalado este mesmo hash registrando
+            # apenas três componentes. Corrige o rótulo sem regravar o payload.
+            self.installed = {**self.installed, 'version': manifest_version(manifest)}
+            atomic_json(self.runtime / 'installed.json', self.installed)
         atomic_json(self.runtime / 'candidate.json', manifest)
-        self.change_state(available=manifest['version'] if changed else None, checkedAt=now(), status='available' if changed else 'up_to_date', error=None)
+        self.change_state(available=manifest_version(manifest) if changed else None, checkedAt=now(), status='available' if changed else 'up_to_date', error=None)
         return manifest, changed
 
     def unpack(self, manifest, archive, stage):
@@ -391,7 +409,7 @@ class Manager:
                 after = backup / 'after' / record['path']
                 write_backup(after, (stage / record['path']).read_bytes())
             previous = self.installed
-            journal = {'schema': 1, 'root': str(self.root), 'createdAt': now(), 'previous': previous, 'version': manifest['version'], 'files': records}
+            journal = {'schema': 1, 'root': str(self.root), 'createdAt': now(), 'previous': previous, 'version': manifest_version(manifest), 'files': records}
             atomic_json(backup / 'backup.json', journal)
             applied = []
             try:
@@ -401,14 +419,14 @@ class Manager:
                         raise UpdateError('Um arquivo mudou durante a atualização. Alterações revertidas.')
                     self.restore_record(backup, record, before=False)
                     applied.append(record)
-                self.installed = {'version': manifest['version'], 'archive_sha256': manifest['archive']['sha256'], 'revision': manifest['archive']['url'].split('/')[-2], 'installedAt': now(), 'last_backup': backup_id, 'files': {**previous.get('files', {}), **{entry['path']: entry['sha256'] for entry in manifest['files']}}}
+                self.installed = {'version': manifest_version(manifest), 'archive_sha256': manifest['archive']['sha256'], 'revision': manifest['archive']['url'].split('/')[-2], 'installedAt': now(), 'last_backup': backup_id, 'files': {**previous.get('files', {}), **{entry['path']: entry['sha256'] for entry in manifest['files']}}}
                 atomic_json(self.runtime / 'installed.json', self.installed)
             except Exception:
                 for record in reversed(applied):
                     self.restore_record(backup, record)
                 self.installed = previous
                 raise
-            history = [{'version': manifest['version'], 'installedAt': self.installed['installedAt'], 'backup': backup_id, 'operation': 'install'}] + self.state.get('history', [])
+            history = [{'version': manifest_version(manifest), 'installedAt': self.installed['installedAt'], 'backup': backup_id, 'operation': 'install'}] + self.state.get('history', [])
             self.change_state(status='up_to_date', available=None, error=None, history=history[:10])
             with contextlib.suppress(OSError):
                 self.prune_backups()

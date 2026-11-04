@@ -9,6 +9,7 @@ import zipfile
 HERE = Path(__file__).resolve().parent
 ORIGINAL = HERE.parent / 'xui-original'
 PAYLOAD = HERE / 'atualizacao' / 'arquivos'
+EDITION = '1.5.14.1'
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
@@ -50,7 +51,7 @@ def build():
             raise ValueError(f'Ajuda de configuração repetida: {key}')
         settings_help_translations[key] = value
     js = js.replace('/* NAXX_SETTINGS_HELP_TRANSLATIONS */', 'Object.assign(settingsHelpTranslations,' + json.dumps(settings_help_translations, ensure_ascii=False) + ');')
-    manifest = {'name': 'XUI NAXX', 'version': '1.5.14', 'base_version': '1.5.12', 'language_keys': len(keys), 'files': []}
+    manifest = {'name': 'XUI NAXX', 'version': EDITION, 'base_version': '1.5.12', 'language_keys': len(keys), 'files': []}
     files = {
         'includes/langs/en.ini': translated,
         'includes/langs/pt_br.ini': translated,
@@ -130,11 +131,20 @@ if(document.readyState==='loading'){
     shutil.copy2(HERE / 'src/naxx-favicon.svg', HERE / 'previa/assets/favicon.svg')
     shutil.copy2(HERE / 'src/naxx-favicon.svg', HERE / 'previa/assets/images/naxx-favicon.svg')
     # Pacote leve da atualização; o ZIP original permanece intacto.
-    with zipfile.ZipFile(HERE / 'XUI-NAXX-1.5.14-atualizacao.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
-        for path in sorted((HERE / 'atualizacao').rglob('*')):
-            if path.is_file():
-                archive.write(path, path.relative_to(HERE))
-        archive.write(HERE / 'LEIA-ME.md', 'LEIA-ME.md')
+    with zipfile.ZipFile(HERE / ('XUI-NAXX-' + EDITION + '-atualizacao.zip'), 'w', zipfile.ZIP_DEFLATED) as archive:
+        for relative in ('atualizacao/aplicar.py', 'atualizacao/manifest.json'):
+            archive.write(HERE / relative, relative)
+        for entry in manifest['files']:
+            relative = 'atualizacao/arquivos/' + entry['path']
+            archive.write(HERE / relative, relative)
+        # O guia do laboratório contém endereços privados e nunca é distribuído.
+        archive.writestr('LEIA-ME.md', '# Xui Naxx ' + EDITION + ' — atualização\n\n'
+            'Compatível com a base XUI 1.5.12. Extraia o pacote e execute no servidor:\n\n'
+            '```bash\nsudo python3 atualizacao/aplicar.py --check\nsudo python3 atualizacao/aplicar.py\n```\n\n'
+            'O aplicador valida os arquivos e cria backup. Recarregue o painel após aplicar.\n\n'
+            'NAXX Automático: edite um canal cadastrado, escolha os servidores sob demanda e '
+            'selecione NAXX Automático no campo de baixa latência. A análise ocorre ao salvar.\n\n'
+            'Documentação: https://github.com/victorbrum33/Xui-Naxx/blob/main/NAXX-AUTOMATICO.md\n')
     print(f'Gerado: {len(keys)} traduções, {len(files)} arquivos de atualização.')
 
 if __name__ == '__main__':

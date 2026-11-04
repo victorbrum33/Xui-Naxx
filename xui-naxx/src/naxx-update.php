@@ -127,6 +127,9 @@ if ($metadata['timed_out'] || !is_array($response) || !isset($response['ok'])) {
     naxxUpdateReply(503, array('ok' => false, 'csrf' => $csrf, 'message' => 'O serviço local não respondeu. Verifique o estado da atualização antes de tentar novamente.'));
 }
 $response['csrf'] = $csrf;
+if (isset($response['state']) && is_array($response['state'])) {
+    $response['state']['interfaceVersion'] = '1.5.14.1';
+}
 if (empty($response['ok'])) {
     $status = isset($response['status']) && in_array((int) $response['status'], array(400, 403, 409, 500, 502, 503), true) ? (int) $response['status'] : 500;
     unset($response['status']);

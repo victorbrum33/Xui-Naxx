@@ -16,8 +16,9 @@ import urllib.request
 import zipfile
 
 REPO = Path(__file__).resolve().parent.parent
-EDITION = '1.5.14'
-TAG = 'v' + EDITION
+EDITION = '1.5.14.1'
+# O pacote de referência do núcleo mantém sua origem e seus hashes existentes.
+TAG = 'v1.5.14'
 ASSET = 'XUI-NAXX-COMPLETO.zip'
 PATCH_FILES = ('xui.so', 'license', 'manifest.json')
 EXTRACTION = ('xui.tar.gz',) + tuple('scripts/community-patch/' + name for name in PATCH_FILES)

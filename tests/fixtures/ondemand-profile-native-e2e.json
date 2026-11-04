@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "release": "1.5.14.1",
+  "test": "native_ondemand_profile_e2e",
+  "cases": [
+    {
+      "source": "ts",
+      "status_http": 200,
+      "csrf_valid": true,
+      "invalid_csrf_rejected": true,
+      "plan_http": 200,
+      "planned_mode": 2,
+      "plan_verified": true,
+      "premature_commit_rejected": true,
+      "native_saved_mode": 2,
+      "commit_http": 200,
+      "profile_persisted": true,
+      "previous_mode": 0,
+      "fetch_change_invalidated_profile": true,
+      "manual_deactivate_confirmed": true,
+      "ok": true,
+      "admin_hls": {
+        "ok": true,
+        "trigger": "authenticated_admin_preview",
+        "manifest_http": 200,
+        "manifest_valid": true,
+        "segment_http": 200,
+        "bytes": 183488,
+        "probe": {
+          "valid": true,
+          "codecs": [
+            {
+              "type": "audio",
+              "codec": "aac"
+            },
+            {
+              "type": "video",
+              "codec": "h264"
+            }
+          ]
+        },
+        "total_seconds": 2.444
+      }
+    },
+    {
+      "source": "hls",
+      "status_http": 200,
+      "csrf_valid": true,
+      "invalid_csrf_rejected": true,
+      "plan_http": 200,
+      "planned_mode": 1,
+      "plan_verified": true,
+      "premature_commit_rejected": true,
+      "native_saved_mode": 1,
+      "commit_http": 200,
+      "profile_persisted": true,
+      "previous_mode": 0,
+      "fetch_change_invalidated_profile": true,
+      "manual_deactivate_confirmed": true,
+      "ok": true,
+      "admin_hls": {
+        "ok": true,
+        "trigger": "authenticated_admin_preview",
+        "manifest_http": 200,
+        "manifest_valid": true,
+        "segment_http": 200,
+        "bytes": 205672,
+        "probe": {
+          "valid": true,
+          "codecs": [
+            {
+              "type": "audio",
+              "codec": "aac"
+            },
+            {
+              "type": "video",
+              "codec": "h264"
+            }
+          ]
+        },
+        "total_seconds": 0.285
+      }
+    }
+  ],
+  "cleanup": {
+    "remaining_owned_profiles": 0,
+    "new_owned_cache_files_removed": 0,
+    "remaining_streams": 0,
+    "remaining_lines": 0,
+    "remaining_bouquets": 0,
+    "production_stream_state_unchanged": true,
+    "remaining_owned_native_processes": 0,
+    "temporary_directory_removed": true
+  },
+  "limitations": [
+    "Two temporary synthetic H264/AAC channels, authenticated native administrative forms and preview.",
+    "Checks numeric native save, profile persistence, source-access invalidation, manual selection and CSRF.",
+    "Does not measure first rendered frame or client-account routing."
+  ]
+}

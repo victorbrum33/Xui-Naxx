@@ -48,8 +48,10 @@
     }
     function render(next) {
       state=next;
-      text(query('[data-update-installed]'),version(state.installed));
-      text(query('[data-update-available]'),state.available?version(state.available):'—');
+      text(query('[data-update-installed]'),version(state.interfaceVersion || state.installed));
+      var legacyRevision = state.available && /^\d+\.\d+\.\d+$/.test(state.available) &&
+        typeof state.interfaceVersion === 'string' && state.interfaceVersion.indexOf(state.available + '.') === 0;
+      text(query('[data-update-available]'),legacyRevision?'Nova revisão':state.available?version(state.available):'—');
       text(query('[data-update-available-help]'),state.status==='available'&&state.available===state.installed?'Nova revisão disponível':state.status==='up_to_date'?'Versão atual':state.available?'No canal de atualizações':'Aguardando verificação');
       var status=copy[state.status]||['Estado indisponível','Verifique novamente para consultar o andamento.'];
       query('[data-update-state]').dataset.state=Object.prototype.hasOwnProperty.call(copy,state.status)?state.status:'idle';

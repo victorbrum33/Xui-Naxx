@@ -1,0 +1,254 @@
+{
+  "schema": 1,
+  "release": "1.5.14.1",
+  "test": "native_llod_synthetic_sources",
+  "source_fixture": {
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "resolution": "320x180",
+    "frame_rate": 25,
+    "keyframe_interval_seconds": 2
+  },
+  "trigger": "authenticated_admin_preview",
+  "measurement": "Time to valid HLS manifest plus decodable H264/AAC segment; not first rendered frame.",
+  "cases": [
+    {
+      "source": "ts",
+      "llod": 0,
+      "stored_llod": 0,
+      "on_demand": 1,
+      "stopped_before_viewer": true,
+      "started_after_viewer": true,
+      "admin_hls": {
+        "ok": true,
+        "manifest_http": 200,
+        "manifest_valid": true,
+        "segment_http": 200,
+        "bytes": 184804,
+        "probe": {
+          "valid": true,
+          "codecs": [
+            {
+              "type": "audio",
+              "codec": "aac"
+            },
+            {
+              "type": "video",
+              "codec": "h264"
+            }
+          ]
+        },
+        "total_seconds": 6.662
+      },
+      "runtime_processes": [
+        {
+          "role": "stream",
+          "executable": "ffmpeg",
+          "scripts": []
+        },
+        {
+          "role": "monitor",
+          "executable": "php_7.4",
+          "scripts": []
+        }
+      ]
+    },
+    {
+      "source": "ts",
+      "llod": 1,
+      "stored_llod": 1,
+      "on_demand": 1,
+      "stopped_before_viewer": true,
+      "started_after_viewer": true,
+      "admin_hls": {
+        "ok": true,
+        "manifest_http": 200,
+        "manifest_valid": true,
+        "segment_http": 200,
+        "bytes": 184804,
+        "probe": {
+          "valid": true,
+          "codecs": [
+            {
+              "type": "audio",
+              "codec": "aac"
+            },
+            {
+              "type": "video",
+              "codec": "h264"
+            }
+          ]
+        },
+        "total_seconds": 3.413
+      },
+      "runtime_processes": [
+        {
+          "role": "stream",
+          "executable": "ffmpeg",
+          "scripts": []
+        },
+        {
+          "role": "monitor",
+          "executable": "php_7.4",
+          "scripts": []
+        }
+      ]
+    },
+    {
+      "source": "ts",
+      "llod": 2,
+      "stored_llod": 2,
+      "on_demand": 1,
+      "stopped_before_viewer": true,
+      "started_after_viewer": true,
+      "admin_hls": {
+        "ok": true,
+        "manifest_http": 200,
+        "manifest_valid": true,
+        "segment_http": 200,
+        "bytes": 183488,
+        "probe": {
+          "valid": true,
+          "codecs": [
+            {
+              "type": "audio",
+              "codec": "aac"
+            },
+            {
+              "type": "video",
+              "codec": "h264"
+            }
+          ]
+        },
+        "total_seconds": 2.476
+      },
+      "runtime_processes": [
+        {
+          "role": "stream",
+          "executable": "php_7.4",
+          "scripts": []
+        },
+        {
+          "role": "monitor",
+          "executable": "php_7.4",
+          "scripts": []
+        }
+      ]
+    },
+    {
+      "source": "hls",
+      "llod": 0,
+      "stored_llod": 0,
+      "on_demand": 1,
+      "stopped_before_viewer": true,
+      "started_after_viewer": true,
+      "admin_hls": {
+        "ok": true,
+        "manifest_http": 200,
+        "manifest_valid": true,
+        "segment_http": 200,
+        "bytes": 188376,
+        "probe": {
+          "valid": true,
+          "codecs": [
+            {
+              "type": "audio",
+              "codec": "aac"
+            },
+            {
+              "type": "video",
+              "codec": "h264"
+            }
+          ]
+        },
+        "total_seconds": 2.613
+      },
+      "runtime_processes": [
+        {
+          "role": "stream",
+          "executable": "ffmpeg",
+          "scripts": []
+        },
+        {
+          "role": "monitor",
+          "executable": "php_7.4",
+          "scripts": []
+        }
+      ]
+    },
+    {
+      "source": "hls",
+      "llod": 1,
+      "stored_llod": 1,
+      "on_demand": 1,
+      "stopped_before_viewer": true,
+      "started_after_viewer": true,
+      "admin_hls": {
+        "ok": true,
+        "manifest_http": 200,
+        "manifest_valid": true,
+        "segment_http": 200,
+        "bytes": 206236,
+        "probe": {
+          "valid": true,
+          "codecs": [
+            {
+              "type": "audio",
+              "codec": "aac"
+            },
+            {
+              "type": "video",
+              "codec": "h264"
+            }
+          ]
+        },
+        "total_seconds": 0.247
+      },
+      "runtime_processes": [
+        {
+          "role": "stream",
+          "executable": "ffmpeg",
+          "scripts": []
+        },
+        {
+          "role": "monitor",
+          "executable": "php_7.4",
+          "scripts": []
+        }
+      ]
+    },
+    {
+      "source": "hls",
+      "llod": 2,
+      "stored_llod": 2,
+      "on_demand": 1,
+      "stopped_before_viewer": true,
+      "started_after_viewer": true,
+      "admin_hls": {
+        "ok": false,
+        "total_seconds": 15.046,
+        "error_type": "timeout"
+      },
+      "runtime_processes": [
+        {
+          "role": "monitor",
+          "executable": "php_7.4",
+          "scripts": []
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Single local run for each mode/source pair; upstream HLS playlist was already running.",
+    "Uses authenticated administrative playback; client-account routing was not validated.",
+    "Does not certify HEVC, AC3, arbitrary sources, devices or runtime fallback."
+  ],
+  "cleanup": {
+    "remaining_streams": 0,
+    "remaining_lines": 0,
+    "remaining_bouquets": 0,
+    "remaining_owned_native_processes": 0,
+    "production_stream_state_unchanged": true,
+    "temporary_directory_removed": true
+  }
+}

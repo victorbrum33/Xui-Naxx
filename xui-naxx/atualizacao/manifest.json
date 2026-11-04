@@ -1,6 +1,6 @@
 {
   "name": "XUI NAXX",
-  "version": "1.5.14",
+  "version": "1.5.14.1",
   "base_version": "1.5.12",
   "language_keys": 696,
   "files": [
@@ -37,7 +37,7 @@
     {
       "path": "admin/naxx-update.php",
       "original_sha256": null,
-      "sha256": "80b8118c4bddfd23fba17001e3d96de4b9d0bd9cc0406dc5a65406620cbf4bea"
+      "sha256": "616550b51e70de2c53038dcf1a27dbd73626765e8056085e64c11111daebbfd6"
     },
     {
       "path": "admin/naxx-update-page.php",
@@ -47,7 +47,7 @@
     {
       "path": "admin/assets/js/naxx-update-ui.js",
       "original_sha256": null,
-      "sha256": "ad9a4b53caba750f905a72f8a0f7dd73ce75495aa4149674ed79370017e9fbbe"
+      "sha256": "aa04df7d41854dcd8a57fc35d13a8c0be0150aa93b55455ad4113ca7381a2029"
     },
     {
       "path": "admin/assets/css/naxx-update.css",
@@ -112,7 +112,7 @@
     {
       "path": "admin/assets/js/naxx-overlay.js",
       "original_sha256": null,
-      "sha256": "5fe84c9f76c7d36cfc4000706c879430c905776d836ee1a88f04960ee7d9469a"
+      "sha256": "dfa7a62eecffc3eb44cb6562c295c54b2bbfa3eec200a24c36c53c9e040e9359"
     },
     {
       "path": "admin/assets/js/naxx-base.min.js",

@@ -15,7 +15,8 @@
     return {
       sources: data.getAll('stream_source[]').filter(function (value) { return typeof value === 'string' && value.trim(); }).map(function (value) { return value.trim(); }),
       flags: {transcode: checked(data, 'enable_transcode') || number(field(data, 'transcode_profile_id')) > 0,
-        custom_ffmpeg: field(data, 'custom_ffmpeg'), direct_source: checked(data, 'direct_source'), delay: number(field(data, 'delay_minutes'))},
+        custom_ffmpeg: field(data, 'custom_ffmpeg'), direct_source: checked(data, 'direct_source'), delay: number(field(data, 'delay_minutes')),
+        fetch: {user_agent: field(data, 'user_agent'), proxy: field(data, 'http_proxy'), cookie: field(data, 'cookie'), headers: field(data, 'headers')}},
       on_demand_servers: servers
     };
   }
@@ -109,7 +110,7 @@
         var remaining = deadline - Date.now();
         if (remaining <= 0) { observations.push({error: 'probe_failed'}); continue; }
         var url = new URL('api', window.location.href);
-        url.searchParams.set('action', 'probe_stream'); url.searchParams.set('url', source);
+        url.searchParams.set('action', 'probe_stream'); url.searchParams.set('map', '1'); url.searchParams.set('url', source);
         url.searchParams.set('user_agent', field(data, 'user_agent')); url.searchParams.set('proxy', field(data, 'http_proxy'));
         url.searchParams.set('cookies', field(data, 'cookie')); url.searchParams.set('headers', field(data, 'headers'));
         url.searchParams.set('server', String(draft.on_demand_servers[0]));
@@ -254,11 +255,28 @@
       } else {
         option.disabled = !controller.ready;
         if (select.value === AUTO) text(controller, 'Analisa as fontes ao salvar e escolhe um modo compatível. Selecione ao menos um servidor sob demanda.');
+        else if (selectionChanged && mode(select.value) !== null) text(controller, 'Modo manual selecionado: ' + labels[select.value] + '. Salve o canal para aplicar.');
       }
       busy(controller, controller.busy);
     }
-    select.addEventListener('change', function () { changed(true); });
-    form.addEventListener('change', function (event) { if (event.target !== select) changed(event.target && event.target.name === 'direct_source'); });
+    function selectChanged() { changed(true); }
+    function formChanged(event) { if (event.target !== select) changed(event.target && event.target.name === 'direct_source'); }
+    select.addEventListener('change', selectChanged);
+    form.addEventListener('change', formChanged);
+    // Select2 dispara change pelo jQuery, sem dispatchEvent nativo. Ambos os caminhos
+    // atualizam apenas o estado local; a análise continua explícita e não se duplica.
+    var jq = window.jQuery;
+    if (jq) {
+      var jqSelect = jq(select), jqForm = jq(form);
+      if (jqSelect && jqForm && typeof jqSelect.on === 'function' && typeof jqForm.on === 'function') {
+        jqSelect.on('change.naxxOnDemand', selectChanged);
+        jqForm.on('change.naxxOnDemand', formChanged);
+        controller.jqueryCleanup = function () {
+          if (typeof jqSelect.off === 'function') jqSelect.off('change.naxxOnDemand');
+          if (typeof jqForm.off === 'function') jqForm.off('change.naxxOnDemand');
+        };
+      }
+    }
     form.addEventListener('input', function () { controller.cached = null; });
     analyze.addEventListener('click', function () {
       if (controller.busy || !controller.ready || select.value !== AUTO) return;
@@ -293,6 +311,7 @@
     controllers.forEach(function (controller) {
       if (!controller.form.isConnected && !controller.destroyed) {
         controller.destroyed = true; controller.requests.forEach(function (request) { request.abort(); }); controller.requests.clear();
+        if (controller.jqueryCleanup) controller.jqueryCleanup();
       }
     });
     controllers = controllers.filter(function (controller) { return !controller.destroyed; });

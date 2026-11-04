@@ -44,7 +44,7 @@ def write_atomic(target, source, reference):
             temp.unlink()
 
 def main():
-    parser = argparse.ArgumentParser(description='Atualização visual XUI NAXX 1.5.14 — base 1.5.12')
+    parser = argparse.ArgumentParser(description='Atualização visual XUI NAXX 1.5.14.1 — base 1.5.12')
     parser.add_argument('--root', default='/home/xui', help='Pasta da instalação XUI')
     parser.add_argument('--check', action='store_true', help='Verificar compatibilidade sem alterar arquivos')
     parser.add_argument('--restore', type=Path, help='Pasta do backup gerado por este script')
