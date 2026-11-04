@@ -238,30 +238,28 @@
     var status = document.createElement('p'); status.className = 'small text-muted mb-2'; status.setAttribute('aria-live', 'polite');
     var analyze = document.createElement('button'); analyze.type = 'button'; analyze.className = 'btn btn-sm btn-light mr-2'; analyze.textContent = 'Analisar agora'; analyze.disabled = true;
     var restore = document.createElement('button'); restore.type = 'button'; restore.className = 'btn btn-sm btn-light'; restore.textContent = 'Usar modo anterior'; restore.hidden = true;
-    var recommend = document.createElement('button'); recommend.type = 'button'; recommend.className = 'btn btn-sm btn-light ml-2'; recommend.textContent = 'Recomendar modo'; recommend.disabled = true; recommend.hidden = true;
-    var apply = document.createElement('button'); apply.type = 'button'; apply.className = 'btn btn-sm btn-primary ml-2'; apply.textContent = 'Aplicar recomendação'; apply.hidden = true;
-    box.appendChild(status); box.appendChild(analyze); box.appendChild(restore); box.appendChild(recommend); box.appendChild(apply);
+    box.appendChild(status); box.appendChild(analyze); box.appendChild(restore);
     var parent = select.parentNode; parent.appendChild(box);
-    var controller = {id: id, form: form, select: select, option: option, box: box, status: status, analyze: analyze, restore: restore, recommend: recommend, apply: apply, recommended: null,
+    var controller = {id: id, form: form, select: select, option: option, box: box, status: status, analyze: analyze, restore: restore,
       ready: false, busy: false, profile: null, csrf: '', requests: new Set(), cached: null, touched: false, destroyed: false};
     controllers.push(controller);
     text(controller, 'Verificando a disponibilidade da escolha automática…');
     function changed(selectionChanged) {
       if (selectionChanged) controller.touched = true;
-      controller.cached = null; controller.apply.hidden = true; controller.recommended = null;
+      controller.cached = null;
       if (direct(controller)) {
-        option.disabled = true; controller.recommend.hidden = true;
+        option.disabled = true;
         if (select.value === AUTO) { select.value = mode(controller.profile && controller.profile.mode) || '0'; syncSelect(controller); }
         text(controller, 'NAXX Automático fica disponível para canais retransmitidos pelo servidor.');
       } else {
-        option.disabled = !controller.ready; controller.recommend.hidden = !controller.ready;
+        option.disabled = !controller.ready;
         if (select.value === AUTO) text(controller, 'Analisa as fontes ao salvar e escolhe um modo compatível. Selecione ao menos um servidor sob demanda.');
       }
       busy(controller, controller.busy);
     }
     select.addEventListener('change', function () { changed(true); });
     form.addEventListener('change', function (event) { if (event.target !== select) changed(event.target && event.target.name === 'direct_source'); });
-    form.addEventListener('input', function () { controller.cached = null; controller.apply.hidden = true; controller.recommended = null; });
+    form.addEventListener('input', function () { controller.cached = null; });
     analyze.addEventListener('click', function () {
       if (controller.busy || !controller.ready || select.value !== AUTO) return;
       busy(controller, true); text(controller, 'Analisando a fonte para escolher o modo de abertura…');
@@ -273,39 +271,12 @@
       select.value = previous; syncSelect(controller); controller.cached = null; controller.touched = true;
       busy(controller, false); text(controller, 'Modo anterior selecionado: ' + labels[previous] + '. Salve o canal para aplicar.');
     });
-    // Assistente: analisa a fonte e recomenda um modo de baixa latência, sem decidir sozinho.
-    recommend.addEventListener('click', function () {
-      if (controller.busy || !controller.ready || direct(controller)) return;
-      controller.apply.hidden = true; controller.recommended = null;
-      busy(controller, true); text(controller, 'Analisando a fonte para recomendar um modo de baixa latência…');
-      plan(controller, new FormData(form)).then(function (choice) {
-        if (!connected(controller)) return;
-        var suggested = String(choice.plan.mode);
-        if ((suggested === '1' || suggested === '2') && choice.plan.verified) {
-          controller.recommended = suggested;
-          controller.apply.textContent = 'Aplicar ' + labels[suggested];
-          controller.apply.hidden = false;
-          text(controller, 'Recomendado: ' + labels[suggested] + '. ' + (typeof choice.plan.reason === 'string' ? choice.plan.reason : '') + ' Clique em Aplicar e salve o canal.');
-        } else {
-          controller.recommended = null; controller.apply.hidden = true;
-          text(controller, 'Sem recomendação de baixa latência para esta fonte neste servidor. ' + (typeof choice.plan.reason === 'string' ? choice.plan.reason : '') + ' Os modos manuais continuam disponíveis.');
-        }
-      }).catch(function (error) { controller.apply.hidden = true; controller.recommended = null; text(controller, errorMessage(error), true); })
-        .finally(function () { busy(controller, false); restoreNativeForm(controller); });
-    });
-    apply.addEventListener('click', function () {
-      if (controller.busy || mode(controller.recommended) === null) return;
-      select.value = controller.recommended; syncSelect(controller);
-      controller.cached = null; controller.touched = true; controller.apply.hidden = true;
-      text(controller, 'Modo selecionado: ' + labels[controller.recommended] + '. Salve o canal para aplicar.');
-    });
     jsonRequest(controller, endpoint(controller), {}, 10000).then(function (result) {
       if (!connected(controller)) return;
       if (!result || result.ok !== true || result.feature !== 'ondemand' || typeof result.csrf !== 'string' || typeof window.submitForm !== 'function' || !window.jQuery || typeof window.jQuery.ajax !== 'function') throw new Error('unavailable');
       controller.csrf = result.csrf; controller.ready = true;
       updateProfile(controller, result.profile);
       option.disabled = direct(controller);
-      controller.recommend.hidden = direct(controller); controller.recommend.disabled = direct(controller);
       if (!controller.touched && controller.profile.active && mode(controller.profile.mode) !== null && !direct(controller)) {
         select.value = AUTO; syncSelect(controller);
         text(controller, 'NAXX Automático ativo: ' + labels[String(controller.profile.mode)] + '. ' + (typeof controller.profile.reason === 'string' ? controller.profile.reason : ''));
@@ -313,7 +284,7 @@
       busy(controller, false); ensureHook();
     }).catch(function () {
       if (!connected(controller)) return;
-      option.disabled = true; analyze.disabled = true; controller.recommend.hidden = true; controller.apply.hidden = true;
+      option.disabled = true; analyze.disabled = true;
       text(controller, 'A escolha automática ainda não está disponível neste servidor. Os modos manuais continuam disponíveis.');
     });
   }
