@@ -38,26 +38,39 @@ Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza 
 
 ## Naxx Sync e MariaDB
 
-O MariaDB da instalação padrão escuta em `127.0.0.1:3306`. Um Sync em outro computador pode acessar o banco por túnel SSH. `ECONNREFUSED` na porta pública indica que a conexão TCP falhou antes da autenticação.
+A instalação padrão mantém o MariaDB em `127.0.0.1:3306`. Para usar o Naxx Sync diretamente de outro computador, configure o acesso remoto no servidor XUI. `ECONNREFUSED` significa que a conexão TCP falhou antes da autenticação; conceder permissões à conta `@'%'` não altera a escuta do banco.
 
-No servidor, confira e aplique as permissões da conta dedicada já criada no banco. Use o host com o qual a conta foi cadastrada no MariaDB. O exemplo usa `naxx_sync` com host `%`.
+Atualize este repositório e execute como root, substituindo `IPV4_PUBLICO_DO_SYNC` pelo IPv4 público do computador que executa o Sync:
+
+```bash
+git pull --ff-only
+sudo python3 scripts/configurar_mysql_sync.py --user naxx_sync --account-host '%' --apply --allow-remote --client-ip IPV4_PUBLICO_DO_SYNC
+```
+
+A conta MySQL precisa existir. O helper acrescenta os privilégios de catálogo que faltam, aplica um filtro na porta 3306 para o IP informado e loopback, configura a escuta IPv4 e reinicia o MariaDB. O filtro é reaplicado antes de cada partida do banco, inclusive após reiniciar o servidor. As demais regras de firewall e a configuração base do MariaDB são preservadas.
+
+No perfil do Sync, informe o **IP do servidor XUI**, porta **3306**, banco **xui** e a conta MySQL. Valide em **Servidores → Testar selecionados**. Se o IPv4 público do computador mudar, execute novamente o comando com o novo IP. Um firewall do provedor também precisa permitir a conexão desse computador.
+
+Para conferir ou aplicar apenas permissões, sem mudar a rede:
 
 ```bash
 sudo python3 scripts/configurar_mysql_sync.py --user naxx_sync --account-host '%' --check
 sudo python3 scripts/configurar_mysql_sync.py --user naxx_sync --account-host '%' --apply
 ```
 
-O script acrescenta apenas os privilégios necessários nas tabelas de canais, filmes, séries, categorias, listas e EPG. O Sync pode avisar que não conseguiu reiniciar a sequência de IDs e prosseguir com a importação.
+O script acrescenta somente os privilégios necessários nas tabelas de canais, filmes, séries, categorias, listas e EPG. Não cria usuários nem redefine senhas. O Sync pode avisar que não conseguiu reiniciar a sequência de IDs e prosseguir com a importação.
 
-No computador em que o Sync roda, mantenha este comando aberto enquanto usa o aplicativo. Troque `usuario_ssh@SERVIDOR` pelo acesso SSH do servidor XUI.
+O túnel SSH continua disponível como alternativa sem habilitar a escuta remota:
 
 ```bash
 ssh -N -L 127.0.0.1:13306:127.0.0.1:3306 usuario_ssh@SERVIDOR
 ```
 
-No perfil do Sync, informe host `127.0.0.1`, porta `13306`, banco `xui` e o usuário e a senha MySQL. Abra **Servidores → Testar selecionados** para validar a conexão com consultas de leitura. **Subir tudo do zero** limpa o catálogo antes de importar. Faça um backup do catálogo antes dessa operação.
+Nesse caso, mantenha o comando aberto no computador do Sync e use host `127.0.0.1` e porta `13306` no perfil. Consulte [configuração do MySQL para o Sync](MYSQL-SYNC.md) para os detalhes.
 
-Para rodar os testes offline do helper:
+**Subir tudo do zero** limpa o catálogo antes de importar. Faça um backup do catálogo antes dessa operação.
+
+Testes offline do helper:
 
 ```bash
 python3 tests/test-mysql-sync.py
@@ -136,3 +149,4 @@ python3 xui-naxx/build.py
 ```
 
 `1.5.14` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
+
