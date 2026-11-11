@@ -43,7 +43,7 @@
       text(query('[data-update-check]'),pending?'Aguarde…':unavailable?'Reconectar':busy?'Atualizar status':'Verificar agora');
       query('[data-update-install]').disabled=pending||busy||!ready||state.status!=='available'||!state.available;
       query('[data-update-automatic]').disabled=pending||busy||!ready;
-      query('[data-update-rollback]').disabled=pending||busy||!ready||!Array.isArray(state.history)||!state.history.length;
+      query('[data-update-rollback]').disabled=pending||busy||!ready||state.canRollback!==true;
       root.setAttribute('aria-busy',String(pending||busy));
     }
     function render(next) {
@@ -108,7 +108,7 @@
     query('[data-update-check]').addEventListener('click',function(){if(!state||!csrf||state.busy||unavailable)loadStatus();else perform('check');});
     query('[data-update-install]').addEventListener('click',function(){if(state&&state.status==='available')perform('install');});
     query('[data-update-automatic]').addEventListener('change',function(event){var enabled=event.target.checked;event.target.checked=!!(state&&state.automatic);perform('automatic',{enabled:enabled});});
-    query('[data-update-rollback]').addEventListener('click',function(){if(window.confirm('Restaurar os arquivos da versão anterior? A restauração usa o último backup da atualização.'))perform('rollback');});
+    query('[data-update-rollback]').addEventListener('click',function(){if(state&&state.canRollback===true&&window.confirm('Restaurar os arquivos da versão anterior? A restauração usa o último backup da atualização.'))perform('rollback');});
     function visibility(){if(document.hidden)stopPoll();else if(state&&state.busy)loadStatus();}
     document.addEventListener('visibilitychange',visibility);window.addEventListener('pagehide',dispose,{once:true});
     controls();loadStatus();

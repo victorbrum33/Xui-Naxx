@@ -221,6 +221,12 @@
   },true);
   document.addEventListener('click',function (event) {
     var anchor=event.target.closest('a[href]');
+    var nativeNavigation=event.target.closest('[onclick]');
+    if (busy && nativeNavigation && /(?:^|[^\w$.])(?:window\.)?navigate\s*\(/.test(nativeNavigation.getAttribute('onclick') || '')) {
+      event.preventDefault();event.stopImmediatePropagation();
+      say('Há uma limpeza em andamento. Aguarde ou interrompa a operação atual.');
+      return;
+    }
     if (busy && anchor && anchor.getAttribute('href').charAt(0)!=='#' && !/^javascript:/i.test(anchor.getAttribute('href'))) {
       event.preventDefault();event.stopImmediatePropagation();
       var target=new URL(anchor.href,location.href);

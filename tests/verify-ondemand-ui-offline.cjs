@@ -64,7 +64,7 @@ function makeForm({id = '2421', imported = false, direct = false, sources = ['ht
 }
 
 function fixture(options = {}) {
-  const created = [], calls = {fetch: [], native: [], ajax: [], callbacks: [], select2: 0}, timers = new Map();
+  const created = [], calls = {fetch: [], native: [], ajax: [], callbacks: [], errors: 0, select2: 0}, timers = new Map();
   const jqueryEvents = new Map();
   let clock = 0, timerId = 0;
   const initial = makeForm(options);
@@ -105,11 +105,11 @@ function fixture(options = {}) {
     callbackForm(result) { calls.callbacks.push(result); },
     submitForm(type, data, referer) {
       calls.native.push({type, data, referer});
-      return jq.ajax({type: 'POST', url: 'post.php?action=' + encodeURIComponent(type), data,
+      return jq.ajax({type: 'POST', url: 'post.php?action=' + encodeURIComponent(type), data, error() { calls.errors++; },
         success(raw) { let result; try { result = JSON.parse(raw); } catch { result = {status: 0}; } window.callbackForm(result); }});
     }
   };
-  function response(value, url, ok = true) { return {ok, url, async json() { return clone(value); }}; }
+  function response(value, url, ok = true, status = ok ? 200 : 500) { return {ok, url, status, async json() { return clone(value); }}; }
   window.fetch = async function (url, settings) {
     const record = {url: new URL(url), settings}; calls.fetch.push(record);
     if (record.url.pathname.endsWith('/api')) {
@@ -124,8 +124,11 @@ function fixture(options = {}) {
         const fallback = record.body.observations.some(value => value.error) || !record.body.observations.length;
         return response({ok: true, csrf: 'csrf-after-plan', plan: {nonce: 'a'.repeat(64), mode: fallback ? 0 : 2, reason: 'Fonte analisada.', format: fallback ? 'unknown' : 'mpegts', verified: !fallback}}, url);
       }
-      if (record.body.action === 'commit') return response({ok: true, profile: {active: true, mode: 2, previous_mode: 0, reason: 'TS validado.'}}, url);
-      if (record.body.action === 'deactivate') return response({ok: true, profile: {active: false}}, url);
+      if (record.body.action === 'commit') {
+        const saved = calls.native.filter(call => call.type === 'stream').at(-1);
+        return response({ok: true, profile: {active: true, mode: Number(saved.data.get('llod')), previous_mode: 0, reason: 'Modo confirmado.'}}, url);
+      }
+      if (record.body.action === 'deactivate') return response({ok: true, csrf: 'csrf-after-deactivate'}, url);
       throw new Error('Ação não simulada');
     }
     if (options.status) return options.status(record, response, api);
@@ -228,6 +231,27 @@ function assertNativeModes(api) { for (const call of api.calls.native.filter(x =
   oldServer.auto(); await oldServer.submit(); assert.equal(oldServer.calls.native.length, 1);
   assertNativeModes(oldServer);
 
+  // Sessão recusada orienta novo login; não vira fallback de probe nem tenta salvar.
+  for (const status of [401, 403]) {
+    const expired = fixture({status(record, response) { return response({ok: false}, record.url.href, false, status); }}); await settle();
+    assert.match(expired.controls().status.textContent, /sessão|permissão/);
+    assert.match(expired.controls().status.textContent, /Entre novamente/);
+    assert.equal(expired.controls().status.attributes.role, 'alert');
+    assert.equal(expired.select.children.find(x => x.value === 'naxx_auto').disabled, true);
+    const probeDenied = fixture({probe(record, response) { return response({}, record.url.href, false, status); }});
+    await settle(); probeDenied.auto(); await probeDenied.submit(); await settle();
+    assert.equal(probeDenied.calls.native.length, 0); assert.equal(probeDenied.posts('plan').length, 0);
+    assert.match(probeDenied.controls().status.textContent, /Entre novamente/);
+    assert.equal(probeDenied.form.controls.find(x => x.type === 'submit').disabled, false);
+  }
+  const loginRedirect = fixture({probe(record, response) { return response({}, 'https://panel.example/access/login.php'); }});
+  await settle(); loginRedirect.auto(); await loginRedirect.submit(); await settle();
+  assert.equal(loginRedirect.calls.native.length, 0); assert.equal(loginRedirect.posts('plan').length, 0);
+  assert.match(loginRedirect.controls().status.textContent, /Entre novamente/);
+  const planDenied = fixture({post(record, response) { if (record.body.action === 'plan') return response({ok: false}, record.url.href, false, 403); }});
+  await settle(); planDenied.auto(); await planDenied.submit(); await settle();
+  assert.equal(planDenied.calls.native.length, 0); assert.match(planDenied.controls().status.textContent, /Entre novamente/);
+
   // Fonte direta e falta de servidor sob demanda falham antes de probe/POST nativo.
   for (const config of [{direct: true}, {onDemand: []}, {sources: []}]) {
     const incompatible = fixture(config); await settle();
@@ -244,6 +268,7 @@ function assertNativeModes(api) { for (const call of api.calls.native.filter(x =
     assert.deepEqual(fallback.posts('plan')[0].body.observations, [{error: 'probe_failed'}]);
     assert.equal(fallback.calls.native[0].data.get('llod'), '0'); assertNativeModes(fallback);
     assert(!fallback.controls().status.textContent.includes('segredo'));
+    fallback.finish(); await settle(); assert.equal(fallback.calls.callbacks.length, 1, 'Fallback 0 confirmado também conclui o Save');
   }
 
   // Tempo total de probe é20s, com um pedido por vez e no máximo três fontes.
@@ -284,6 +309,31 @@ function assertNativeModes(api) { for (const call of api.calls.native.filter(x =
   assert.equal(commitFailure.select.value, '2'); assert.equal(commitFailure.form.controls.find(x => x.type === 'submit').disabled, false);
   assert.match(commitFailure.controls().status.textContent, /canal foi salvo/);
 
+  // ok:true só confirma Automático quando o perfil salvo está ativo no modo solicitado.
+  for (const payload of [{ok: true}, {ok: true, profile: {active: false, mode: 2}}, {ok: true, profile: {active: true, mode: 1}}]) {
+    const inconsistent = fixture({post(record, response) { if (record.body.action === 'commit') return response(payload, record.url.href); }});
+    await settle(); inconsistent.auto(); await inconsistent.submit(); inconsistent.finish(); await settle();
+    assert.equal(inconsistent.calls.callbacks.length, 0, 'Perfil incompleto ou divergente não deve navegar como sucesso');
+    assert.equal(inconsistent.select.value, '2'); assert.equal(inconsistent.select.disabled, false);
+    assert.equal(inconsistent.form.controls.find(x => x.type === 'submit').disabled, false);
+    assert.match(inconsistent.controls().status.textContent, /canal foi salvo.*perfil.*não foi confirmado/);
+  }
+
+  // Respostas tardias da página anterior não podem chamar os callbacks da página atual.
+  const lateError = fixture(); await settle(); lateError.auto(); await lateError.submit();
+  lateError.form.isConnected = false; lateError.window.NaxxOnDemand.enhance();
+  lateError.finish({status: 0, result: false}); await settle();
+  assert.equal(lateError.calls.callbacks.length, 0); assert.equal(lateError.posts('commit').length, 0);
+  const lateTransportError = fixture(); await settle(); lateTransportError.auto(); await lateTransportError.submit();
+  lateTransportError.form.isConnected = false; lateTransportError.window.NaxxOnDemand.enhance();
+  lateTransportError.calls.ajax[0].error(); assert.equal(lateTransportError.calls.errors, 0);
+  const liveTransportError = fixture(); await settle(); liveTransportError.auto(); await liveTransportError.submit();
+  liveTransportError.calls.ajax[0].error(); assert.equal(liveTransportError.calls.errors, 1);
+  const lateSuccess = fixture(); await settle(); lateSuccess.auto(); await lateSuccess.submit();
+  lateSuccess.form.isConnected = false; lateSuccess.window.NaxxOnDemand.enhance(); lateSuccess.finish(); await settle();
+  assert.equal(lateSuccess.posts('commit').length, 1, 'Save já confirmado ainda registra a escolha solicitada');
+  assert.equal(lateSuccess.calls.callbacks.length, 0, 'Confirmar metadata não deve navegar a página nova');
+
   // Formulário desconectado cancela análise e não envia para uma página que já saiu da tela.
   const departed = fixture({probe(record) { return new Promise((resolve, reject) => record.settings.signal.addEventListener('abort', () => reject(new Error('aborted')), {once: true})); }});
   await settle(); departed.auto(); const departedSave = departed.submit(); await settle(); departed.form.isConnected = false; departed.window.NaxxOnDemand.enhance(); await departedSave; await settle();
@@ -310,5 +360,5 @@ function assertNativeModes(api) { for (const call of api.calls.native.filter(x =
     {user_agent: 'FixtureAgent/1.0', proxy: '127.0.0.1:8080', cookie: 'private-cookie=value', headers: 'X-Fixture: private-header'});
   assert(!fetchArguments.controls().status.textContent.includes('private-cookie'));
   assert(!fetchArguments.controls().status.textContent.includes('private-header'));
-  console.log('NAXX Automático: POST nativo numérico único, CSRF/persistência após confirmação, modos manuais, timeout/fallback, races, limite de fontes, falhas e navegação passaram. Sem rede.');
+  console.log('NAXX Automático: POST nativo numérico único, CSRF/perfil confirmado, sessão expirada, modos manuais, timeout/fallback, races, respostas tardias e navegação passaram. Sem rede.');
 })().catch(error => { console.error(error.stack); process.exitCode = 1; });

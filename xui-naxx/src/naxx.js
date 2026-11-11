@@ -41,9 +41,10 @@
     Array.from(element.childNodes).forEach(function(node){if(node.nodeType!==3)return;var key=node.textContent.trim(),value=translations[key],duration=key.match(/^(\d+) (Hours?|Days?)$/);if(!value&&duration)value=duration[1]+' '+(duration[2].startsWith('Hour')?(duration[1]==='1'?'hora':'horas'):(duration[1]==='1'?'dia':'dias'));if(value)node.textContent=node.textContent.replace(key,value);});
   }
   var translationSelector='.navigation-menu a,.page-title,.header-title,.cta-box p,.card h1,.card h2,.card h3,.card h4,.card h5,.card h6,.card p,.topnav-menu a,.dropdown-item,.dropdown-item span,.nav-tabs a,.nav-tabs a span,.nav-pills a,.nav-pills a span,.nav-link,.next a,.previous a,button,label,th,option,.jstree-anchor,.select2-selection__placeholder,.apexcharts-legend-text,.timeline-item-info strong,.bootstrap-select .filter-option-inner-inner,.bootstrap-select .text,.select2-selection__rendered,.jBox-content,.jBox-title,.tooltip-inner,.popover-body';
-  var translatedAttributes=['placeholder','title','data-original-title','data-content'];
+  var translatedAttributes=['placeholder','title','data-original-title','data-content','aria-label'];
   translationSelector+=',.table a[href*="server_view"],.table small';
-  translations['No Category']='Sem categoria';
+  Object.assign(translations,{'No Category':'Sem categoria','Add Source as Backup':'Adicionar fonte como reserva','Update Existing':'Atualizar existentes','Search for a stream...':'Pesquisar canal…','Clear':'Limpar'});
+  translationSelector+=',.nextb a,.prevb a';
   function within(root,selector){
     var elements=Array.from(root.querySelectorAll(selector));
     if(root.nodeType===1&&root.matches(selector))elements.unshift(root);
@@ -600,6 +601,8 @@
     replaceLegacyLogos(root);
     enhanceModernImages(root);
     if(window.NaxxMenus&&(navigation||pageTools))window.NaxxMenus.enhance();
+    if(window.NaxxStreamPageSize&&(full||containsFeature(root,'#stream_show_entries,#datatable-streampage,select[name="datatable-streampage_length"]')))window.NaxxStreamPageSize.enhance();
+    if(window.NaxxStreamSources&&(full||pageTools||containsFeature(root,'#collapse_filters')))window.NaxxStreamSources.enhance();
     if(window.NaxxDashboard&&dashboard)window.NaxxDashboard.enhance();
     if(full||containsFeature(root,'.page-title-box'))addEpgSyncButton();
     if(containsFeature(root,'#login_button')&&document.getElementById('login_button')){
@@ -607,7 +610,7 @@
       if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.5.14.1';document.querySelector('#login_button').after(note);}
     }
     within(root,translationSelector).forEach(translate);
-    within(root,'[placeholder],[title],[data-original-title],[data-content]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute);if(value&&translations[value])element.setAttribute(attribute,translations[value]);});});
+    within(root,'[placeholder],[title],[data-original-title],[data-content],[aria-label]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute);if(value&&translations[value])element.setAttribute(attribute,translations[value]);});});
     translateSettingsHelp(root);
     translateStreamHelp(root);
     translateCacheSettings(root);
@@ -687,7 +690,7 @@
         if(elements.length>8)enqueue(mutation.target);else elements.forEach(enqueue);
       });
     });
-    bodyObserver.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['src','placeholder','title','data-original-title','data-content']});
+    bodyObserver.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['src','placeholder','title','data-original-title','data-content','aria-label']});
     document.addEventListener('visibilitychange',function(){
       if(document.hidden){if(frame)window.cancelAnimationFrame(frame);frame=0;}
       else{if(hiddenDirty){hiddenDirty=false;pendingRoots.clear();enqueue(document.body);}else if(pendingRoots.size&&!frame)frame=window.requestAnimationFrame(flush);}

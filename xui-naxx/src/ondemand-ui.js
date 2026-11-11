@@ -73,7 +73,8 @@
     var request;
     try {
       request = window.fetch(url, options).then(function (response) {
-        if (!response.ok || /\/(?:login|license)(?:[?.#]|$)/i.test(new URL(response.url || url, window.location.href).pathname)) throw new Error('request_failed');
+        if (response.status === 401 || response.status === 403 || /\/(?:login|license)(?:\.php)?\/?$/i.test(new URL(response.url || url, window.location.href).pathname)) throw new Error('session_expired');
+        if (!response.ok) throw new Error('request_failed');
         return response.json();
       });
     } catch (error) { request = Promise.reject(error); }
@@ -115,7 +116,10 @@
         url.searchParams.set('cookies', field(data, 'cookie')); url.searchParams.set('headers', field(data, 'headers'));
         url.searchParams.set('server', String(draft.on_demand_servers[0]));
         try { observations.push(observation(await jsonRequest(controller, url.href, {}, Math.min(8000, remaining)))); }
-        catch (error) { observations.push({error: 'probe_failed'}); }
+        catch (error) {
+          if (error && error.message === 'session_expired') throw error;
+          observations.push({error: 'probe_failed'});
+        }
       }
     }
     if (!sourceStillCurrent(controller, expected)) throw new Error('source_changed');
@@ -131,6 +135,7 @@
     return {direct_source: 'A escolha automática exige retransmissão pelo servidor. Desative Fonte direta para usar este perfil.',
       servers_required: 'Escolha pelo menos um servidor sob demanda antes de analisar ou salvar o perfil automático.',
       sources_required: 'Informe a fonte do canal antes de analisar.', source_changed: 'A fonte ou as opções mudaram durante a análise. Analise novamente antes de salvar.',
+      session_expired: 'Sua sessão expirou ou você não tem permissão para editar este canal. Entre novamente no painel e reabra o canal.',
       native_unavailable: 'Não foi possível acompanhar o formulário nativo. Reabra o canal e confira o cadastro antes de tentar novamente.'}[error && error.message] || 'Não foi possível confirmar a escolha automática. Tente analisar novamente; o canal não foi enviado para gravação.';
   }
   function updateProfile(controller, profile) {
@@ -140,10 +145,12 @@
   function finishMetadata(controller, pending, result, nativeCallback, callbackThis, callbackArguments) {
     if (!result || typeof result.location !== 'string' || !result.location.trim() || /(?:^|\/)(?:login|license)(?:[?.#]|$)/i.test(result.location)) {
       controller.cached = null; busy(controller, false);
-      return nativeCallback.apply(callbackThis, callbackArguments);
+      if (connected(controller)) return nativeCallback.apply(callbackThis, callbackArguments);
+      return;
     }
     var change = pending.automatic ? api(controller, 'commit', {nonce: pending.plan.nonce}) : api(controller, 'deactivate');
     return change.then(function (response) {
+      if (pending.automatic && (!response.profile || response.profile.active !== true || mode(response.profile.mode) !== pending.mode)) throw new Error('profile_failed');
       updateProfile(controller, response.profile || {active: false});
       controller.cached = null; busy(controller, false);
       if (connected(controller)) return nativeCallback.apply(callbackThis, callbackArguments);
@@ -175,7 +182,7 @@
         options.error = function () {
           controller.cached = null;
           fail(controller, 'A gravação do canal não foi confirmada. Confira o cadastro antes de tentar novamente.');
-          if (typeof failure === 'function') return failure.apply(this, arguments);
+          if (connected(controller) && typeof failure === 'function') return failure.apply(this, arguments);
         };
         if (typeof complete === 'function') options.complete = complete;
         return originalAjax.call(this, options);
@@ -300,10 +307,11 @@
         text(controller, 'NAXX Automático ativo: ' + labels[String(controller.profile.mode)] + '. ' + (typeof controller.profile.reason === 'string' ? controller.profile.reason : ''));
       } else text(controller, 'Escolha NAXX Automático para analisar as fontes ao salvar. Os modos manuais continuam disponíveis.');
       busy(controller, false); ensureHook();
-    }).catch(function () {
+    }).catch(function (error) {
       if (!connected(controller)) return;
       option.disabled = true; analyze.disabled = true;
-      text(controller, 'A escolha automática ainda não está disponível neste servidor. Os modos manuais continuam disponíveis.');
+      if (error && error.message === 'session_expired') text(controller, errorMessage(error), true);
+      else text(controller, 'A escolha automática ainda não está disponível neste servidor. Os modos manuais continuam disponíveis.');
     });
   }
   function enhance() {

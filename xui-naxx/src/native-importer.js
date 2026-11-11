@@ -75,16 +75,24 @@
           // Este botão importa a lista revisada. A ação por pasta fica no formulário avançado.
           data.delete('import_folder');data.delete('scan_recursive');
           if(!configured){
-            if(native.form.querySelector('[name="direct_source"]')){data.delete('direct_source');if(type==='channel'&&channelMode==='direct')data.set('direct_source','on');}
+            if(native.form.querySelector('[name="direct_source"]'))data.delete('direct_source');
             if(native.form.querySelector('[name="server_tree_data"]'))data.set('server_tree_data','[]');
-            if(type==='channel'&&channelMode==='ondemand')setDefaultOnDemand(data,native.doc);
             if(native.form.querySelector('[name="disable_tmdb"]'))data.set('disable_tmdb','on');
             data.delete('restart_on_edit');data.delete('update_existing');
-          }else if(type==='channel'&&channelMode==='ondemand'){
-            var configuredTree=[];try{configuredTree=JSON.parse(data.get('server_tree_data')||'[]');}catch(_){}
-            var configuredServers=Array.isArray(configuredTree)?configuredTree.filter(function(node){return node&&/^[1-9]\d*$/.test(String(node.id))&&node.parent!=='#';}):[];
-            if(!configuredServers.length)throw new Error('Escolha um servidor na árvore Online das configurações avançadas para importar canais sob demanda.');
-            data.delete('on_demand[]');configuredServers.forEach(function(node){data.append('on_demand[]',String(node.id));});
+          }
+          // O destino principal também prevalece quando o formulário avançado está aberto.
+          if(type==='channel'){
+            data.delete('direct_source');
+            if(channelMode==='direct')data.set('direct_source','on');
+            if(channelMode!=='ondemand'){
+              data.delete('on_demand[]');data.set('server_tree_data','[]');
+            }else if(!configured)setDefaultOnDemand(data,native.doc);
+            else{
+              var configuredTree=[];try{configuredTree=JSON.parse(data.get('server_tree_data')||'[]');}catch(_){}
+              var configuredServers=Array.isArray(configuredTree)?configuredTree.filter(function(node){return node&&/^[1-9]\d*$/.test(String(node.id))&&node.parent!=='#';}):[];
+              if(!configuredServers.length)throw new Error('Escolha um servidor na árvore Online das configurações avançadas para importar canais sob demanda.');
+              data.delete('on_demand[]');configuredServers.forEach(function(node){data.append('on_demand[]',String(node.id));});
+            }
           }
           var byCategory=groups[type],available=categoryMap(native.doc);
           for(var entry of byCategory){
