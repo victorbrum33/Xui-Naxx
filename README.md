@@ -36,6 +36,33 @@ sudo ./install.sh --check
 
 Se `/home/xui` já contiver uma instalação compatível, o instalador atualiza a interface com backup e instala os serviços de manutenção e atualização automática.
 
+## Naxx Sync e MariaDB
+
+O MariaDB da instalação padrão escuta em `127.0.0.1:3306`. Um Sync em outro computador pode acessar o banco por túnel SSH. `ECONNREFUSED` na porta pública indica que a conexão TCP falhou antes da autenticação.
+
+No servidor, confira e aplique as permissões da conta dedicada já criada no banco. Use o host com o qual a conta foi cadastrada no MariaDB. O exemplo usa `naxx_sync` com host `%`.
+
+```bash
+sudo python3 scripts/configurar_mysql_sync.py --user naxx_sync --account-host '%' --check
+sudo python3 scripts/configurar_mysql_sync.py --user naxx_sync --account-host '%' --apply
+```
+
+O script acrescenta apenas os privilégios necessários nas tabelas de canais, filmes, séries, categorias, listas e EPG. O Sync pode avisar que não conseguiu reiniciar a sequência de IDs e prosseguir com a importação.
+
+No computador em que o Sync roda, mantenha este comando aberto enquanto usa o aplicativo. Troque `usuario_ssh@SERVIDOR` pelo acesso SSH do servidor XUI.
+
+```bash
+ssh -N -L 127.0.0.1:13306:127.0.0.1:3306 usuario_ssh@SERVIDOR
+```
+
+No perfil do Sync, informe host `127.0.0.1`, porta `13306`, banco `xui` e o usuário e a senha MySQL. Abra **Servidores → Testar selecionados** para validar a conexão com consultas de leitura. **Subir tudo do zero** limpa o catálogo antes de importar. Faça um backup do catálogo antes dessa operação.
+
+Para rodar os testes offline do helper:
+
+```bash
+python3 tests/test-mysql-sync.py
+```
+
 ## Recursos
 
 - **NAXX Automático:** escolha do modo de baixa latência ao salvar um canal, com análise das fontes, combinação validada e retorno aos modos manuais. Consulte [uso, testes e limites](NAXX-AUTOMATICO.md).
