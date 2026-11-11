@@ -27,6 +27,7 @@ function page(mainValue, length, ready = true) {
 let active = page('10', 5000, false);
 const handlers = new Map(), select2Changes = [], urlWrites = [];
 const document = {
+  readyState: 'complete',
   getElementById(id) {
     if (id === 'datatable-streampage') return active.table;
     if (id === 'stream_show_entries') return active.main;
@@ -73,6 +74,8 @@ function addedOptions(control) {
 const added = [['2000', '2.000'], ['5000', '5.000']];
 
 // A URL já fornece 5.000 e página 2 à inicialização nativa.
+assert.deepEqual(addedOptions(active.main), added,
+  'O módulo deve iniciar sozinho com o DOM completo, sem uma chamada do boot global.');
 enhance();
 assert.deepEqual(addedOptions(active.main), added);
 active.ready = true;
@@ -131,4 +134,4 @@ assert.deepEqual(addedOptions(active.generated), added);
 assert.equal(active.main.value, '50');
 assert.equal(handlers.size, 2);
 assert.equal(urlWrites.length, 2);
-console.log('PASS: 2.000/5.000 nos selects de Canais, deep link, filtros, Select2, limpeza e troca SPA.');
+  console.log('PASS: início independente com DOM completo, 2.000/5.000 nos selects de Canais, deep link, filtros, Select2, limpeza e troca SPA.');

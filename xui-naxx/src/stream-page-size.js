@@ -80,4 +80,6 @@
   }
 
   window.NaxxStreamPageSize = {enhance: enhance};
+  enhance();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance, {once: true});
 }());

@@ -12,7 +12,11 @@
   function json(url, signal) {
     return window.fetch(url, {credentials: 'same-origin', cache: 'no-store', signal: signal,
       headers: {'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json'}}).then(function (response) {
-      if (!response.ok) throw new Error('request_failed');
+      if (!response.ok) {
+        var error = new Error('request_failed');
+        error.status = response.status;
+        throw error;
+      }
       return response.json();
     });
   }
@@ -31,6 +35,11 @@
 
   function rowId(row) {
     return Array.isArray(row) ? integer(String(row[0]).replace(/<[^>]*>/g, '').trim()) : NaN;
+  }
+
+  function pageStart(start, length, filtered) {
+    if (start < filtered) return start;
+    return filtered ? Math.floor((filtered - 1) / length) * length : 0;
   }
 
   async function queryPage(state, params, start, length, signal) {
@@ -59,7 +68,14 @@
     do {
       var limit = source ? (ids.size ? batch : 1) : Math.min(batch, count - (result ? result.rows.length : 0));
       var page = await queryPage(state, params, start, limit, signal);
-      if (!result) result = {total: page.total, filtered: page.filtered, rows: []};
+      if (!result) {
+        var first = source ? 0 : pageStart(start, count, page.filtered);
+        result = {total: page.total, filtered: page.filtered, rows: [], start: first};
+        if (first !== start) {
+          start = first;
+          if (page.filtered) continue;
+        }
+      }
       if (result.filtered !== page.filtered || result.total !== page.total || (source && page.filtered > maxCatalog)) throw new Error('catalog_changed');
       page.rows.forEach(function (row) {
         var id = rowId(row);
@@ -85,6 +101,10 @@
 
   function useAjax(state, length) {
     var replacement = state.source || Number(length) > batch;
+    if (!replacement && state.settings.ajax === state.ajax) {
+      abort(state);
+      text(state, '');
+    }
     state.settings.ajax = replacement ? state.ajax : state.native;
   }
 
@@ -108,10 +128,16 @@
     var loading = reuse ? Promise.resolve(cached.result) : collect(state, data, source, controller.signal);
     loading.then(function (result) {
       if (state.request !== request || controller.signal.aborted || !state.table.isConnected) return;
-      if (source) state.cache = {key: key, result: result, start: start, length: length, expires: Date.now() + 15000};
+      var first = source ? pageStart(start, length, result.filtered) : result.start;
+      if (first !== start) {
+        // O DataTables usa o offset interno para numerar a página após o callback.
+        state.settings._iDisplayStart = first;
+        data.start = first;
+      }
+      if (source) state.cache = {key: key, result: result, start: first, length: length, expires: reuse ? cached.expires : Date.now() + 15000};
       text(state, '');
       callback({draw: integer(data.draw), recordsTotal: result.total, recordsFiltered: result.filtered,
-        data: source ? result.rows.slice(start, start + length) : result.rows});
+        data: source ? result.rows.slice(first, first + length) : result.rows});
     }, function () {
       if (state.request !== request || (!timedOut && controller.signal.aborted) || !state.table.isConnected) return;
       state.cache = null;
@@ -135,8 +161,13 @@
     }
   }
 
-  function choose(state, source, redraw) {
-    if (state.source === source) return;
+  function choose(state, source, redraw, resetPaging) {
+    var pending = state.requested;
+    state.requested = '';
+    if (state.source === source) {
+      if (pending) { setURL(source); text(state, ''); }
+      return;
+    }
     abort(state);
     state.source = source;
     state.cache = null;
@@ -147,7 +178,7 @@
     text(state, '');
     if (redraw) {
       if (typeof window.checkClear === 'function') window.checkClear();
-      state.api.ajax.reload(null, true);
+      state.api.ajax.reload(null, resetPaging !== false);
     }
   }
 
@@ -168,7 +199,7 @@
     }; });
     wrap(state, 'checkClear', function (original) { return function () {
       var result = original.apply(this, arguments), button = document.getElementById('clearFilters');
-      if (state.source && button) button.disabled = false;
+      if ((state.source || state.requested) && button) button.disabled = false;
       return result;
     }; });
     // Um timer da página anterior pode disparar depois de selecionar 5.000.
@@ -197,7 +228,7 @@
     option.value = value; option.textContent = label; select.appendChild(option);
   }
 
-  function mount(table, filters, jq, api, settings) {
+  function mount(table, filters, jq, api, settings, initializing) {
     var native = settings.ajax;
     if (!native || typeof native.url !== 'string' || typeof native.data !== 'function') return;
     var box = document.createElement('div'), select = document.createElement('select'), status = document.createElement('p');
@@ -211,17 +242,24 @@
     status.setAttribute('role', 'status'); filters.after(status);
     var state = {table: table, filters: filters, api: api, settings: settings, native: native, jq: jq,
       box: box, select: select, status: status, source: '', request: null, cache: null,
-      list: new AbortController(), wrappers: {}};
+      list: new AbortController(), wrappers: {}, requested: new URLSearchParams(window.location.search).get('naxx_source') || ''};
     state.ajax = function (data, callback) { return runAjax(state, data, callback); };
     active = state;
     jq(table).on('length.dt.naxxStreamTable', function (_event, eventSettings, length) {
       if (eventSettings === settings) useAjax(state, length);
     });
+    jq(table).on('destroy.dt.naxxStreamTable', function (_event, eventSettings) {
+      if (eventSettings !== settings || active !== state) return;
+      active = null;
+      destroy(state);
+    });
     hooks(state);
     useAjax(state, api.page.len());
-    if (api.page.len() > batch) api.ajax.reload(null, false);
+    if (state.requested && typeof window.checkClear === 'function') window.checkClear();
+    if (!initializing && api.page.len() > batch) api.ajax.reload(null, false);
     json(sourceURL(''), state.list.signal).then(function (result) {
-      if (active !== state || !table.isConnected || !result.ok || !Array.isArray(result.hosts)) return;
+      if (active !== state || !table.isConnected) return;
+      if (!result || !result.ok || !Array.isArray(result.hosts)) throw new Error('source_hosts');
       var hosts = result.hosts.filter(function (host) { return typeof host === 'string' && host.length && host.length <= 253; });
       hosts.forEach(function (host) { addOption(select, host, host); });
       if (!hosts.length) select.disabled = true;
@@ -229,13 +267,20 @@
       filters.classList.add('naxx-stream-source-filters');
       if (jq.fn.select2) jq(select).select2({width: '100%'});
       jq(select).on('change.naxxStreamTable', function () { choose(state, select.value, true); });
-      var requested = new URLSearchParams(window.location.search).get('naxx_source');
-      if (requested && hosts.indexOf(requested) !== -1) choose(state, requested, true);
-      else if (requested) setURL('');
-    }).catch(function () {});
+      if (state.requested && hosts.indexOf(state.requested) !== -1) choose(state, state.requested, true, false);
+      else if (state.requested) {
+        choose(state, '', false);
+        if (typeof window.checkClear === 'function') window.checkClear();
+        text(state, 'A fonte do endereço já não está disponível.');
+      }
+    }).catch(function (error) {
+      if (active !== state || !table.isConnected) return;
+      if (error && error.status === 413) text(state, 'O filtro de fonte aceita catálogos com até 50.000 canais ao vivo.');
+      else if (state.requested || !error || error.status !== 403) text(state, 'Não foi possível carregar as fontes. Atualize a lista ou limpe o filtro.');
+    });
   }
 
-  function enhance() {
+  function enhance(initializing) {
     var table = /\/streams(?:\.php)?$/.test(window.location.pathname) ? document.getElementById(tableId) : null;
     var filters = table && document.getElementById('collapse_filters'), jq = window.jQuery;
     if (active && (active.table !== table || active.filters !== filters || !table || !table.isConnected)) {
@@ -244,20 +289,22 @@
     if (!jq || !jq.fn || !jq.fn.dataTable) return;
     if (!bound) {
       bound = true;
-      jq(document).on('init.dt.naxxStreamTable', '#' + tableId, enhance);
+      jq(document).on('preInit.dt.naxxStreamTable', '#' + tableId, function (_event, settings) { enhance(settings); });
+      jq(document).on('init.dt.naxxStreamTable', '#' + tableId, function () { enhance(); });
       document.addEventListener('click', function (event) {
-        if (!active || !active.source || !active.table.isConnected || !event.target.closest('#btn-export-csv')) return;
+        if (!active || (!active.source && !active.requested) || !active.table.isConnected || !event.target.closest('#btn-export-csv')) return;
         event.preventDefault(); event.stopImmediatePropagation();
         text(active, 'Limpe o filtro de fonte antes de exportar o CSV.');
       }, true);
     }
-    if (active) { hooks(active); return; }
     if (!table || !filters || !jq.fn.dataTable.isDataTable(table)) return;
     var api = jq(table).DataTable(), settings = api.settings()[0];
-    if (settings && settings._bInitComplete) mount(table, filters, jq, api, settings);
+    if (active && active.settings !== settings) { destroy(active); active = null; }
+    if (active) { hooks(active); return; }
+    if (settings && (settings._bInitComplete || settings === initializing)) mount(table, filters, jq, api, settings, settings === initializing);
   }
 
   window.NaxxStreamSources = {enhance: enhance};
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance, {once: true});
-  else enhance();
+  enhance();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { enhance(); }, {once: true});
 }());
