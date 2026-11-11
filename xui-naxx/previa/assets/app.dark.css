@@ -4468,6 +4468,8 @@ a:hover { color: #a3d0ff; }
 .btn-primary,.btn-success { background: var(--naxx-accent) !important; border-color: var(--naxx-accent) !important; color: #071a33 !important; }
 .btn-primary:hover,.btn-success:hover { background: #83b5ff !important; border-color: #83b5ff !important; }
 .btn-info { background: #79b8ff !important; color: #0a2039 !important; border-color: #79b8ff !important; }
+body.naxx-streams-page #datatable-streampage tbody .btn-fixed-xl.btn-info { background: #f6b84c !important; border-color: #f6b84c !important; color: #291c08 !important; }
+body.naxx-streams-page #datatable-streampage tbody .btn-fixed-xl.btn-purple { background: #22c6b8 !important; border-color: #22c6b8 !important; color: #062f2c !important; }
 .btn-light,.btn-secondary { background: var(--naxx-raised) !important; color: var(--naxx-text) !important; border-color: #3b4b60 !important; }
 .btn-danger { background: #8e2939 !important; border-color: #bd5262 !important; color: #fff !important; }
 .btn-outline-primary,.btn-outline-success { color: var(--naxx-accent); border-color: #3c6db5; }

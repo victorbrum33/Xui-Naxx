@@ -177,6 +177,7 @@
   function enhanceModernImages(root) {
     var contentList=/\/(?:streams|movies|series)(?:\.php)?$/.test(location.pathname);
     if(contentList)document.body.classList.add('naxx-content-list');
+    if(/\/streams(?:\.php)?$/.test(location.pathname))document.body.classList.add('naxx-streams-page');
     within(root,'img[src]').forEach(function(image){
       if(contentList&&image.closest('table tbody'))image.classList.add('naxx-content-logo');
       var source=modernImageURL(image.getAttribute('src'));
