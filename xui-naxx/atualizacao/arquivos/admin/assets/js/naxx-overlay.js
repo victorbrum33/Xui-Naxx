@@ -37,12 +37,72 @@
     jqTables.extend(true,jqTables.fn.dataTable.defaults,{language:{emptyTable:'Nenhum registro disponível.',info:'Mostrando _START_ a _END_ de _TOTAL_ registros',infoEmpty:'Nenhum registro disponível.',infoFiltered:'(filtrado de _MAX_ registros)',lengthMenu:'Mostrar _MENU_ registros',loadingRecords:'Carregando…',processing:'Processando…',search:'Pesquisar:',zeroRecords:'Nenhum resultado encontrado.',paginate:{first:'Primeira',last:'Última',next:'Próxima',previous:'Anterior'},aria:{sortAscending:': ordenar em ordem crescente',sortDescending:': ordenar em ordem decrescente'}}});
   }
   var translations = {'Dashboard':'Visão geral','All Servers':'Todos os servidores','Main Server':'Servidor principal','Online Connections':'Conexões ativas','Active Lines':'Contas ativas','Live Streams':'Canais ao vivo','Down Streams':'Canais indisponíveis','Network Output':'Saída de rede','Network Input':'Entrada de rede','Service Status':'Estado dos serviços','CPU & Memory':'CPU e memória','Network Traffic':'Tráfego de rede','Connections':'Conexões','Database Incomplete':'Atualização do banco pendente','Root Crons Missing':'Rotinas do servidor pendentes','Server Order':'Ordem dos servidores','Service Setup':'Configuração dos serviços','Access Control':'Controle de acesso','Stream Providers':'Provedores de conteúdo','Plex Sync':'Sincronização Plex','Access Codes':'Códigos de acesso','Blocked ASN\'s':'ASNs bloqueados','HMAC Keys':'Chaves HMAC','RTMP Monitor':'Monitor RTMP','Created Channels':'Canais criados','Stream Review':'Revisar transmissões','Recordings':'Gravações','TV Guide':'Guia de programação','Import Multiple':'Importar lista','Import & Review':'Importar e revisar','Import':'Importar','Review':'Revisar','Save':'Salvar','Add':'Adicionar','Light':'Claro','Dark':'Escuro','Default':'Padrão','Blue':'Azul','Light Blue':'Azul claro','Green':'Verde','Red':'Vermelho','Orange':'Laranja','Purple':'Roxo','Pink':'Rosa','Dark Grey':'Cinza escuro','Light Grey':'Cinza claro','Search...':'Pesquisar…','Search:':'Pesquisar:','Next':'Próximo','Previous':'Anterior','Data':'Dados','Advanced':'Opções avançadas','Servers':'Servidores','Source':'Fonte','Sources':'Fontes','Online':'Ativo','Offline':'Inativo','Transcoding Disabled':'Transcodificação desativada','Disabled':'Desativado'};
+  // Estes nomes também podem ser títulos e categorias cadastrados pelo usuário.
+  // Traduza-os somente nos controles e cabeçalhos da interface.
+  var interfaceTranslations = {
+    'Manage Bouquets':'Gerenciar listas de canais','Add Bouquet':'Adicionar lista de canais','Edit Bouquet':'Editar lista de canais',
+    'Manage Streams':'Gerenciar canais','Manage Movies':'Gerenciar filmes','Add Movie':'Adicionar filme',
+    'Manage Series':'Gerenciar séries','Add Series':'Adicionar série','Manage Episodes':'Gerenciar episódios','Add Episode':'Adicionar episódio',
+    'Category Name':'Nome da categoria','Search for a movie...':'Pesquisar filme…','Search for a series...':'Pesquisar série…',
+    'Select All':'Selecionar todos','Deselect All':'Desmarcar todos','Clear All':'Limpar tudo','Refresh':'Atualizar',
+    'Close':'Fechar','Confirm':'Confirmar','Cancel':'Cancelar','Apply':'Aplicar','Back':'Voltar','Finish':'Concluir',
+    'Save Changes':'Salvar alterações','Save changes':'Salvar alterações'
+  };
+  var columnTranslations = {
+    icon:'Ícone',name:'Nome',clients:'Clientes',uptime:'Tempo ativo',player:'Reprodutor',server:'Servidor',
+    type:'Tipo',time:'Horário',title:'Título',description:'Descrição',line:'Conta',duration:'Duração',restreamer:'Retransmissor',
+    provider:'Provedor',geolocation:'Geolocalização',continent:'Continente',country:'País',city:'Cidade',postcode:'Código postal',
+    'lat lng':'Latitude / longitude','isp name':'Nome do provedor',organisation:'Organização','as number':'Número do AS',
+    locale:'Localidade',timezone:'Fuso horário','local time':'Hora local','type / reseller':'Tipo / revendedor',
+    'domain name':'Nome de domínio','call sign':'Identificação',language:'Idioma',action:'Ação',date:'Data',
+    'server ip':'IP do servidor',image:'Imagem',category:'Categoria',seasons:'Temporadas',episodes:'Episódios',
+    'first aired':'Estreia','last updated':'Última atualização'
+  };
+  var filterTranslations = {
+    'No Filter':'Sem filtro',Audio:'Áudio',Video:'Vídeo',Stopped:'Parados',Starting:'Iniciando',Timeshift:'Replay',
+    Looping:'Em repetição','Has EPG':'Com EPG','Title Sync':'Título sincronizado','No Audio':'Sem áudio','No Video':'Sem vídeo'
+  };
+  var interfaceLabelSelector='button,label,.navigation-menu a,.topnav-menu a,.dropdown-item,.dropdown-item span,.nav-link,.nav-tabs a,.nav-tabs a span,.nav-pills a,.nav-pills a span,.next a,.previous a,.nextb a,.prevb a,.page-title,.header-title,.jBox-title';
+  function nativeFilterLabel(element) {
+    var id=element.id||'';
+    if(element.tagName==='OPTION'){
+      var select=element.closest('select');
+      return Boolean(select&&/^(?:stream|movies|episodes)_(?:filter|audio|video|resolution)$/.test(select.id));
+    }
+    return /^select2-(?:stream|movies|episodes)_(?:filter|audio|video|resolution)-(?:container|result-)/.test(id);
+  }
+  function labelTranslation(element,key) {
+    var normalized=key.replace(/\s+/g,' '),column=columnTranslations[normalized.toLowerCase()],filter=filterTranslations[normalized],label=interfaceTranslations[normalized];
+    if(element.matches('#datatable-streampage tbody td:last-child > div'))return normalized==='No information available'?'Nenhuma informação disponível':null;
+    if(element.tagName==='TH'&&typeof column==='string')return column;
+    if(nativeFilterLabel(element)&&typeof filter==='string')return filter;
+    if(!element.closest('.nav-user,.pro-user-name')&&(element.matches(interfaceLabelSelector)||element.matches('input[type="submit"],input[type="button"]'))&&typeof label==='string')return label;
+    return typeof translations[key]==='string'?translations[key]:null;
+  }
+  function attributeTranslation(element,attribute,value) {
+    if(element.tagName==='TH'&&attribute==='aria-label'){
+      var sort=value.match(/^(.+?):\s*(?:activate to sort column (ascending|descending)|ordenar em ordem (crescente|decrescente))$/);
+      if(sort)return (labelTranslation(element,sort[1].trim())||sort[1].trim())+': ordenar em ordem '+(sort[2]==='descending'||sort[3]==='decrescente'?'decrescente':'crescente');
+    }
+    return labelTranslation(element,value);
+  }
   function translate(element) {
-    Array.from(element.childNodes).forEach(function(node){if(node.nodeType!==3)return;var key=node.textContent.trim(),value=translations[key],duration=key.match(/^(\d+) (Hours?|Days?)$/);if(!value&&duration)value=duration[1]+' '+(duration[2].startsWith('Hour')?(duration[1]==='1'?'hora':'horas'):(duration[1]==='1'?'dia':'dias'));if(value)node.textContent=node.textContent.replace(key,value);});
+    Array.from(element.childNodes).forEach(function(node){if(node.nodeType!==3)return;var key=node.textContent.trim(),value=labelTranslation(element,key),duration=key.match(/^(\d+) (Hours?|Days?)$/);if(!value&&duration)value=duration[1]+' '+(duration[2].startsWith('Hour')?(duration[1]==='1'?'hora':'horas'):(duration[1]==='1'?'dia':'dias'));if(value)node.textContent=node.textContent.replace(key,value);});
+  }
+  function translateInput(input) {
+    var placeholder=translations[input.placeholder]||interfaceTranslations[input.placeholder];
+    if(typeof placeholder==='string')input.placeholder=placeholder;
+    // O valor de uma caixa de texto é dado do usuário, mesmo que seja "Default".
+    if(/^(?:submit|button)$/i.test(input.type)){
+      var value=labelTranslation(input,input.value);
+      if(value)input.value=value;
+    }
   }
   var translationSelector='.navigation-menu a,.page-title,.header-title,.cta-box p,.card h1,.card h2,.card h3,.card h4,.card h5,.card h6,.card p,.topnav-menu a,.dropdown-item,.dropdown-item span,.nav-tabs a,.nav-tabs a span,.nav-pills a,.nav-pills a span,.nav-link,.next a,.previous a,button,label,th,option,.jstree-anchor,.select2-selection__placeholder,.apexcharts-legend-text,.timeline-item-info strong,.bootstrap-select .filter-option-inner-inner,.bootstrap-select .text,.select2-selection__rendered,.jBox-content,.jBox-title,.tooltip-inner,.popover-body';
   var translatedAttributes=['placeholder','title','data-original-title','data-content','aria-label'];
   translationSelector+=',.table a[href*="server_view"],.table small';
+  translationSelector+=',#datatable-streampage tbody td:last-child > div';
+  ['stream','movies','episodes'].forEach(function(page){['filter','audio','video','resolution'].forEach(function(control){translationSelector+=',[id^="select2-'+page+'_'+control+'-result-"]';});});
   Object.assign(translations,{'No Category':'Sem categoria','Add Source as Backup':'Adicionar fonte como reserva','Update Existing':'Atualizar existentes','Search for a stream...':'Pesquisar canal…','Clear':'Limpar'});
   translationSelector+=',.nextb a,.prevb a';
   function within(root,selector){
@@ -611,7 +671,7 @@
       if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.5.14.1';document.querySelector('#login_button').after(note);}
     }
     within(root,translationSelector).forEach(translate);
-    within(root,'[placeholder],[title],[data-original-title],[data-content],[aria-label]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute);if(value&&translations[value])element.setAttribute(attribute,translations[value]);});});
+    within(root,'[placeholder],[title],[data-original-title],[data-content],[aria-label]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute),translated=value&&attributeTranslation(element,attribute,value);if(translated&&translated!==value)element.setAttribute(attribute,translated);});});
     translateSettingsHelp(root);
     translateStreamHelp(root);
     translateCacheSettings(root);
@@ -622,10 +682,10 @@
     var pageTitle=document.title;
     if(/\/settings(?:\.php)?$/.test(location.pathname))pageTitle=pageTitle.replace(/\|\s*Settings$/,'| Configurações gerais');
     if(/\/stream(?:\.php)?$/.test(location.pathname) && !new URLSearchParams(location.search).has('import'))pageTitle=pageTitle.replace(/\|\s*Stream$/,'| Adicionar canal');
-    within(root,'input[placeholder],input[type="submit"]').forEach(function(input){if(translations[input.placeholder])input.placeholder=translations[input.placeholder];if(translations[input.value])input.value=translations[input.value];});
+    within(root,'input[placeholder],input[type="submit"],input[type="button"]').forEach(translateInput);
     within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.5.14.1';});
     pageTitle=pageTitle.replace(/^XUI(?:\.one)?\s*\|/, 'XUI NAXX |');
-    var titleParts=pageTitle.split('|');if(titleParts.length===2&&translations[titleParts[1].trim()])pageTitle=titleParts[0].trim()+' | '+translations[titleParts[1].trim()];
+    var titleParts=pageTitle.split('|');if(titleParts.length===2){var titleLabel=titleParts[1].trim(),titleTranslation=translations[titleLabel]||interfaceTranslations[titleLabel];if(titleTranslation)pageTitle=titleParts[0].trim()+' | '+titleTranslation;}
     if(document.title!==pageTitle)document.title=pageTitle;
     if(location.search.includes('naxx_embed=1'))document.body.classList.add('naxx-embedded');
     within(root,'.logo').forEach(function (logo) {
@@ -669,7 +729,7 @@
     function textChanged(node){
       var parent=node.parentElement;if(!parent)return;
       var key=(node.nodeValue||'').trim();
-      if((translations[key]||/^\d+ (?:Hours?|Days?)$/.test(key))&&parent.matches(translationSelector)){enqueue(parent);return;}
+      if((labelTranslation(parent,key)||/^\d+ (?:Hours?|Days?)$/.test(key))&&parent.matches(translationSelector)){enqueue(parent);return;}
       // Os textos extensos e avisos do cache têm tradução própria no módulo.
       if(/\/cache(?:\.php)?$/.test(location.pathname)&&parent.closest('.jBox-container,.jq-toast-wrap'))enqueue(parent);
       else if(/^Your last cron execution was at /.test(key))enqueue(parent);
@@ -680,7 +740,7 @@
         if(mutation.type==='characterData'){textChanged(mutation.target);return;}
         if(mutation.type==='attributes'){
           if(mutation.attributeName==='src'){if(mutation.target.matches('img'))enqueue(mutation.target);}
-          else if(translations[mutation.target.getAttribute(mutation.attributeName)])enqueue(mutation.target);
+          else {var attributeValue=mutation.target.getAttribute(mutation.attributeName),attributeLabel=attributeValue&&attributeTranslation(mutation.target,mutation.attributeName,attributeValue);if(attributeLabel&&attributeLabel!==attributeValue)enqueue(mutation.target);}
           return;
         }
         var elements=[];
@@ -2003,4 +2063,199 @@
   window.NaxxStreamSources = {enhance: enhance};
   enhance();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { enhance(); }, {once: true});
+}());
+
+/* Seleciona somente os itens da página visível do editor nativo de listas. */
+(function () {
+  'use strict';
+  if (!/\/bouquet(?:\.php)?$/.test(window.location.pathname)) return;
+  if (window.NaxxBouquetSelection) { window.NaxxBouquetSelection.enhance(); return; }
+
+  var tables = {
+    'datatable-stream': {type: 'stream', label: 'Canais'},
+    'datatable-movies': {type: 'movies', label: 'Filmes'},
+    'datatable-series': {type: 'series', label: 'Séries'},
+    'datatable-radios': {type: 'radios', label: 'Rádio'}
+  };
+  var states = new Map();
+  var observedForm = null;
+  var observer = null;
+  var bound = false;
+  var frame = null;
+
+  function visible(element) {
+    if (!element || !element.isConnected || element.hidden || !element.getClientRects().length) return false;
+    var style = window.getComputedStyle(element);
+    return style.display !== 'none' && style.visibility !== 'hidden' && style.visibility !== 'collapse';
+  }
+
+  function selected(type) {
+    if (!window.rBouquet || !Array.isArray(window.rBouquet[type])) return null;
+    return new Set(window.rBouquet[type].map(Number));
+  }
+
+  function review() {
+    var jq = window.jQuery;
+    var table = document.getElementById('datatable-review');
+    if (!jq || !jq.fn || !jq.fn.dataTable || typeof jq.fn.dataTable.isDataTable !== 'function' ||
+        !table || !jq.fn.dataTable.isDataTable(table)) return null;
+    return jq(table).DataTable();
+  }
+
+  function nativeReady(state) {
+    return typeof window.toggleBouquet === 'function' && selected(state.type) !== null && review() !== null;
+  }
+
+  function items(state, mode) {
+    var selection = selected(state.type);
+    if (!selection || !visible(state.table)) return [];
+    var seen = new Set();
+    var selector = mode === 'add' ? '.btn-add[data-id][data-type]' :
+      mode === 'remove' ? '.btn-remove[data-id][data-type]' : '.btn-add[data-id][data-type],.btn-remove[data-id][data-type]';
+    return Array.prototype.filter.call(state.table.querySelectorAll('tbody ' + selector.split(',').join(',tbody ')), function (button) {
+      var raw = button.getAttribute('data-id');
+      var id = Number(raw);
+      if (button.closest('table') !== state.table || button.getAttribute('data-type') !== state.type ||
+          !/^[1-9]\d*$/.test(raw || '') || !Number.isSafeInteger(id) ||
+          button.disabled || button.getAttribute('aria-disabled') === 'true' || !visible(button) || seen.has(id)) return false;
+      if (mode === 'add' && selection.has(id) || mode === 'remove' && !selection.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
+  }
+
+  function text(element, value) {
+    if (element.textContent !== value) element.textContent = value;
+  }
+
+  function refresh(state) {
+    var ready = nativeReady(state);
+    var adds = items(state, 'add');
+    var removes = items(state, 'remove');
+    var total = items(state).length;
+    var unavailable = state.busy || state.loading || !ready || !visible(state.table);
+    state.add.disabled = unavailable || adds.length === 0;
+    state.remove.disabled = unavailable || removes.length === 0;
+    text(state.add, 'Selecionar visíveis' + (adds.length ? ' (' + adds.length + ')' : ''));
+    text(state.remove, 'Desmarcar visíveis' + (removes.length ? ' (' + removes.length + ')' : ''));
+    var status = state.busy ? 'Atualizando seleção…' : state.loading || !ready ? 'Carregando itens…' :
+      total + (total === 1 ? ' item nesta página' : ' itens nesta página') + ' · ' + removes.length +
+        (removes.length === 1 ? ' selecionado.' : ' selecionados.');
+    text(state.status, state.notice ? state.notice + ' ' + status : status);
+  }
+
+  function apply(state, mode) {
+    if (state.busy || state.loading || !nativeReady(state) || !visible(state.table)) return;
+    var buttons = items(state, mode);
+    if (!buttons.length) return;
+    state.busy = true;
+    state.notice = '';
+    refresh(state);
+    var changed = 0;
+    var failed = false;
+    try {
+      buttons.forEach(function (button) {
+        var id = Number(button.getAttribute('data-id'));
+        var current = selected(state.type);
+        // A callback nativa pode redesenhar/ocultar uma linha. Nunca inverta
+        // novamente um item que já atingiu o estado solicitado.
+        if (!current || !visible(button) || (mode === 'add') === current.has(id)) return;
+        window.toggleBouquet(id, state.type, false);
+        var after = selected(state.type);
+        if (after && after.has(id) === (mode === 'add')) changed++;
+        else throw new Error('selection_not_confirmed');
+      });
+    } catch (_error) {
+      failed = true;
+    } finally {
+      try {
+        // Cada toggle atualiza o rascunho e as linhas da revisão nativa;
+        // desenhar uma única vez evita redesenhar a lista inteira a cada item.
+        if (changed) review().draw(false);
+      } catch (_error) { failed = true; }
+      state.busy = false;
+      state.notice = failed ? 'A seleção foi parcialmente atualizada. Confira os itens antes de salvar.' :
+        changed + (changed === 1 ? ' item ' : ' itens ') + (mode === 'add' ?
+          (changed === 1 ? 'selecionado.' : 'selecionados.') : (changed === 1 ? 'desmarcado.' : 'desmarcados.'));
+      refresh(state);
+    }
+  }
+
+  function create(table, definition) {
+    var box = document.createElement('div');
+    box.className = 'naxx-bouquet-selection mb-3';
+    box.setAttribute('role', 'group');
+    box.setAttribute('aria-label', 'Seleção dos itens visíveis: ' + definition.label);
+    var actions = document.createElement('div');
+    actions.className = 'd-flex flex-wrap align-items-center';
+    actions.style.gap = '8px';
+    var add = document.createElement('button');
+    add.type = 'button'; add.className = 'btn btn-outline-primary btn-sm';
+    add.setAttribute('aria-controls', table.id);
+    var remove = document.createElement('button');
+    remove.type = 'button'; remove.className = 'btn btn-outline-secondary btn-sm';
+    remove.setAttribute('aria-controls', table.id);
+    var status = document.createElement('span');
+    status.className = 'text-muted small';
+    status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+    var help = document.createElement('div');
+    help.className = 'text-muted small mt-2';
+    help.textContent = 'Respeita a busca, a categoria e a página atual. Salve a lista para gravar as alterações.';
+    actions.appendChild(add); actions.appendChild(remove); actions.appendChild(status);
+    box.appendChild(actions); box.appendChild(help);
+    var target = table.closest('.dataTables_wrapper') || table;
+    target.parentNode.insertBefore(box, target);
+    var state = {table: table, type: definition.type, box: box, add: add, remove: remove,
+      status: status, busy: false, loading: false, notice: ''};
+    add.addEventListener('click', function (event) { event.preventDefault(); apply(state, 'add'); });
+    remove.addEventListener('click', function (event) { event.preventDefault(); apply(state, 'remove'); });
+    return state;
+  }
+
+  function schedule() {
+    if (frame !== null) return;
+    frame = window.requestAnimationFrame(function () { frame = null; enhance(); });
+  }
+
+  function bind() {
+    var jq = window.jQuery;
+    if (bound || !jq || !jq.fn || !jq.fn.dataTable) return;
+    bound = true;
+    jq(document).on('draw.dt.naxxBouquetSelection init.dt.naxxBouquetSelection', 'table', function () {
+      var state = states.get(this);
+      if (state) { state.loading = false; state.notice = ''; }
+      schedule();
+    });
+    jq(document).on('processing.dt.naxxBouquetSelection', 'table', function (_event, _settings, processing) {
+      var state = states.get(this);
+      if (state) { state.loading = Boolean(processing); refresh(state); }
+    });
+    jq(document).on('shown.bs.tab.naxxBouquetSelection', schedule);
+  }
+
+  function enhance() {
+    var form = document.getElementById('bouquet_form');
+    if (!form) return;
+    bind();
+    states.forEach(function (state, table) {
+      if (!table.isConnected || !form.contains(table)) { state.box.remove(); states.delete(table); }
+    });
+    Object.keys(tables).forEach(function (id) {
+      var table = document.getElementById(id);
+      if (!table || !form.contains(table)) return;
+      var state = states.get(table);
+      if (!state) { state = create(table, tables[id]); states.set(table, state); }
+      refresh(state);
+    });
+    if (observedForm !== form && typeof MutationObserver === 'function') {
+      if (observer) observer.disconnect();
+      observer = new MutationObserver(schedule);
+      observer.observe(form, {childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden']});
+      observedForm = form;
+    }
+  }
+
+  window.NaxxBouquetSelection = {enhance: enhance};
+  enhance();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance, {once: true});
 }());
