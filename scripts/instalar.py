@@ -16,7 +16,7 @@ import urllib.request
 import zipfile
 
 REPO = Path(__file__).resolve().parent.parent
-EDITION = '1.5.14.1'
+EDITION = '1.14.2'
 # O pacote de referência do núcleo mantém sua origem e seus hashes existentes.
 TAG = 'v1.5.14'
 ASSET = 'XUI-NAXX-COMPLETO.zip'

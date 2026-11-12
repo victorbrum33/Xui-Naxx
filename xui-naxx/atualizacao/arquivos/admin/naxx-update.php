@@ -938,7 +938,7 @@ if ($metadata['timed_out'] || !is_array($response) || !isset($response['ok'])) {
 }
 $response['csrf'] = $csrf;
 if (isset($response['state']) && is_array($response['state'])) {
-    $response['state']['interfaceVersion'] = '1.5.14.1';
+    $response['state']['interfaceVersion'] = '1.14.2';
 }
 if (empty($response['ok'])) {
     $status = isset($response['status']) && in_array((int) $response['status'], array(400, 403, 409, 500, 502, 503), true) ? (int) $response['status'] : 500;

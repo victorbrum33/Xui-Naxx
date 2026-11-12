@@ -63,3 +63,17 @@ o teclado nos menus e o cancelamento da limpeza em lotes.
 A validação usa DOM e respostas simulados e um servidor PHP temporário em
 loopback. O tempo de resposta com listas grandes depende dos dados, do servidor
 e do navegador.
+
+### Interface e buquês — 1.14.2
+
+Ambiente verificado: Node.js 24.19.0 LTS e jsdom 30.1.3. Na raiz do repositório:
+
+```bash
+npm install --no-save jsdom
+node --unhandled-rejections=strict tests/verify-bouquet-selection-offline.cjs
+node --unhandled-rejections=strict tests/verify-bouquet-order-offline.cjs
+node --unhandled-rejections=strict tests/verify-ptbr-ui-offline.cjs
+node --unhandled-rejections=strict tests/verify-topbar-theme-offline.cjs
+```
+
+Os testes usam DOM e respostas simulados, sem acessar servidores ou modificar o catálogo. O teste do organizador requer o pacote jsdom no ambiente Node; os demais usam apenas módulos nativos.

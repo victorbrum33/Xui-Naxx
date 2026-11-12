@@ -40,6 +40,7 @@
   // Estes nomes também podem ser títulos e categorias cadastrados pelo usuário.
   // Traduza-os somente nos controles e cabeçalhos da interface.
   var interfaceTranslations = {
+    'Topbar Theme':'Tema da barra superior','System Theme':'Tema do sistema','API Key':'Chave da API',
     'Manage Bouquets':'Gerenciar listas de canais','Add Bouquet':'Adicionar lista de canais','Edit Bouquet':'Editar lista de canais',
     'Manage Streams':'Gerenciar canais','Manage Movies':'Gerenciar filmes','Add Movie':'Adicionar filme',
     'Manage Series':'Gerenciar séries','Add Series':'Adicionar série','Manage Episodes':'Gerenciar episódios','Add Episode':'Adicionar episódio',
@@ -85,6 +86,33 @@
       if(sort)return (labelTranslation(element,sort[1].trim())||sort[1].trim())+': ordenar em ordem '+(sort[2]==='descending'||sort[3]==='decrescente'?'decrescente':'crescente');
     }
     return labelTranslation(element,value);
+  }
+  function enhanceTopbarTheme() {
+    if(!/\/edit_profile(?:\.php)?$/.test(location.pathname))return;
+    var select=document.getElementById('hue'),topbar=document.getElementById('topnav');
+    if(!select||!topbar)return;
+    var preview=select.naxxTopbarPreview;
+    if(!preview){
+      var help=document.createElement('small');help.className='form-text text-muted';
+      help.textContent='Escolha uma cor para visualizar. Salve o perfil para manter a preferência.';
+      select.parentElement.appendChild(help);
+      var previous=select.value;
+      preview=function(){
+        var value=select.value;
+        if(!['','primary','info','success','danger','warning','purple','pink','dark','secondary'].includes(value)||value===previous)return;
+        previous=value;var theme='bg-animate'+(value?'-'+value:'');
+        topbar.querySelectorAll('[class*="bg-animate"],[data-theme]').forEach(function(element){
+          var classes=Array.from(element.classList).filter(function(name){return /^bg-animate(?:-|$)/.test(name);});
+          if(classes.length){classes.forEach(function(name){element.classList.remove(name);});element.classList.add(theme);}
+          if(/^bg-animate(?:-|$)/.test(element.getAttribute('data-theme')||'')){
+            element.setAttribute('data-theme',theme);
+            if(window.jQuery)window.jQuery(element).data('theme',theme);
+          }
+        });
+      };
+      select.naxxTopbarPreview=preview;select.addEventListener('change',preview);
+    }
+    if(window.jQuery&&!preview.jqBound){window.jQuery(select).on('change.naxxTopbarTheme',preview);preview.jqBound=true;}
   }
   function translate(element) {
     Array.from(element.childNodes).forEach(function(node){if(node.nodeType!==3)return;var key=node.textContent.trim(),value=labelTranslation(element,key),duration=key.match(/^(\d+) (Hours?|Days?)$/);if(!value&&duration)value=duration[1]+' '+(duration[2].startsWith('Hour')?(duration[1]==='1'?'hora':'horas'):(duration[1]==='1'?'dia':'dias'));if(value)node.textContent=node.textContent.replace(key,value);});
@@ -654,6 +682,7 @@
     root=root||document;
     if(window.NaxxPerformance&&typeof window.NaxxPerformance.enhance==='function')window.NaxxPerformance.enhance();
     var full=root===document;
+    if(full||containsFeature(root,'#hue'))enhanceTopbarTheme();
     var navigation=containsFeature(root,'.navigation-menu,.topnav-menu,.dropdown-menu');
     var pageTools=containsFeature(root,'.page-title-box,table');
     var dashboard=containsFeature(root,'.card-body.active-connections,.card-body.online-users,.card-body.active-streams,.card-body.offline-streams,.card-body.input-flow,.card-body.output-flow,[id^="s_"][id$="_conns"]');
@@ -664,11 +693,13 @@
     if(window.NaxxMenus&&(navigation||pageTools))window.NaxxMenus.enhance();
     if(window.NaxxStreamPageSize&&(full||containsFeature(root,'#stream_show_entries,#datatable-streampage,select[name="datatable-streampage_length"]')))window.NaxxStreamPageSize.enhance();
     if(window.NaxxStreamSources&&(full||pageTools||containsFeature(root,'#collapse_filters')))window.NaxxStreamSources.enhance();
+    if(window.NaxxBouquetSelection&&(full||pageTools||containsFeature(root,'#bouquet_form')))window.NaxxBouquetSelection.enhance();
+    if(window.NaxxBouquetOrder&&(full||pageTools||containsFeature(root,'#stream_order_array')))window.NaxxBouquetOrder.enhance();
     if(window.NaxxDashboard&&dashboard)window.NaxxDashboard.enhance();
     if(full||containsFeature(root,'.page-title-box'))addEpgSyncButton();
     if(containsFeature(root,'#login_button')&&document.getElementById('login_button')){
       document.body.classList.add('naxx-login');
-      if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.5.14.1';document.querySelector('#login_button').after(note);}
+      if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.14.2';document.querySelector('#login_button').after(note);}
     }
     within(root,translationSelector).forEach(translate);
     within(root,'[placeholder],[title],[data-original-title],[data-content],[aria-label]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute),translated=value&&attributeTranslation(element,attribute,value);if(translated&&translated!==value)element.setAttribute(attribute,translated);});});
@@ -683,7 +714,7 @@
     if(/\/settings(?:\.php)?$/.test(location.pathname))pageTitle=pageTitle.replace(/\|\s*Settings$/,'| Configurações gerais');
     if(/\/stream(?:\.php)?$/.test(location.pathname) && !new URLSearchParams(location.search).has('import'))pageTitle=pageTitle.replace(/\|\s*Stream$/,'| Adicionar canal');
     within(root,'input[placeholder],input[type="submit"],input[type="button"]').forEach(translateInput);
-    within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.5.14.1';});
+    within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.14.2';});
     pageTitle=pageTitle.replace(/^XUI(?:\.one)?\s*\|/, 'XUI NAXX |');
     var titleParts=pageTitle.split('|');if(titleParts.length===2){var titleLabel=titleParts[1].trim(),titleTranslation=translations[titleLabel]||interfaceTranslations[titleLabel];if(titleTranslation)pageTitle=titleParts[0].trim()+' | '+titleTranslation;}
     if(document.title!==pageTitle)document.title=pageTitle;

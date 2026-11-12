@@ -1,4 +1,4 @@
-# Xui Naxx · 1.5.14.1
+# Xui Naxx · 1.14.2
 
 Painel em português brasileiro, com identidade azul, temas claro e escuro, interface adaptada a dispositivos móveis e ferramentas para canais, filmes e séries.
 
@@ -78,6 +78,10 @@ python3 tests/test-mysql-sync.py
 
 ## Recursos
 
+### Edição 1.14.2
+
+O menu superior oferece nove paletas. Os buquês permitem selecionar o catálogo completo e organizar canais, filmes, séries e rádios com comandos simplificados.
+
 - **NAXX Automático:** escolha do modo de baixa latência ao salvar um canal, com análise das fontes, combinação validada e retorno aos modos manuais. Consulte [uso, testes e limites](NAXX-AUTOMATICO.md).
 - Importador em **Conteúdo**, por arquivo ou URL, com revisão de categorias, canais, filmes, séries e episódios.
 - Análise em processo separado e envio em lotes sequenciais, com pausa, retomada e progresso. Sem o antigo limite fixo de 10 MB; o processamento depende dos recursos do servidor e do navegador.
@@ -148,5 +152,5 @@ sudo python3 xui-naxx/atualizacao/aplicar.py --restore /home/xui/.naxx-backups/S
 python3 xui-naxx/build.py
 ```
 
-`1.5.14` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
+`1.14.2` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
 

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var overlayScript=document.currentScript;
-  var overlayRevision=window.naxxAssetRevision||'f96f912ed4b2';
+  var overlayRevision=window.naxxAssetRevision||'79a1fec99d39';
   var overlayAssetBase=overlayScript&&overlayScript.src?new URL('../css/',overlayScript.src):new URL('assets/css/',location.href);
   function loadOverlayStyles(){
     if(overlayScript&&overlayScript.src&&!/\/(?:naxx-overlay|app\.min)\.js(?:\?|$)/.test(overlayScript.src))return;
@@ -40,6 +40,7 @@
   // Estes nomes também podem ser títulos e categorias cadastrados pelo usuário.
   // Traduza-os somente nos controles e cabeçalhos da interface.
   var interfaceTranslations = {
+    'Topbar Theme':'Tema da barra superior','System Theme':'Tema do sistema','API Key':'Chave da API',
     'Manage Bouquets':'Gerenciar listas de canais','Add Bouquet':'Adicionar lista de canais','Edit Bouquet':'Editar lista de canais',
     'Manage Streams':'Gerenciar canais','Manage Movies':'Gerenciar filmes','Add Movie':'Adicionar filme',
     'Manage Series':'Gerenciar séries','Add Series':'Adicionar série','Manage Episodes':'Gerenciar episódios','Add Episode':'Adicionar episódio',
@@ -85,6 +86,33 @@
       if(sort)return (labelTranslation(element,sort[1].trim())||sort[1].trim())+': ordenar em ordem '+(sort[2]==='descending'||sort[3]==='decrescente'?'decrescente':'crescente');
     }
     return labelTranslation(element,value);
+  }
+  function enhanceTopbarTheme() {
+    if(!/\/edit_profile(?:\.php)?$/.test(location.pathname))return;
+    var select=document.getElementById('hue'),topbar=document.getElementById('topnav');
+    if(!select||!topbar)return;
+    var preview=select.naxxTopbarPreview;
+    if(!preview){
+      var help=document.createElement('small');help.className='form-text text-muted';
+      help.textContent='Escolha uma cor para visualizar. Salve o perfil para manter a preferência.';
+      select.parentElement.appendChild(help);
+      var previous=select.value;
+      preview=function(){
+        var value=select.value;
+        if(!['','primary','info','success','danger','warning','purple','pink','dark','secondary'].includes(value)||value===previous)return;
+        previous=value;var theme='bg-animate'+(value?'-'+value:'');
+        topbar.querySelectorAll('[class*="bg-animate"],[data-theme]').forEach(function(element){
+          var classes=Array.from(element.classList).filter(function(name){return /^bg-animate(?:-|$)/.test(name);});
+          if(classes.length){classes.forEach(function(name){element.classList.remove(name);});element.classList.add(theme);}
+          if(/^bg-animate(?:-|$)/.test(element.getAttribute('data-theme')||'')){
+            element.setAttribute('data-theme',theme);
+            if(window.jQuery)window.jQuery(element).data('theme',theme);
+          }
+        });
+      };
+      select.naxxTopbarPreview=preview;select.addEventListener('change',preview);
+    }
+    if(window.jQuery&&!preview.jqBound){window.jQuery(select).on('change.naxxTopbarTheme',preview);preview.jqBound=true;}
   }
   function translate(element) {
     Array.from(element.childNodes).forEach(function(node){if(node.nodeType!==3)return;var key=node.textContent.trim(),value=labelTranslation(element,key),duration=key.match(/^(\d+) (Hours?|Days?)$/);if(!value&&duration)value=duration[1]+' '+(duration[2].startsWith('Hour')?(duration[1]==='1'?'hora':'horas'):(duration[1]==='1'?'dia':'dias'));if(value)node.textContent=node.textContent.replace(key,value);});
@@ -138,7 +166,7 @@
     llod:'NAXX Automático analisa as fontes ao salvar e escolhe um modo compatível validado. A decisão aparece abaixo do campo. Após alterar a fonte, analise novamente. Os modos manuais continuam disponíveis.'
   };
   var brandAssetVersion = 'dc7f713aa259';
-  var stylesheetVersion = 'f96f912ed4b2';
+  var stylesheetVersion = '79a1fec99d39';
   Object.assign(translations,{"Settings": "Configurações gerais", "Save Changes": "Salvar alterações", "General": "Geral", "Security": "Segurança", "Streaming": "Transmissão", "Web Player": "Player web", "Logs": "Registros", "Preferences": "Preferências", "Server Name": "Nome do servidor", "Server Timezone": "Fuso horário do servidor", "Message of the Day": "Mensagem do dia", "Show Entries": "Itens por página", "Fails Per Time": "Falhas por período", "Date Format": "Formato da data", "Datetime Format": "Formato de data e hora", "Group Streams Table": "Agrupar transmissões na tabela", "Seamless Navigation": "Navegação sem recarregar a página", "Show Tickets Icon": "Exibir ícone de chamados", "Disable Restart Counter": "Desativar contador de reinicializações", "Auto-Cleanup Files": "Limpar arquivos automaticamente", "Check VOD Cron": "Verificar rotina de VOD", "Show Images & Picons": "Exibir imagens e ícones de canais", "Group Buttons": "Agrupar botões", "Quick Edit Modal": "Janela de edição rápida", "MySQL Sleep Timeout": "Tempo limite de conexões ociosas no MySQL", "Show Graphs": "Exibir gráficos", "Show Connections Map": "Exibir mapa de conexões", "Alternate Server View": "Visualização alternativa de servidores", "Show Header Stats": "Exibir estatísticas no cabeçalho", "Show Service Status": "Exibir estado dos serviços", "CPU Threshold %": "Limite de CPU (%)", "Memory Threshold %": "Limite de memória (%)", "Disk Threshold %": "Limite de disco (%)", "Network Threshold %": "Limite de rede (%)", "Clients Threshold %": "Limite de clientes (%)", "Search": "Pesquisa", "Enable Search": "Ativar pesquisa", "Number of Items": "Quantidade de itens", "Reseller": "Revendedor", "Disable Trials": "Desativar testes", "SSL Custom DNS": "DNS personalizado com SSL", "Debug": "Diagnóstico", "Debug Mode": "Modo de diagnóstico", "Auto-Send Logs to XUI": "Enviar registros automaticamente ao XUI", "Enable reCAPTCHA": "Ativar reCAPTCHA", "reCAPTCHA V2 - Site Key": "reCAPTCHA V2 — chave do site", "reCAPTCHA V2 - Secret Key": "reCAPTCHA V2 — chave secreta", "Default Arguments": "Parâmetros padrão", "User Agent": "Agente de usuário", "HTTP Proxy": "Proxy HTTP", "Headers": "Cabeçalhos", "On Demand Probesize": "Tamanho da análise sob demanda", "IP Security": "Segurança de IP", "Match Subnet of IP": "Verificar sub-rede do IP", "Logout On IP Change": "Encerrar sessão ao mudar de IP", "Restrict to Same IP": "Restringir ao mesmo IP", "Random RTMP IP": "IP RTMP aleatório", "Disallow 2nd IP": "Bloquear segundo IP", "Disallow if Connections <=": "Bloquear se as conexões forem menores ou iguais a", "Restream Prevention": "Prevenção de retransmissão", "XUI Detect - Deny": "Detecção de XUI — negar acesso", "XUI Detect - Ban Lines": "Detecção de XUI — banir contas", "Block Hosting Servers": "Bloquear servidores de hospedagem", "Block Proxies / VPN's": "Bloquear proxies e VPNs", "Spam Prevention": "Prevenção de abuso", "Flood Limit": "Limite de requisições", "Per Seconds": "Período em segundos", "Auth Flood Limit": "Limite de requisições de autenticação", "Auth Flood Seconds": "Período de autenticação em segundos", "Auth Flood Sleep": "Pausa após excesso de autenticações", "Flood IP Exclusions": "IPs isentos do limite de requisições", "Detect MAC Bruteforce": "Detectar tentativas de força bruta por MAC", "Detect Username Bruteforce": "Detectar tentativas de força bruta por usuário", "Bruteforce Frequency": "Intervalo de verificação de força bruta", "Maximum Login Attempts": "Máximo de tentativas de login", "Max Simultaneous Downloads": "Máximo de downloads simultâneos", "TMDb Key": "Chave do TMDb", "TMDb Language": "Idioma do TMDb", "Download Images": "Baixar imagens", "API Redirect": "Redirecionamento da API", "Append Movie Year": "Adicionar ano ao título do filme", "API Container": "Formato de saída da API", "Cache Playlists for": "Manter listas em cache por", "Grab Playlists from MySQL": "Obter listas diretamente do MySQL", "Force EPG to UTC Timezone": "Forçar EPG no fuso UTC", "Keep Request Protocol": "Manter protocolo da requisição", "VOD Parser": "Analisador de títulos de VOD", "Enable Cloudflare": "Ativar Cloudflare", "Legacy Support": "Compatibilidade com aplicativos antigos", "Legacy Playlist URL": "URL de lista para aplicativos antigos", "Legacy XMLTV URL": "URL XMLTV para aplicativos antigos", "Legacy Panel API": "API do painel para aplicativos antigos", "Duplicate Streams in Legacy Apps": "Duplicar transmissões em aplicativos antigos", "EPG API": "API do guia de programação", "Enable EPG API": "Ativar API do guia de programação", "Append Extra Data": "Incluir dados adicionais", "Days to Fetch": "Dias para buscar", "Days to Keep": "Dias para manter", "API Services": "Serviços da API", "Admin Streaming IP's": "IPs de transmissão dos administradores", "API IP's": "IPs autorizados na API", "API Password": "Senha da API", "Disable EPG Download - Line": "Desativar download de EPG para contas", "Disable EPG Download - Restreamer": "Desativar download de EPG para retransmissores", "Disable Playlist Download - Line": "Desativar download de listas para contas", "Disable Playlist Download - Restreamer": "Desativar download de listas para retransmissores", "Disable Player API": "Desativar API do player", "Disable Enigma2 API": "Desativar API Enigma2", "Disable Ministra API": "Desativar API Ministra", "Verify Hosts": "Verificar servidores de origem", "Streaming Password": "Senha de transmissão", "Enable ISP Lock": "Ativar bloqueio por provedor", "Enable ASN Lock": "Ativar bloqueio por ASN", "Disable MPEG-TS Output": "Desativar saída MPEG-TS", "Allow Restreamers - MPEG-TS": "Permitir retransmissores em MPEG-TS", "Disable HLS Output": "Desativar saída HLS", "Allow Restreamers - HLS": "Permitir retransmissores em HLS", "Disable RTMP Output": "Desativar saída RTMP", "Allow Restreamers - RTMP": "Permitir retransmissores em RTMP", "Case Sensitive Lines": "Diferenciar maiúsculas e minúsculas nas contas", "Override Country with First": "Usar país da primeira conexão", "Encrypt HLS Segments": "Criptografar segmentos HLS", "Disallow Empty UA": "Bloquear agente de usuário vazio", "VOD Bitrate Buffer": "Buffer de taxa de bits do VOD", "VOD Limit At %": "Limitar VOD a (%)", "Auto-Kick Hours": "Desconectar automaticamente após horas", "Use Domain Name in API": "Usar nome de domínio na API", "Encrypt Playlists": "Criptografar listas", "Encrypt Restreamer Playlists": "Criptografar listas de retransmissores", "Restrictions on Playlists & EPG": "Aplicar restrições às listas e ao EPG", "Ignore Invalid Credentials": "Ignorar credenciais inválidas", "Client Prebuffer": "Buffer inicial do cliente", "Restreamer Prebuffer": "Buffer inicial do retransmissor", "Load Balancing": "Balanceamento de carga", "Restreamer Bypass Proxy": "Permitir que retransmissores ignorem o proxy", "Channel Sorting Type": "Tipo de ordenação dos canais", "Sort VOD by Date": "Ordenar VOD por data", "Use Nginx Buffer": "Usar buffer do Nginx", "Log Client ISP's": "Registrar provedor dos clientes", "Online Capacity Interval": "Intervalo de atualização da capacidade", "Monitor Connection Status": "Monitorar estado das conexões", "Auto-Restart Crashed PHP-FPM": "Reiniciar PHP-FPM automaticamente após falhas", "Kill Rogue FFMPEG PID's": "Encerrar processos FFMPEG órfãos", "Redirect Expiration": "Validade do redirecionamento", "HLS Read Native": "Leitura nativa de HLS", "Read Buffer Size": "Tamanho do buffer de leitura", "Redis Connection Sync Timer": "Intervalo de sincronização de conexões do Redis", "Allow CDN / Forwarding": "Permitir CDN e encaminhamento", "Max Failures": "Máximo de falhas", "On-Demand Settings": "Configurações sob demanda", "Instant Off": "Desligamento imediato", "Exit on Failure": "Encerrar em caso de falha", "Wait Timeout": "Tempo limite de espera", "Request Prebuffer": "Solicitar buffer inicial", "Balance As Live": "Balancear como transmissão ao vivo", "On-Demand Scanner": "Verificador de conteúdo sob demanda", "Enable Scanner": "Ativar verificador", "Scan Time": "Intervalo de verificação", "Max Probe Time": "Tempo máximo de análise", "Keep Logs For": "Manter registros por", "Encoding Queue Settings": "Configurações da fila de codificação", "Max Movie Encodes": "Máximo de filmes em codificação", "Max Channel Encodes": "Máximo de canais em codificação", "Queue Loop Timer": "Intervalo da fila", "Segment Settings": "Configurações de segmentos", "Segment Duration": "Duração do segmento", "List Size": "Tamanho da lista", "Delete Threshold": "Limite para exclusão", "Max Segment Wait Time": "Tempo máximo de espera por segmento", "Analysis Duration": "Duração da análise", "Probe Size": "Tamanho da análise", "FFMPEG Version": "Versão do FFMPEG", "FFMPEG Segment Type": "Tipo de segmento do FFMPEG", "FFMPEG Show Warnings": "Exibir avisos do FFMPEG", "Ignore Keyframes": "Ignorar quadros-chave", "DTS - Use FFMPEG v4.0": "DTS — usar FFMPEG v4.0", "Loopback Streams via PHP": "Retornar transmissões pelo PHP", "Stream Monitor Settings": "Configurações do monitor de transmissões", "Restart on Audio Loss": "Reiniciar ao perder o áudio", "Priority Backup": "Prioridade da fonte reserva", "Probe Duration": "Duração da análise inicial", "Stream Failure Sleep": "Pausa após falha de transmissão", "FPS Start Delay": "Atraso inicial da verificação de FPS", "FPS Check Type": "Tipo de verificação de FPS", "Probe via API": "Analisar pela API", "Off Air Videos": "Vídeos para conteúdo fora do ar", "Stream Down Video": "Vídeo de transmissão indisponível", "Banned Video": "Vídeo de conta banida", "Expired Video": "Vídeo de conta expirada", "Expiring Video": "Vídeo de aviso de vencimento", "2nd IP Connected Video": "Vídeo de segundo IP conectado", "Allowed Countries": "Países permitidos", "Show All Categories": "Exibir todas as categorias", "Default Container": "Formato padrão", "Always Enabled Subtitles": "Manter legendas ativadas", "Connection Problem Indiciation": "Indicar problemas de conexão", "Show Channel Logos": "Exibir logos dos canais", "Show Preview Channel Logos": "Exibir prévia dos logos dos canais", "Playback Limit": "Limite de reprodução", "Default Aspect Ratio": "Proporção de imagem padrão", "Default Theme Type": "Tipo de tema padrão", "Legacy Theme": "Tema para modelos antigos", "Legacy URL Redirect": "Redirecionar URLs antigas", "Keep URL Extension": "Manter extensão da URL", "Disable SSL": "Desativar SSL", "Load Channels on Startup": "Carregar canais ao iniciar", "Disable MAG Token": "Desativar token MAG", "Allowed STB Types": "Tipos de aparelhos permitidos", "Allowed STB Recording": "Aparelhos autorizados a gravar", "Speedtest URL": "URL do teste de velocidade", "Information Message": "Mensagem informativa", "Allow Playlist Download": "Permitir download de listas", "Allow Bouquet Ordering": "Permitir ordenar listas de canais", "Hide Incompatible Streams": "Ocultar transmissões incompatíveis", "Mark HEVC as Compatible": "Marcar HEVC como compatível", "Background Blur px": "Desfoque do fundo (px)", "Background Opacity %": "Opacidade do fundo (%)", "Extract Subtitles": "Extrair legendas", "Activity Logs": "Registros de atividade", "Client Logs": "Registros de clientes", "Login Logs": "Registros de login", "Stream Error Logs": "Registros de erros de transmissão", "Stream Restart Logs": "Registros de reinicialização de transmissões", "Brackets": "Parênteses", "Hyphen": "Hífen", "Default Format": "Formato padrão", "Extended Title": "Título ampliado", "Extended Description": "Descrição ampliada", "Max Clients": "Máximo de clientes", "Network Speed": "Velocidade da rede", "Detected Network Speed": "Velocidade de rede detectada", "Bouquet": "Lista de canais", "Legacy": "Antigo", "Progress Info": "Informações de progresso", "Modern": "Moderno", "Forever": "Para sempre", "All Countries": "Todos os países", "Remove item": "Remover item", "Choose...": "Selecione…", "Default - EN": "Padrão — inglês", "Leave blank to use default XUI video.": "Deixe em branco para usar o vídeo padrão do XUI.", "Cancel": "Cancelar", "Use Icon": "Usar ícone", "Adjust Credits": "Ajustar créditos", "Reason for Adjustment...": "Motivo do ajuste…", "Record": "Gravar", "Clear Stream Logs": "Limpar registros da transmissão", "Reinstall Server": "Reinstalar servidor", "Restart Services": "Reiniciar serviços", "Reboot Server": "Reiniciar servidor", "Update Binaries": "Atualizar binários", "Update Server": "Atualizar servidor"});
   var settingsHelpTranslations = {};
   Object.assign(settingsHelpTranslations,{"server_name": "Nome do seu serviço de transmissão.", "default_timezone": "Fuso horário padrão das interfaces de administração e revenda. É usado por todos os usuários até que escolham outro fuso no próprio perfil.", "message_of_day": "Mensagem exibida na API do player. Alguns aplicativos Android usam essa informação.", "default_entries": "Quantidade de itens exibidos por página nas tabelas das interfaces de administração e revenda.", "fails_per_time": "Período, em segundos, usado para contar as falhas na página de transmissões: falhas a cada X segundos.", "date_format": "Formato padrão das datas. Consulte os códigos de formatação de datas do PHP antes de alterar.", "datetime_format": "Formato padrão de data e hora. Consulte os códigos de formatação de datas do PHP antes de alterar.", "streams_grouped": "Agrupa os servidores de uma mesma transmissão em uma única linha, reduzindo a quantidade de linhas da tabela.", "js_navigate": "Usa JavaScript para carregar páginas sem recarregar toda a interface. Esse recurso fica desativado em dispositivos móveis.", "show_tickets": "Exibe o ícone de chamados no canto superior direito do menu. Ao desativar, os chamados ficam no menu de gerenciamento.", "hide_failures": "Oculta o contador de reinicializações ao lado do tempo de atividade da transmissão.", "cleanup": "Remove automaticamente arquivos desnecessários em segundo plano. Opção recomendada.", "check_vod": "Verifica periodicamente se os arquivos de VOD existem. Se não existirem, marca o conteúdo como não codificado. Não é recomendado para acervos muito grandes.", "show_images": "Exibe os logos dos canais e as imagens de VOD nas páginas de gerenciamento.", "group_buttons": "Agrupa os botões de ação em um menu nas páginas compatíveis.", "modal_edit": "Abre a edição em uma janela sobre a página atual, sem sair dela.", "mysql_sleep_kill": "Tempo permitido para uma conexão MySQL permanecer ociosa, no estado Sleep, antes de ser encerrada. Use 0 para desativar.", "dashboard_stats": "Exibe gráficos de recursos do sistema, rede e conexões na visão geral.", "dashboard_map": "Exibe o mapa das conexões na visão geral.", "dashboard_display_alt": "Troca os cartões dos servidores entre os formatos largo e quadrado na visão geral.", "header_stats_sh": "Exibe as estatísticas dos servidores no menu do cabeçalho.", "dashboard_status": "Exibe avisos conforme as estatísticas dos servidores.", "threshold_cpu": "Quando o uso de CPU ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_mem": "Quando o uso de memória ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_disk": "Quando o uso de disco ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_network": "Quando o uso da rede ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_clients": "Exibe um aviso quando a quantidade de clientes, em relação ao máximo permitido pelo servidor, ultrapassar esta porcentagem.", "enable_search": "Exibe a pesquisa no canto superior direito do cabeçalho e permite que o mecanismo de cache grave as consultas de pesquisa no banco de dados.", "search_items": "Quantidade de resultados exibidos na pesquisa. O máximo é 100.", "disable_trial": "Desativa temporariamente a criação de testes para todas as contas.", "reseller_ssl_domain": "Usa HTTPS nos downloads de listas quando o servidor principal tem SSL ativo e o revendedor usa um DNS personalizado.", "debug_show_errors": "Ativa a exibição de erros para diagnosticar problemas no painel. As mensagens podem incluir detalhes técnicos do sistema.", "auto_send_logs": "Envia automaticamente os registros de erros do painel para análise e verificação pela equipe do XUI.", "recaptcha_v2_site_key": "Acesse https://google.com/recaptcha/admin para obter as chaves do reCAPTCHA.", "recaptcha_v2_secret_key": "Acesse https://google.com/recaptcha/admin para obter as chaves do reCAPTCHA.", "http_proxy": "Formato: IP:porta.", "cookie": "Formato: chave=valor;", "headers": "Cabeçalhos enviados pelo parâmetro -headers do FFmpeg.", "probesize_ondemand": "Tamanho da análise inicial das transmissões sob demanda. Ajuste se houver problemas de ausência de áudio.", "ip_subnet_match": "Aceita mudanças de IP dentro da mesma sub-rede /24, mantendo a verificação de segurança menos restritiva. Por exemplo, 159.55.26.0 e 159.55.26.255 serão considerados equivalentes.", "ip_logout": "Encerra a sessão se o IP mudar durante o uso, ajudando a proteger contra o uso indevido de cookies.", "restrict_same_ip": "Vincula as conexões HLS ao endereço IP de origem. Desative se isso causar problemas com IPs dinâmicos.", "rtmp_random": "Usa um IP aleatório nas conexões RTMP.", "disallow_2nd_ip_con": "Impede uma conexão de outro IP enquanto a conta já estiver em uso.", "disallow_2nd_ip_max": "A restrição ao segundo IP só se aplica às contas cujo limite de conexões seja menor ou igual a este valor. Por exemplo, com 3, contas com limite de até 3 conexões serão desconectadas ao conectar por outro IP.", "restream_deny_unauthorised": "Nega conexões de contas sem permissão de retransmissão que tentem usar o XUI para retransmitir conteúdo.", "detect_restream_block_user": "Bane contas sem permissão de retransmissão que tentem usar o XUI para retransmitir conteúdo.", "block_streaming_servers": "Bloqueia automaticamente servidores identificados como pertencentes a provedores de hospedagem. Não afeta retransmissores autorizados.", "block_proxies": "Bloqueia automaticamente proxies e VPNs conforme o ASN. Não afeta retransmissores autorizados.", "flood_limit": "Quantidade de tentativas antes de bloquear o IP. Use 0 para desativar a detecção de excesso de requisições.", "flood_seconds": "Período, em segundos, usado para contar as requisições.", "auth_flood_limit": "Quantidade de requisições válidas antes de aplicar uma pausa. Use 0 para desativar.<br/><br/>Este limite se aplica apenas a clientes autenticados. Por exemplo, após 30 conexões em 10 segundos, as próximas requisições podem aguardar 1 segundo durante o período de controle.", "auth_flood_seconds": "Período, em segundos, usado para contar as requisições autenticadas.", "auth_flood_sleep": "Tempo de espera aplicado ao atingir o limite de requisições autenticadas. A requisição continua após a pausa.", "flood_ips_exclude": "Separe os endereços IP por vírgulas.", "bruteforce_mac_attempts": "Detecta e bloqueia automaticamente IPs com tentativas de força bruta contra dispositivos MAG ou Enigma. Use 0 tentativas para desativar.", "bruteforce_username_attempts": "Detecta e bloqueia automaticamente IPs com tentativas de força bruta contra contas. Use 0 tentativas para desativar.", "bruteforce_frequency": "Período usado para contar as tentativas de força bruta por MAC e usuário: X tentativas a cada X segundos.", "login_flood": "Quantidade de tentativas de login permitidas antes de bloquear o IP. Use 0 para não limitar, por exemplo, ao utilizar reCAPTCHA ou código de acesso como proteção.", "max_simultaneous_downloads": "Máximo de downloads simultâneos de EPG e listas por usuário. Não afeta retransmissores. Requisições excedentes recebem o erro HTTP 429. Use 0 para desativar o limite.", "tmdb_api_key": "Obtenha sua chave de API em <a href='https://www.themoviedb.org/settings/api'>https://www.themoviedb.org/settings/api</a>.", "tmdb_language": "Idioma padrão das consultas ao TMDb. Pode ser alterado individualmente em cada filme ou série.", "download_images": "Baixa para o servidor principal as imagens obtidas de serviços como o TMDb.", "api_redirect": "Redireciona as requisições de transmissão da API usando tokens criptografados com AES, em vez de URLs com usuário e senha. Pode permanecer desativado se seus aplicativos não utilizarem esse recurso.", "movie_year_append": "Adiciona automaticamente o ano ao título do filme ao usar o TMDb ou as pastas monitoradas.", "api_container": "Formato de saída padrão usado em aplicativos Android e Smart TVs.", "cache_playlists": "Quando maior que 0, mantém as listas baixadas pelos clientes em cache por esta quantidade de segundos. Reduz o processamento, mas pode ocupar bastante disco com muitos clientes.", "playlist_from_mysql": "Lê as transmissões diretamente do MySQL em vez do cache local. Pode ser mais rápido quando há uma grande quantidade de transmissões.", "force_epg_timezone": "Gera o EPG e os horários das APIs em UTC. Também informa UTC como fuso na API do player para sincronizar os aplicativos.", "keep_protocol": "Mantém nas listas e transmissões o protocolo solicitado pelo cliente: HTTP ou HTTPS.", "parse_type": "Escolhe entre GuessIt e PTN para interpretar nomes de arquivos nas pastas monitoradas e em outros recursos. O GuessIt costuma ser mais preciso, mas usa mais recursos.", "cloudflare": "Permite conexões dos IPs da Cloudflare e o encaminhamento do IP real do cliente para o XUI.", "legacy_get": "Redireciona requisições de get.php para a nova URL de listas.", "legacy_xmltv": "Redireciona requisições de xmltv.php para a nova URL do EPG.", "legacy_panel_api": "Redireciona requisições de panel_api.php para a nova API do player do XUI.", "show_category_duplicates": "Repete o conteúdo em cada categoria à qual ele pertence para melhorar a compatibilidade com aplicativos antigos. Como consequência, o mesmo item pode aparecer várias vezes na pesquisa ou na categoria Todos.", "enable_epg_api": "Ativa a API do guia de programação na interface de administração.", "epg_api_extended": "Acrescenta informações aos dados de EPG recebidos, como o nome do programa.", "epg_api_days_fetch": "Quantidade de dias buscados ao obter os dados de EPG.", "epg_api_days_keep": "Quantidade de dias de EPG mantidos no armazenamento.", "allowed_ips_admin": "IPs autorizados a acessar transmissões com a senha de transmissão administrativa. Separe os IPs por vírgulas.", "api_ips": "IPs autorizados a acessar a API administrativa do XUI. Separe os IPs por vírgulas.", "api_password": "Senha necessária para acessar a API administrativa do XUI. Deixe em branco para usar somente a lista de IPs autorizados.", "disable_xmltv": "Impede o download do guia de programação no formato XMLTV para contas comuns.", "disable_xmltv_restreamer": "Impede o download do guia de programação no formato XMLTV para retransmissores.", "disable_playlist": "Impede que contas comuns baixem listas HLS ou listas para dispositivos.", "disable_playlist_restreamer": "Impede que retransmissores baixem listas HLS ou listas para dispositivos.", "disable_player_api": "Impede o acesso à API por aplicativos Android e Smart TVs.", "disable_enigma2": "Impede a conexão de dispositivos Enigma.", "disable_ministra": "Impede a conexão de dispositivos MAG pela API Ministra.", "verify_host": "Confere os domínios e IPs com os endereços autorizados no banco de dados, incluindo IPs de servidores, domínios e DNS dos revendedores.", "enable_isp_lock": "Ativa ou desativa globalmente o bloqueio por provedor de internet.", "block_svp": "Ativa ou desativa globalmente o bloqueio por ASN.", "disable_ts": "Desativa a saída MPEG-TS para todos os clientes e dispositivos.", "disable_ts_allow_restream": "Permite que retransmissores continuem usando MPEG-TS mesmo com essa saída desativada.", "disable_hls": "Desativa a saída HLS para todos os clientes e dispositivos.", "disable_hls_allow_restream": "Permite que retransmissores continuem usando HLS mesmo com essa saída desativada.", "disable_rtmp": "Desativa a saída RTMP para todos os clientes e dispositivos.", "disable_rtmp_allow_restream": "Permite que retransmissores continuem usando RTMP mesmo com essa saída desativada.", "case_sensitive_line": "Diferencia letras maiúsculas e minúsculas no usuário e na senha das contas.", "county_override_1st": "Usa o país identificado na primeira conexão da conta.", "encrypt_hls": "Criptografa as transmissões HLS com AES-256 durante a reprodução. Aumenta o uso de CPU e protege o conteúdo dos pacotes.", "disallow_empty_user_agents": "Bloqueia conexões de clientes que não informam o agente de usuário.", "vod_bitrate_plus": "Buffer adicional usado na transmissão de VOD.", "vod_limit_perc": "Aplica o limite de velocidade após transmitir esta porcentagem do VOD. Use 0 para limitar desde o início ou 100 para desativar a limitação.", "user_auto_kick_hours": "Desconecta automaticamente clientes que permanecerem conectados por mais que esta quantidade de horas.", "use_mdomain_in_lists": "Usa o nome de domínio nas listas.", "encrypt_playlist": "Criptografa as credenciais das contas nos arquivos de listas.", "encrypt_playlist_restreamer": "Criptografa as credenciais nos arquivos de listas dos retransmissores.", "restrict_playlists": "Verifica agente de usuário, IP, provedor e país antes de permitir downloads de listas ou EPG. Ao desativar, os downloads podem ser feitos de qualquer IP; as restrições das transmissões continuam valendo.", "ignore_invalid_users": "Encerra rapidamente conexões com usuário ou senha incorretos, sem carregar as funções do XUI nem acionar o limite de requisições. Pode reduzir o uso de CPU em servidores com muitas requisições.", "client_prebuffer": "Quantidade de dados, em segundos de reprodução, enviada inicialmente ao cliente quando ele se conecta à transmissão. Valores maiores aumentam o buffer inicial.", "restreamer_prebuffer": "Quantidade de dados, em segundos de reprodução, enviada inicialmente ao retransmissor quando ele se conecta à transmissão. Valores maiores aumentam o buffer inicial.", "split_by": "Critério preferido para distribuir conexões entre os servidores.", "restreamer_bypass_proxy": "Encaminha retransmissores diretamente aos balanceadores, sem passar pelos proxies quando o serviço de proxy estiver ativo.", "channel_number_type": "Critério preferido para ordenar os canais nas listas e nos aplicativos.", "vod_sort_newest": "Ordena o VOD pela data de inclusão, do mais recente para o mais antigo. Para funcionar corretamente, o tipo de ordenação dos canais deve estar definido como Lista de canais.", "use_buffer": "Ativa o buffer do proxy para a conexão. Ao desativar, as respostas são enviadas sem esse buffer; ao ativar, a resposta pode ser armazenada temporariamente pelo proxy.", "show_isps": "Obtém o provedor de internet de cada cliente conectado e armazena essa informação no banco de dados.", "online_capacity_interval": "Intervalo de verificação da atividade dos servidores para calcular os limites de conexões.", "monitor_connection_status": "Verifica connection_status() do PHP durante a transmissão de canais e VOD. Encerra a conexão quando o estado retornado deixa de ser CONNECTION_NORMAL.", "restart_php_fpm": "Executa uma rotina que reinicia o PHP-FPM quando ele falha e são encontrados erros.", "kill_rogue_ffmpeg": "Verifica a cada minuto os processos FFmpeg de transmissões que deveriam estar paradas e os encerra. Também faz essa limpeza antes de iniciar uma transmissão.", "create_expiration": "Validade, em segundos, do redirecionamento do servidor principal para um balanceador. Aumente se houver muitos erros TOKEN_EXPIRED nos registros.", "read_native_hls": "Ativa a leitura nativa em todas as transmissões HLS. Desative para configurar individualmente em cada transmissão compatível.", "read_buffer_size": "Tamanho do buffer usado para ler arquivos em blocos.", "connection_sync_timer": "Intervalo entre execuções da rotina de sincronização das conexões do Redis.", "allow_cdn_access": "Aceita o IP real encaminhado pelo cabeçalho X-Forwarded-For e usa tokens no lugar da criptografia do caminho das transmissões.<br/>Exige configurar os IPs autorizados para encaminhamento. Recurso de uso avançado.", "stop_failures": "Quantidade de falhas antes de encerrar o monitor da transmissão. Com 3, o monitor para após três falhas e pode ser reiniciado pela rotina de transmissões no minuto seguinte. Use 0 para continuar tentando indefinidamente.", "on_demand_instant_off": "Ao desconectar um cliente de uma transmissão sob demanda, verifica se ainda há espectadores e desliga a transmissão se não houver nenhum.", "on_demand_failure_exit": "Se a transmissão sob demanda falhar ao iniciar, encerra a tentativa e desconecta o cliente. Uma nova conexão fará outra tentativa, evitando tentativas contínuas que ocupem a fonte.", "on_demand_wait_time": "Tempo de espera para iniciar uma transmissão sob demanda. Ao esgotar esse tempo, a conexão é encerrada. Também se aplica a transmissões comuns enquanto iniciam ou estão indisponíveis.", "request_prebuffer": "Solicita um buffer inicial ao provedor para iniciar a reprodução mais rapidamente. Requer um provedor XUI e pode deixar o conteúdo cerca de 10 segundos atrasado.<br/><br/>Pela URL: adiciona ?prebuffer=1. Pelo cabeçalho: envia a solicitação em um cabeçalho, aceito pelo XUI a partir da versão 1.4.4.", "ondemand_balance_equal": "Trata servidores sob demanda como servidores já ativos no balanceamento. Assim, um servidor sob demanda pode ser iniciado mesmo que outro servidor já transmita o mesmo conteúdo.", "on_demand_checker": "Analisa periodicamente o estado, a resolução, os codecs, o FPS e o tempo de resposta das transmissões sob demanda. Registra os erros no banco e verifica uma transmissão por vez em cada servidor.", "on_demand_scan_time": "Intervalo, em segundos, entre as verificações de uma transmissão.", "on_demand_max_probe": "Tempo máximo, em segundos, de análise da transmissão antes de cancelar.", "on_demand_scan_keep": "Tempo de retenção dos registros, em segundos. Afeta as estatísticas de disponibilidade da página de registros. O padrão é 604800 segundos, equivalente a uma semana.", "max_encode_movies": "Máximo de filmes codificados simultaneamente por servidor. Use um valor compatível com a capacidade do servidor; valores maiores são adequados quando todo o conteúdo usa links simbólicos.", "max_encode_cc": "Máximo de canais criados codificados simultaneamente por servidor. Recomenda-se 1, exceto quando todos usam links simbólicos.", "queue_loop": "Intervalo entre as verificações da fila. Se o conteúdo usar links simbólicos, recomenda-se 1 segundo.", "seg_time": "Duração de cada segmento HLS. Os quadros-chave podem impedir a duração exata, mas o valor deve funcionar na maioria das transmissões.", "seg_list_size": "Quantidade de segmentos mantidos na lista HLS.", "seg_delete_threshold": "Quantidade de segmentos antigos mantidos ao gerar a lista HLS. Valores menores economizam RAM, mas mantenha um buffer suficiente para novos clientes. Por exemplo, 30 segundos de buffer precisam de três segmentos de 10 segundos.", "segment_wait_time": "Tempo máximo, em segundos, de espera por um novo segmento. Ao esgotar esse tempo sem novos dados, a conexão do cliente é encerrada.", "stream_max_analyze": "Tempo de análise da transmissão. Um tempo maior melhora a precisão da amostra. 5.000.000 de microssegundos equivalem a 5 segundos.", "probesize": "Quantidade de dados analisados, em bytes.", "ffmpeg_cpu": "Versão do FFmpeg usada para filmes, canais criados e transmissões comuns.<br/><br/>v4.0: versão antiga, de 2018, fornecida originalmente com o XUI.<br/>v4.3.2 e v4.4: versões compiladas pelo XUI com mais bibliotecas e suporte a DASH e NVENC.", "segment_type": "Escolhe -f segment ou -f hls no processamento. A opção hls foi criada para HLS e tende a funcionar melhor. A opção segment desativa o limite de exclusão e é usada por padrão nas transmissões sob demanda para agilizar o início.", "ffmpeg_warnings": "Grava também os avisos do FFmpeg na tabela de erros das transmissões. Ao desativar, grava somente erros.", "ignore_keyframes": "Permite iniciar segmentos fora dos quadros-chave. Pode ajudar alguns players quando o intervalo entre quadros-chave varia, mas prejudicar outros ou causar tela preta no início até o vídeo começar.", "dts_legacy_ffmpeg": "Usa automaticamente o FFmpeg v4.0 em transmissões com áudio DTS. Pode corrigir falhas de sincronização do áudio. A opção de gerar PTS deve estar desativada.", "php_loopback": "Usa o PHP para ler diretamente as transmissões de retorno e gerar HLS, sem passar pelo FFmpeg.", "audio_restart_loss": "Reinicia periodicamente a transmissão se não houver áudio detectado.", "priority_backup": "Retorna à primeira fonte quando ela voltar a funcionar.", "probe_extra_wait": "Tempo de espera adicional após a duração de análise antes de cancelar a verificação da transmissão.", "stream_fail_sleep": "Tempo de espera, em segundos, após uma falha ao iniciar a transmissão antes de tentar novamente.", "fps_delay": "Tempo de espera, em segundos, antes de verificar se o FPS caiu abaixo do limite.", "fps_check_type": "Escolhe entre usar as informações de progresso após o atraso inicial ou analisar um segmento e usar avg_frame_rate para determinar o FPS.", "api_probe": "Usa chamadas de API para analisar as fontes a partir dos servidores XUI.", "show_not_on_air_video": "Exibe este vídeo quando a transmissão estiver fora do ar.", "show_banned_video": "Exibe este vídeo quando uma conta banida tentar acessar uma transmissão.", "show_expired_video": "Exibe este vídeo quando uma conta expirada tentar acessar uma transmissão.", "show_expiring_video": "Exibe este vídeo uma vez por dia durante os sete dias anteriores ao vencimento da conta.", "show_connected_video": "Exibe este vídeo quando o cliente for bloqueado por já estar conectado por outro IP.", "show_all_category_mag": "Exibe a categoria Todos nos dispositivos MAG.", "always_enabled_subtitles": "Mantém as legendas sempre ativadas.", "playback_limit": "Exibe um aviso e interrompe a transmissão após esta quantidade de horas de reprodução contínua.", "tv_channel_default_aspect": "Define a proporção de imagem padrão das transmissões. A opção Ajustar é recomendada.", "mag_default_type": "Define se novos dispositivos usam o tema moderno ou o tema antigo por padrão.", "stalker_theme": "Tema padrão do Ministra usado pelos dispositivos MAG.", "mag_legacy_redirect": "Redireciona /c para a pasta do Ministra com links simbólicos, permitindo o endereço antigo em dispositivos legados. Exige acesso de administrador do servidor e é aplicado pela rotina do minuto seguinte. Não é recomendado por segurança.", "mag_keep_extension": "Mantém a extensão nas URLs de canais ao vivo, conteúdo com deslocamento de tempo e VOD. Alguns dispositivos antigos dependem dela para escolher como reproduzir.", "mag_disable_ssl": "Força os dispositivos MAG a usarem URLs sem SSL. Considere a compatibilidade dos aparelhos antigos antes de desativar a proteção das conexões.", "mag_load_all_channels": "Carrega todos os canais ao iniciar, em vez de aguardar a seleção de uma categoria. Pode ajudar dispositivos antigos que não seguem os padrões do Ministra.", "disable_mag_token": "Desativa a verificação do token MAG durante a reprodução. Pode melhorar a compatibilidade, mas reduz a segurança.", "test_download_url": "URL do arquivo baixado durante o teste de velocidade dos dispositivos MAG.", "mag_message": "Mensagem exibida em Informações, na aba Minha conta. Aceita HTML; quebras de linha são convertidas em &lt;br/&gt;.", "player_allow_playlist": "Permite que os clientes gerem URLs de listas pelo player web.", "player_allow_bouquet": "Permite que os clientes alterem a ordem das suas listas de canais pelo player web.", "player_hide_incompatible": "Oculta transmissões incompatíveis com a maioria dos navegadores, priorizando formatos como H.264 e AV1. Também oculta canais e filmes indisponíveis.", "player_allow_hevc": "Considera HEVC compatível no player web. O suporte depende do navegador, do sistema e dos codecs disponíveis no dispositivo.", "player_blur": "Intensidade do desfoque das imagens de fundo, em pixels.", "player_opacity": "Opacidade das imagens de fundo. O padrão é 10%.", "extract_subtitles": "Extrai automaticamente as legendas de filmes e episódios durante o processamento, permitindo seu uso no player web.", "save_closed_connection": "Tempo de retenção dos registros de atividade, gravados quando uma conexão ativa é encerrada. Eles ajudam no acompanhamento do serviço, mas podem ocupar bastante espaço com muitas conexões.", "client_logs_save": "Tempo de retenção dos registros de clientes. Manter o histórico ajuda a investigar problemas, mas aumenta o espaço usado no banco.", "save_login_logs": "Tempo de retenção dos registros de login. Manter o histórico ajuda a acompanhar os acessos, mas aumenta o espaço usado no banco.", "stream_logs_save": "Tempo de retenção dos registros de erros das transmissões. Manter o histórico ajuda no diagnóstico, mas aumenta o espaço usado no banco.", "save_restart_logs": "Tempo de retenção dos registros de reinicialização das transmissões. Manter o histórico ajuda no diagnóstico, mas aumenta o espaço usado no banco."});
@@ -654,6 +682,7 @@
     root=root||document;
     if(window.NaxxPerformance&&typeof window.NaxxPerformance.enhance==='function')window.NaxxPerformance.enhance();
     var full=root===document;
+    if(full||containsFeature(root,'#hue'))enhanceTopbarTheme();
     var navigation=containsFeature(root,'.navigation-menu,.topnav-menu,.dropdown-menu');
     var pageTools=containsFeature(root,'.page-title-box,table');
     var dashboard=containsFeature(root,'.card-body.active-connections,.card-body.online-users,.card-body.active-streams,.card-body.offline-streams,.card-body.input-flow,.card-body.output-flow,[id^="s_"][id$="_conns"]');
@@ -664,11 +693,13 @@
     if(window.NaxxMenus&&(navigation||pageTools))window.NaxxMenus.enhance();
     if(window.NaxxStreamPageSize&&(full||containsFeature(root,'#stream_show_entries,#datatable-streampage,select[name="datatable-streampage_length"]')))window.NaxxStreamPageSize.enhance();
     if(window.NaxxStreamSources&&(full||pageTools||containsFeature(root,'#collapse_filters')))window.NaxxStreamSources.enhance();
+    if(window.NaxxBouquetSelection&&(full||pageTools||containsFeature(root,'#bouquet_form')))window.NaxxBouquetSelection.enhance();
+    if(window.NaxxBouquetOrder&&(full||pageTools||containsFeature(root,'#stream_order_array')))window.NaxxBouquetOrder.enhance();
     if(window.NaxxDashboard&&dashboard)window.NaxxDashboard.enhance();
     if(full||containsFeature(root,'.page-title-box'))addEpgSyncButton();
     if(containsFeature(root,'#login_button')&&document.getElementById('login_button')){
       document.body.classList.add('naxx-login');
-      if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.5.14.1';document.querySelector('#login_button').after(note);}
+      if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.14.2';document.querySelector('#login_button').after(note);}
     }
     within(root,translationSelector).forEach(translate);
     within(root,'[placeholder],[title],[data-original-title],[data-content],[aria-label]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute),translated=value&&attributeTranslation(element,attribute,value);if(translated&&translated!==value)element.setAttribute(attribute,translated);});});
@@ -683,7 +714,7 @@
     if(/\/settings(?:\.php)?$/.test(location.pathname))pageTitle=pageTitle.replace(/\|\s*Settings$/,'| Configurações gerais');
     if(/\/stream(?:\.php)?$/.test(location.pathname) && !new URLSearchParams(location.search).has('import'))pageTitle=pageTitle.replace(/\|\s*Stream$/,'| Adicionar canal');
     within(root,'input[placeholder],input[type="submit"],input[type="button"]').forEach(translateInput);
-    within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.5.14.1';});
+    within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.14.2';});
     pageTitle=pageTitle.replace(/^XUI(?:\.one)?\s*\|/, 'XUI NAXX |');
     var titleParts=pageTitle.split('|');if(titleParts.length===2){var titleLabel=titleParts[1].trim(),titleTranslation=translations[titleLabel]||interfaceTranslations[titleLabel];if(titleTranslation)pageTitle=titleParts[0].trim()+' | '+titleTranslation;}
     if(document.title!==pageTitle)document.title=pageTitle;
@@ -2065,23 +2096,308 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { enhance(); }, {once: true});
 }());
 
-/* Seleciona somente os itens da página visível do editor nativo de listas. */
+/* Seleção por página ou por resultado completo no rascunho nativo de listas. */
 (function () {
   'use strict';
-  if (!/\/bouquet(?:\.php)?$/.test(window.location.pathname)) return;
   if (window.NaxxBouquetSelection) { window.NaxxBouquetSelection.enhance(); return; }
 
   var tables = {
-    'datatable-stream': {type: 'stream', label: 'Canais'},
-    'datatable-movies': {type: 'movies', label: 'Filmes'},
-    'datatable-series': {type: 'series', label: 'Séries'},
-    'datatable-radios': {type: 'radios', label: 'Rádio'}
+    'datatable-stream': {type: 'stream', label: 'Canais', query: 'bouquets_streams', category: 'category_id', search: 'stream_search'},
+    'datatable-movies': {type: 'movies', label: 'Filmes', query: 'bouquets_vod', category: 'category_idv', search: 'vod_search'},
+    'datatable-series': {type: 'series', label: 'Séries', query: 'bouquets_series', category: 'category_ids', search: 'series_search'},
+    'datatable-radios': {type: 'radios', label: 'Rádio', query: 'bouquets_radios', category: 'category_idr', search: 'radios_search'}
   };
   var states = new Map();
   var observedForm = null;
   var observer = null;
   var bound = false;
   var frame = null;
+  var bulk = null;
+  var lazySettings = null;
+  var names = new Map();
+  var batchSize = 1000;
+
+  function count(value) { return value.toLocaleString('pt-BR'); }
+
+  function integer(value) {
+    if (typeof value !== 'number' && (typeof value !== 'string' || !/^\d+$/.test(value))) return null;
+    var number = Number(value);
+    return Number.isSafeInteger(number) && number >= 0 ? number : null;
+  }
+
+  // Preserve callbacks while copying public DataTables configuration/parameters.
+  function copy(value) {
+    if (Array.isArray(value)) return value.map(copy);
+    if (value && Object.prototype.toString.call(value) === '[object Object]') {
+      var result = {};
+      Object.keys(value).forEach(function (key) {
+        if (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') result[key] = copy(value[key]);
+      });
+      return result;
+    }
+    return value;
+  }
+
+  function sourceTable(state) {
+    var jq = window.jQuery;
+    return jq && jq.fn.dataTable.isDataTable(state.table) ? jq(state.table).DataTable() : null;
+  }
+
+  function filterValue(id) {
+    var control = document.getElementById(id);
+    return control ? String(control.value || '') : '';
+  }
+
+  function allScope(state) {
+    try {
+      var api = sourceTable(state);
+      if (!api || !api.ajax || typeof api.ajax.params !== 'function' || typeof api.ajax.url !== 'function') return null;
+      var params = copy(api.ajax.params());
+      var info = api.page.info();
+      var total = integer(info.recordsDisplay);
+      var records = integer(info.recordsTotal);
+      if (!params || params.id !== state.definition.query || total === null || records === null || total > records) return null;
+      var signature = copy(params);
+      ['draw', 'start', 'length', 'order'].forEach(function (key) { delete signature[key]; });
+      var url = api.ajax.url();
+      if (typeof url !== 'string' || !url) return null;
+      return {params: params, total: total, records: records, url: url,
+        key: JSON.stringify([url, signature, filterValue(state.definition.category), filterValue(state.definition.search)])};
+    } catch (_error) { return null; }
+  }
+
+  function unchanged(job) {
+    if (window.rBouquet !== job.model || document.getElementById('bouquet_form') !== job.form ||
+        document.getElementById(job.table.id) !== job.table ||
+        document.getElementById('datatable-review') !== job.reviewTable ||
+        !job.form.isConnected || !job.form.contains(job.table)) return false;
+    var scope = allScope(job.state);
+    return job.state.table.isConnected && scope && scope.key === job.scope.key &&
+      scope.total === job.scope.total && scope.records === job.scope.records;
+  }
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[character];
+    });
+  }
+
+  function reviewRow(id, type, name) {
+    var row = [id, type.charAt(0).toUpperCase() + type.slice(1), escapeHTML(name),
+      '<button type="button" class="btn-remove btn btn-warning waves-effect waves-warning btn-xs" ' +
+      'onClick="toggleBouquet(' + id + ', \'' + type + '\');"><i class="mdi mdi-minus"></i></button>'];
+    row.DT_RowId = type + '-' + id;
+    return row;
+  }
+
+  function rowCopy(data) {
+    if (!Array.isArray(data) || data.length !== 4) throw new Error('review_contract');
+    var id = integer(data[0]);
+    var type = String(data[1]).toLowerCase();
+    if (!id || !Object.keys(tables).some(function (key) { return tables[key].type === type; })) throw new Error('review_contract');
+    var row = data.slice();
+    row.DT_RowId = type + '-' + id;
+    return row;
+  }
+
+  function visibleName(id, type) {
+    var table = document.getElementById('datatable-' + type);
+    var row = table && table.querySelector('#' + type + '-' + id);
+    return row && row.children[1] ? row.children[1].textContent : names.get(type + '-' + id) || '';
+  }
+
+  // Native addRow requires an immediate DOM node. With rowId metadata, native
+  // delRow keeps finding even off-page rows while Review creates only its page.
+  function lazyReview() {
+    var api = review();
+    var table = document.getElementById('datatable-review');
+    if (lazySettings && lazySettings.table === table) return api;
+    var rows = api.rows().data().toArray().map(rowCopy);
+    var config = copy(api.init());
+    var info = api.page.info();
+    config.data = rows;
+    delete config.aaData;
+    config.deferRender = true;
+    config.rowId = 'DT_RowId';
+    config.order = copy(api.order());
+    config.search = copy(config.search || {});
+    config.search.search = api.search();
+    config.pageLength = info.length;
+    config.displayStart = info.start;
+    if (typeof api.columns === 'function') {
+      var priorSearches = config.searchCols || [];
+      config.searchCols = api.columns().search().toArray().map(function (search, index) {
+        var options = copy(priorSearches[index] || {});
+        options.search = search;
+        return options;
+      });
+    }
+    api.destroy(false);
+    try {
+      api = window.jQuery(table).DataTable(config);
+    } catch (error) {
+      // Rebuild the same draft even if initialization fails midway.
+      try {
+        var damaged = review();
+        if (damaged) damaged.destroy(false);
+        var fallback = copy(config);
+        fallback.deferRender = false;
+        window.jQuery(table).DataTable(fallback);
+      } catch (_restoreError) { /* The outer operation reports failure. */ }
+      throw error;
+    }
+    lazySettings = {table: table};
+    window.addRow = function (raw, type) {
+      var id = integer(raw);
+      if (!id || !Object.keys(tables).some(function (key) { return tables[key].type === type; })) return;
+      review().row.add(reviewRow(id, type, visibleName(id, type)));
+    };
+    return api;
+  }
+
+  function lock(job) {
+    job.controls = Array.prototype.map.call(job.form.querySelectorAll('button,input,select,textarea'), function (control) {
+      var prior = control.disabled;
+      if (control !== job.state.cancel) control.disabled = true;
+      return [control, prior];
+    });
+  }
+
+  function unlock(job) {
+    (job.controls || []).forEach(function (entry) { if (entry[0].isConnected) entry[0].disabled = entry[1]; });
+  }
+
+  function repaintVisible(state) {
+    var selection = selected(state.type);
+    Array.prototype.forEach.call(state.table.querySelectorAll('tbody .btn-add[data-id][data-type],tbody .btn-remove[data-id][data-type]'), function (button) {
+      var id = integer(button.getAttribute('data-id'));
+      if (!id || button.getAttribute('data-type') !== state.type || button.closest('table') !== state.table) return;
+      var add = button.className.split(/\s+/).indexOf('btn-add') !== -1;
+      button.style.display = selection.has(id) === add ? 'none' : '';
+    });
+  }
+
+  function updateJob(job, message) {
+    job.message = message;
+    states.forEach(refresh);
+  }
+
+  function cancelBulk(reason) {
+    if (!bulk) return;
+    bulk.cancelled = reason || 'cancelled';
+    if (bulk.xhr && typeof bulk.xhr.abort === 'function') bulk.xhr.abort();
+    updateJob(bulk, 'Cancelando seleção…');
+  }
+
+  function check(job) {
+    if (job.cancelled) throw new Error(job.cancelled);
+    if (!unchanged(job)) throw new Error('changed');
+  }
+
+  function tick() { return new Promise(function (resolve) { window.setTimeout(resolve, 0); }); }
+
+  function requestPage(job, params, url) {
+    return new Promise(function (resolve, reject) {
+      job.xhr = window.jQuery.ajax({url: url, type: 'GET', data: params, dataType: 'json', timeout: 30000,
+        success: function (response) { job.xhr = null; resolve(response); },
+        error: function () { job.xhr = null; reject(new Error(job.cancelled || 'network')); }});
+    });
+  }
+
+  async function applyAll(state) {
+    if (bulk || state.busy || state.loading || !nativeReady(state) || !visible(state.table)) return;
+    var scope = allScope(state);
+    if (!scope || !scope.total) return;
+    var job = {state: state, scope: scope, model: window.rBouquet,
+      form: document.getElementById('bouquet_form'), table: state.table,
+      reviewTable: document.getElementById('datatable-review'),
+      phase: 'collecting', message: '', cancelled: '', xhr: null};
+    var snapshot = null;
+    var selection = job.model[state.type].slice();
+    var api = null;
+    var committed = false;
+    var modelPublished = false;
+    bulk = job;
+    state.notice = '';
+    lock(job);
+    updateJob(job, 'Buscando 0 de ' + count(scope.total) + ' itens…');
+    try {
+      // Only the native same-origin table endpoint is allowed. Source/media
+      // URLs in row data are never opened or used as request destinations.
+      var url = new URL(scope.url, window.location.href);
+      if (url.origin !== window.location.origin || !/^https?:$/.test(url.protocol) ||
+          !/\/table(?:\.php)?$/.test(url.pathname) || url.username || url.password || url.hash) throw new Error('endpoint');
+      var collected = [];
+      var previous = 0;
+      var offset = 0;
+      var draw = integer(scope.params.draw) || 0;
+      while (offset < scope.total) {
+        check(job);
+        var params = copy(scope.params);
+        params.start = offset;
+        params.length = batchSize;
+        params.order = [{column: 0, dir: 'asc'}];
+        params.draw = ++draw;
+        var response = await requestPage(job, params, url.href);
+        check(job);
+        if (!response || response.error || integer(response.recordsFiltered) !== scope.total ||
+            integer(response.recordsTotal) !== scope.records || !Array.isArray(response.data) ||
+            !response.data.length || response.data.length > batchSize ||
+            (response.draw !== undefined && integer(response.draw) !== params.draw) ||
+            offset + response.data.length > scope.total) throw new Error('response');
+        response.data.forEach(function (row) {
+          var id = Array.isArray(row) && row.length === 4 ? integer(row[0]) : null;
+          if (!id || id <= previous || typeof row[1] !== 'string' || typeof row[3] !== 'string') throw new Error('response');
+          previous = id;
+          collected.push({id: id, name: row[1]});
+        });
+        // Servers may cap length below the requested batch size.
+        offset += response.data.length;
+        updateJob(job, 'Buscando ' + count(offset) + ' de ' + count(scope.total) + ' itens…');
+      }
+      check(job);
+      var present = new Set(selection.map(Number));
+      var additions = collected.filter(function (item) { return !present.has(item.id); });
+      if (!additions.length) {
+        state.notice = 'Todos os ' + count(scope.total) + ' itens já estão selecionados.';
+        return;
+      }
+      job.phase = 'applying';
+      api = lazyReview();
+      snapshot = api.rows().data().toArray().map(rowCopy);
+      for (var start = 0; start < additions.length; start += batchSize) {
+        check(job);
+        api.rows.add(additions.slice(start, start + batchSize).map(function (item) { return reviewRow(item.id, state.type, item.name); }));
+        updateJob(job, 'Selecionando ' + count(Math.min(start + batchSize, additions.length)) + ' de ' + count(additions.length) + ' itens…');
+        await tick();
+      }
+      check(job);
+      // Publish the native draft only after every page and Review batch passed.
+      job.model[state.type] = selection.concat(additions.map(function (item) { return item.id; }));
+      modelPublished = true;
+      api.draw(false);
+      additions.forEach(function (item) { names.set(state.type + '-' + item.id, item.name); });
+      committed = true;
+      state.notice = count(additions.length) + (additions.length === 1 ? ' item selecionado.' : ' itens selecionados.');
+    } catch (error) {
+      if (snapshot && api) {
+        if (modelPublished) job.model[state.type] = selection;
+        // One linear restore avoids removing hundreds of thousands of rows
+        // individually, which would repeatedly reindex the complete table.
+        try { api.clear(); api.rows.add(snapshot); api.draw(false); }
+        catch (_restoreError) { state.notice = 'Não foi possível restaurar a revisão. Recarregue a página antes de salvar.'; }
+      }
+      if (!state.notice) state.notice = error.message === 'cancelled' ? 'Seleção cancelada. O rascunho foi preservado.' :
+        error.message === 'changed' ? 'Busca ou categoria alterada. O rascunho foi preservado.' :
+        'Não foi possível selecionar todos os itens. O rascunho foi preservado; tente novamente.';
+    } finally {
+      if (!committed && modelPublished) job.model[state.type] = selection;
+      bulk = null;
+      unlock(job);
+      if (committed) repaintVisible(state);
+      states.forEach(refresh);
+    }
+  }
 
   function visible(element) {
     if (!element || !element.isConnected || element.hidden || !element.getClientRects().length) return false;
@@ -2103,12 +2419,14 @@
   }
 
   function nativeReady(state) {
-    return typeof window.toggleBouquet === 'function' && selected(state.type) !== null && review() !== null;
+    return typeof window.toggleBouquet === 'function' && window.rBouquet &&
+      Array.isArray(window.rBouquet[state.type]) && review() !== null;
   }
 
-  function items(state, mode) {
-    var selection = selected(state.type);
-    if (!selection || !visible(state.table)) return [];
+  function items(state, mode, selection) {
+    if (!visible(state.table)) return [];
+    selection = selection || selected(state.type);
+    if (!selection) return [];
     var seen = new Set();
     var selector = mode === 'add' ? '.btn-add[data-id][data-type]' :
       mode === 'remove' ? '.btn-remove[data-id][data-type]' : '.btn-add[data-id][data-type],.btn-remove[data-id][data-type]';
@@ -2129,13 +2447,26 @@
   }
 
   function refresh(state) {
+    if (bulk) {
+      state.add.disabled = state.remove.disabled = state.all.disabled = true;
+      var current = bulk.state === state;
+      if (state.cancel.hidden !== !current) state.cancel.hidden = !current;
+      state.cancel.disabled = false;
+      if (current) text(state.status, bulk.message);
+      return;
+    }
+    if (!state.cancel.hidden) state.cancel.hidden = true;
     var ready = nativeReady(state);
-    var adds = items(state, 'add');
-    var removes = items(state, 'remove');
-    var total = items(state).length;
+    var selection = visible(state.table) ? selected(state.type) : null;
+    var adds = items(state, 'add', selection);
+    var removes = items(state, 'remove', selection);
+    var total = items(state, null, selection).length;
     var unavailable = state.busy || state.loading || !ready || !visible(state.table);
     state.add.disabled = unavailable || adds.length === 0;
     state.remove.disabled = unavailable || removes.length === 0;
+    var scope = allScope(state);
+    state.all.disabled = unavailable || !scope || scope.total === 0;
+    text(state.all, 'Selecionar tudo' + (scope && scope.total ? ' (' + count(scope.total) + ')' : ''));
     text(state.add, 'Selecionar visíveis' + (adds.length ? ' (' + adds.length + ')' : ''));
     text(state.remove, 'Desmarcar visíveis' + (removes.length ? ' (' + removes.length + ')' : ''));
     var status = state.busy ? 'Atualizando seleção…' : state.loading || !ready ? 'Carregando itens…' :
@@ -2145,7 +2476,7 @@
   }
 
   function apply(state, mode) {
-    if (state.busy || state.loading || !nativeReady(state) || !visible(state.table)) return;
+    if (bulk || state.busy || state.loading || !nativeReady(state) || !visible(state.table)) return;
     var buttons = items(state, mode);
     if (!buttons.length) return;
     state.busy = true;
@@ -2156,13 +2487,13 @@
     try {
       buttons.forEach(function (button) {
         var id = Number(button.getAttribute('data-id'));
-        var current = selected(state.type);
+        var values = window.rBouquet && window.rBouquet[state.type];
         // A callback nativa pode redesenhar/ocultar uma linha. Nunca inverta
         // novamente um item que já atingiu o estado solicitado.
-        if (!current || !visible(button) || (mode === 'add') === current.has(id)) return;
+        if (!Array.isArray(values) || !visible(button) || (mode === 'add') === values.some(function (value) { return Number(value) === id; })) return;
         window.toggleBouquet(id, state.type, false);
-        var after = selected(state.type);
-        if (after && after.has(id) === (mode === 'add')) changed++;
+        var after = window.rBouquet && window.rBouquet[state.type];
+        if (Array.isArray(after) && after.some(function (value) { return Number(value) === id; }) === (mode === 'add')) changed++;
         else throw new Error('selection_not_confirmed');
       });
     } catch (_error) {
@@ -2195,20 +2526,30 @@
     var remove = document.createElement('button');
     remove.type = 'button'; remove.className = 'btn btn-outline-secondary btn-sm';
     remove.setAttribute('aria-controls', table.id);
+    var all = document.createElement('button');
+    all.type = 'button'; all.className = 'btn btn-primary btn-sm';
+    all.setAttribute('aria-controls', table.id);
+    all.setAttribute('data-naxx-bouquet-all', definition.type);
+    var cancel = document.createElement('button');
+    cancel.type = 'button'; cancel.className = 'btn btn-outline-secondary btn-sm';
+    cancel.textContent = 'Cancelar'; cancel.hidden = true;
     var status = document.createElement('span');
     status.className = 'text-muted small';
     status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
     var help = document.createElement('div');
     help.className = 'text-muted small mt-2';
-    help.textContent = 'Respeita a busca, a categoria e a página atual. Salve a lista para gravar as alterações.';
+    help.textContent = 'Visíveis: página atual. Tudo: todos os resultados da busca e categoria. Salve a lista para gravar as alterações.';
     actions.appendChild(add); actions.appendChild(remove); actions.appendChild(status);
+    actions.appendChild(all); actions.appendChild(cancel);
     box.appendChild(actions); box.appendChild(help);
     var target = table.closest('.dataTables_wrapper') || table;
     target.parentNode.insertBefore(box, target);
-    var state = {table: table, type: definition.type, box: box, add: add, remove: remove,
-      status: status, busy: false, loading: false, notice: ''};
+    var state = {table: table, type: definition.type, definition: definition, box: box, add: add, remove: remove,
+      all: all, cancel: cancel, status: status, busy: false, loading: false, notice: ''};
     add.addEventListener('click', function (event) { event.preventDefault(); apply(state, 'add'); });
     remove.addEventListener('click', function (event) { event.preventDefault(); apply(state, 'remove'); });
+    all.addEventListener('click', function (event) { event.preventDefault(); return applyAll(state); });
+    cancel.addEventListener('click', function (event) { event.preventDefault(); cancelBulk(); });
     return state;
   }
 
@@ -2228,12 +2569,23 @@
     });
     jq(document).on('processing.dt.naxxBouquetSelection', 'table', function (_event, _settings, processing) {
       var state = states.get(this);
-      if (state) { state.loading = Boolean(processing); refresh(state); }
+      if (state) {
+        if (bulk && bulk.state === state && processing) cancelBulk('changed');
+        state.loading = Boolean(processing); refresh(state);
+      }
     });
     jq(document).on('shown.bs.tab.naxxBouquetSelection', schedule);
   }
 
   function enhance() {
+    if (!/\/bouquet(?:\.php)?$/.test(window.location.pathname)) {
+      if (bulk) cancelBulk('changed');
+      if (observer) observer.disconnect();
+      observedForm = null;
+      states.forEach(function (state) { state.box.remove(); });
+      states.clear();
+      return;
+    }
     var form = document.getElementById('bouquet_form');
     if (!form) return;
     bind();
@@ -2252,6 +2604,15 @@
       observer = new MutationObserver(schedule);
       observer.observe(form, {childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden']});
       observedForm = form;
+      form.addEventListener('submit', function (event) {
+        if (bulk) { event.preventDefault(); event.stopImmediatePropagation(); }
+      }, true);
+      form.addEventListener('click', function (event) {
+        if (bulk && !bulk.state.cancel.contains(event.target)) { event.preventDefault(); event.stopImmediatePropagation(); }
+      }, true);
+      ['change', 'input'].forEach(function (name) {
+        form.addEventListener(name, function () { if (bulk) cancelBulk('changed'); }, true);
+      });
     }
   }
 
@@ -2259,3 +2620,417 @@
   enhance();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance, {once: true});
 }());
+
+/* Editor de ordem: o formulário e o salvamento continuam sendo os nativos. */
+(function () {
+  'use strict';
+  if (window.NaxxBouquetOrder) { window.NaxxBouquetOrder.enhance(); return; }
+
+  var definitions = [
+    {type: 'stream', panel: 'bouquet-stream', label: 'Canais'},
+    {type: 'movie', panel: 'bouquet-movie', label: 'Filmes'},
+    {type: 'series', panel: 'bouquet-series', label: 'Séries'},
+    {type: 'radio', panel: 'bouquet-stations', label: 'Rádio'}
+  ];
+  var pageSize = 100;
+  var historyLimit = 10;
+  var collator = new Intl.Collator('pt-BR', {numeric: true, sensitivity: 'base'});
+  var formatter = new Intl.NumberFormat('pt-BR');
+  var active = null;
+  var observer = null;
+  var pending = null;
+
+  function isOrderPage() { return /\/bouquet_sort(?:\.php)?$/.test(window.location.pathname); }
+  function count(value) { return formatter.format(value); }
+  function normalize(value) { return String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR'); }
+  function equal(a, b) {
+    if (a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+    return true;
+  }
+  function element(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function button(text, action, className) {
+    var node = element('button', 'naxx-order-button' + (className ? ' ' + className : ''), text);
+    node.type = 'button';
+    node.setAttribute('data-order-action', action);
+    return node;
+  }
+  function readState(definition, form) {
+    var panel = document.getElementById(definition.panel);
+    var left = document.getElementById('sort_' + definition.type + '_l');
+    var right = document.getElementById('sort_' + definition.type + '_r');
+    if (!panel || !left || !right || left.form !== form || right.form !== form || !panel.contains(left) || !panel.contains(right)) return null;
+    var leftOptions = Array.from(left.options), rightOptions = Array.from(right.options);
+    if (leftOptions.length !== rightOptions.length) return null;
+    var entries = [];
+    for (var i = 0; i < leftOptions.length; i++) {
+      var option = leftOptions[i], mirror = rightOptions[i];
+      if (option.value !== mirror.value || option.text !== mirror.text) return null;
+      var name = option.text.trim() || 'Sem nome' + (option.value ? ' · ID ' + option.value : '');
+      entries.push({key: i, value: option.value, text: option.text, name: name,
+        search: normalize(name + ' ' + option.value), left: option, right: mirror});
+    }
+    var order = entries.map(function (entry) { return entry.key; });
+    return {definition: definition, panel: panel, left: left, right: right, entries: entries,
+      order: order, nativeOrder: order.slice(), initial: order.slice(), selected: new Set(),
+      undo: [], redo: [], query: '', page: 0, matches: null, changed: 0, dragKeys: null};
+  }
+  function matches(state) {
+    if (state.matches) return state.matches;
+    state.matches = [];
+    state.order.forEach(function (key, index) {
+      if (!state.query || state.entries[key].search.includes(state.query)) state.matches.push({key: key, index: index});
+    });
+    return state.matches;
+  }
+  function refreshFilter(state) {
+    window.clearTimeout(state.searchTimer);
+    var query = normalize(state.search.value.trim());
+    if (query === state.query) return;
+    state.query = query; state.page = 0; state.matches = null; render(state, true);
+  }
+  function announce(state, text) { state.notice.textContent = text; }
+  function isSaving(editor) {
+    // The native failure callback enables submit buttons. Respect that unlock,
+    // including when the user retries before the attribute observer has run.
+    if (editor.submitting && !editor.save.disabled) {
+      editor.submitting = false;
+      editor.form.removeAttribute('aria-busy');
+    }
+    return Boolean(editor.submitting);
+  }
+  function updateGlobal(editor) {
+    var types = editor.states.filter(function (state) { return state.changed > 0; });
+    var changed = editor.states.reduce(function (total, state) { return total + state.changed; }, 0);
+    editor.pending.textContent = changed ? count(changed) + ' posições alteradas em ' + count(types.length) +
+      (types.length === 1 ? ' tipo de conteúdo. Salve para aplicar.' : ' tipos de conteúdo. Salve para aplicar.') : 'Nenhuma alteração pendente.';
+    if (!isSaving(editor)) editor.save.disabled = !changed;
+    editor.footer.setAttribute('data-pending', changed ? 'true' : 'false');
+  }
+  function updateControls(state) {
+    var selected = state.selected.size;
+    var first = -1, last = -1;
+    state.order.forEach(function (key, index) { if (state.selected.has(key)) { if (first < 0) first = index; last = index; } });
+    ['up', 'top'].forEach(function (action) { state.buttons[action].disabled = !selected || first === 0 && last === selected - 1; });
+    ['down', 'bottom'].forEach(function (action) { state.buttons[action].disabled = !selected || first === state.order.length - selected && last === state.order.length - 1; });
+    state.buttons.move.disabled = !selected || selected === state.order.length;
+    state.position.disabled = !selected || selected === state.order.length;
+    state.position.max = String(Math.max(1, state.order.length));
+    state.buttons.clear.disabled = !selected;
+    state.buttons.select.disabled = !matches(state).some(function (match) { return !state.selected.has(match.key); });
+    state.buttons.az.disabled = matches(state).length < 2;
+    state.buttons.za.disabled = matches(state).length < 2;
+    state.buttons.undo.disabled = !state.undo.length;
+    state.buttons.redo.disabled = !state.redo.length;
+    state.buttons.restore.disabled = !state.changed;
+    state.summary.textContent = count(matches(state).length) + ' resultados de ' + count(state.order.length) + ' itens · ' + count(selected) + ' marcados';
+    updateGlobal(state.editor);
+  }
+  function render(state, resetScroll) {
+    var scrollTop = resetScroll ? 0 : state.list.scrollTop;
+    var focused = document.activeElement;
+    var focusedRow = focused && state.list.contains(focused) && focused.closest('[data-order-key]');
+    var focusKey = focusedRow && focusedRow.getAttribute('data-order-key');
+    var focusSelector = focused && focused.matches('input[type="checkbox"]') ? 'input[type="checkbox"]' : '.naxx-order-handle';
+    var found = matches(state);
+    var pages = Math.max(1, Math.ceil(found.length / pageSize));
+    state.page = Math.min(state.page, pages - 1);
+    if (!resetScroll && focusedRow) {
+      var focusIndex = found.findIndex(function (match) { return match.key === Number(focusKey); });
+      var focusPage = Math.floor(focusIndex / pageSize);
+      if (focusIndex >= 0 && focusPage !== state.page) { state.page = focusPage; scrollTop = 0; }
+    }
+    var start = state.page * pageSize;
+    var fragment = document.createDocumentFragment();
+    found.slice(start, start + pageSize).forEach(function (match) {
+      var entry = state.entries[match.key];
+      var row = element('li', 'naxx-order-item' + (state.selected.has(match.key) ? ' is-selected' : ''));
+      row.setAttribute('data-order-key', String(match.key));
+      if (match.index !== match.key) row.classList.add('is-moved');
+      var handle = button('⠿', 'drag', 'naxx-order-handle');
+      handle.draggable = true;
+      handle.setAttribute('aria-label', 'Arrastar ' + entry.name + '. Alt + seta para cima ou para baixo também move.');
+      handle.title = 'Arraste para outra posição ou use Alt + ↑ / ↓';
+      var label = element('label', 'naxx-order-item-label');
+      var check = element('input'); check.type = 'checkbox'; check.checked = state.selected.has(match.key);
+      check.setAttribute('aria-label', 'Marcar ' + entry.name + ', posição ' + count(match.index + 1));
+      var position = element('span', 'naxx-order-position', count(match.index + 1));
+      position.setAttribute('aria-label', 'Posição ' + count(match.index + 1));
+      var name = element('span', 'naxx-order-name', entry.name); name.title = entry.name;
+      label.append(check, position, name); row.append(handle, label); fragment.appendChild(row);
+    });
+    state.list.replaceChildren(fragment);
+    if (focusKey !== null && focusKey !== false) {
+      var restored = state.list.querySelector('[data-order-key="' + focusKey + '"] ' + focusSelector);
+      if (restored) restored.focus({preventScroll: true});
+    }
+    state.list.scrollTop = scrollTop;
+    state.empty.hidden = found.length > 0;
+    state.empty.textContent = state.order.length ? 'Nenhum resultado. Tente outro nome ou ID.' : 'Nenhum item neste tipo de conteúdo.';
+    state.buttons.previous.disabled = state.page === 0;
+    state.buttons.next.disabled = state.page >= pages - 1;
+    state.pageLabel.textContent = 'Página ' + count(state.page + 1) + ' de ' + count(pages) +
+      (found.length ? ' · resultados ' + count(start + 1) + '–' + count(Math.min(start + pageSize, found.length)) : '');
+    updateControls(state);
+  }
+  function apply(state, next, message) {
+    if (equal(next, state.order)) { announce(state, 'A ordem já está nessa posição.'); return false; }
+    state.undo.push(state.order.slice());
+    if (state.undo.length > historyLimit) state.undo.shift();
+    state.redo = [];
+    state.order = next; state.matches = null;
+    state.changed = next.reduce(function (total, key, index) { return total + (key !== state.initial[index] ? 1 : 0); }, 0);
+    render(state); announce(state, message + ' Salve para aplicar.'); return true;
+  }
+  function selectedKeys(state) { return state.order.filter(function (key) { return state.selected.has(key); }); }
+  function move(state, action, position, keys) {
+    var moving = new Set(keys || selectedKeys(state));
+    if (!moving.size) return;
+    var next = state.order.slice(), i, temporary;
+    if (action === 'up') {
+      for (i = 1; i < next.length; i++) if (moving.has(next[i]) && !moving.has(next[i - 1])) {
+        temporary = next[i - 1]; next[i - 1] = next[i]; next[i] = temporary;
+      }
+    } else if (action === 'down') {
+      for (i = next.length - 2; i >= 0; i--) if (moving.has(next[i]) && !moving.has(next[i + 1])) {
+        temporary = next[i + 1]; next[i + 1] = next[i]; next[i] = temporary;
+      }
+    } else {
+      var block = next.filter(function (key) { return moving.has(key); });
+      var rest = next.filter(function (key) { return !moving.has(key); });
+      var target = action === 'top' ? 0 : action === 'bottom' ? rest.length : Math.max(0, Math.min(rest.length, position - 1));
+      next = rest.slice(0, target).concat(block, rest.slice(target));
+    }
+    apply(state, next, count(moving.size) + (moving.size === 1 ? ' item movido.' : ' itens movidos.'));
+  }
+  function sortResults(state, descending) {
+    var found = matches(state);
+    var keys = found.map(function (match) { return match.key; });
+    keys.sort(function (a, b) { return collator.compare(state.entries[a].name, state.entries[b].name) * (descending ? -1 : 1); });
+    var next = state.order.slice();
+    found.forEach(function (match, index) { next[match.index] = keys[index]; });
+    apply(state, next, 'Resultados ordenados de ' + (descending ? 'Z a A.' : 'A a Z.'));
+  }
+  function history(state, redo) {
+    var source = redo ? state.redo : state.undo, destination = redo ? state.undo : state.redo;
+    if (!source.length) return;
+    destination.push(state.order.slice());
+    if (destination.length > historyLimit) destination.shift();
+    state.order = source.pop(); state.matches = null;
+    state.changed = state.order.reduce(function (total, key, index) { return total + (key !== state.initial[index] ? 1 : 0); }, 0);
+    render(state); announce(state, redo ? 'Alteração refeita.' : 'Alteração desfeita.');
+  }
+  function build(state, editor) {
+    state.editor = editor;
+    var wrapper = element('section', 'naxx-content-order');
+    wrapper.setAttribute('aria-label', 'Ordenar ' + state.definition.label);
+    var head = element('div', 'naxx-order-section-head');
+    head.appendChild(element('h3', '', state.definition.label));
+    state.summary = element('p', 'naxx-order-summary'); head.appendChild(state.summary); wrapper.appendChild(head);
+    var searchLabel = element('label', 'naxx-order-search');
+    searchLabel.appendChild(element('span', '', 'Buscar por nome ou ID'));
+    state.search = element('input'); state.search.type = 'search'; state.search.placeholder = 'Digite para encontrar um item…';
+    state.search.autocomplete = 'off'; searchLabel.appendChild(state.search); wrapper.appendChild(searchLabel);
+    var toolbar = element('div', 'naxx-order-toolbar'); state.buttons = {};
+    function add(target, action, text, className) { var node = button(text, action, className); state.buttons[action] = node; target.appendChild(node); return node; }
+    add(toolbar, 'select', 'Marcar resultados'); add(toolbar, 'clear', 'Limpar marcações');
+    var sorts = element('div', 'naxx-order-button-group');
+    add(sorts, 'az', 'Ordenar resultados A–Z'); add(sorts, 'za', 'Z–A'); toolbar.appendChild(sorts); wrapper.appendChild(toolbar);
+    var moves = element('div', 'naxx-order-moves');
+    moves.appendChild(element('span', 'naxx-order-moves-label', 'Mover marcados'));
+    var directions = element('div', 'naxx-order-button-group');
+    add(directions, 'up', '↑ Subir'); add(directions, 'down', '↓ Descer'); add(directions, 'top', '⇈ Início'); add(directions, 'bottom', '⇊ Fim'); moves.appendChild(directions);
+    var moveTo = element('div', 'naxx-order-move-to');
+    var positionLabel = element('label', '', 'Para a posição');
+    state.position = element('input'); state.position.type = 'text'; state.position.inputMode = 'numeric'; state.position.value = '1';
+    state.position.setAttribute('data-order-position', '');
+    state.position.setAttribute('aria-label', 'Posição do primeiro item marcado na lista completa');
+    positionLabel.appendChild(state.position); moveTo.appendChild(positionLabel); add(moveTo, 'move', 'Mover'); moves.appendChild(moveTo); wrapper.appendChild(moves);
+    wrapper.appendChild(element('p', 'naxx-order-help', 'As posições pertencem à lista completa. A busca só oculta itens; ordenar A–Z reorganiza os resultados nas posições que já ocupam. Arraste pela alça ⠿ ou marque itens para movê-los juntos.'));
+    var listHead = element('div', 'naxx-order-list-head'); listHead.append(element('span', '', 'POSIÇÃO'), element('span', '', 'NOME DO CONTEÚDO')); wrapper.appendChild(listHead);
+    state.list = element('ol', 'naxx-order-list'); state.list.setAttribute('aria-label', 'Ordem de ' + state.definition.label); wrapper.appendChild(state.list);
+    state.empty = element('p', 'naxx-order-empty'); wrapper.appendChild(state.empty);
+    var pager = element('div', 'naxx-order-pagination'); add(pager, 'previous', '← Anterior');
+    state.pageLabel = element('span', 'naxx-order-page-label'); pager.appendChild(state.pageLabel); add(pager, 'next', 'Próxima →'); wrapper.appendChild(pager);
+    var historyBar = element('div', 'naxx-order-history'); add(historyBar, 'undo', 'Desfazer'); add(historyBar, 'redo', 'Refazer'); add(historyBar, 'restore', 'Restaurar ordem inicial'); wrapper.appendChild(historyBar);
+    state.notice = element('p', 'naxx-order-notice'); state.notice.setAttribute('role', 'status'); state.notice.setAttribute('aria-live', 'polite'); wrapper.appendChild(state.notice);
+    // Hide only this panel's original visible controls. Keep the native selects,
+    // hidden fields, form and backend handler intact.
+    Array.from(state.panel.children).forEach(function (child) { child.classList.add('naxx-order-native'); });
+    state.panel.appendChild(wrapper); state.wrapper = wrapper;
+    wrapper.addEventListener('click', function (event) {
+      if (!isSaving(editor)) return;
+      event.preventDefault(); event.stopImmediatePropagation(); announce(state, 'Salvamento em andamento. Aguarde a resposta.');
+    }, true);
+    state.search.addEventListener('input', function () {
+      if (isSaving(editor)) return;
+      window.clearTimeout(state.searchTimer);
+      state.searchTimer = window.setTimeout(function () { refreshFilter(state); }, 100);
+    });
+    wrapper.addEventListener('keydown', function (event) {
+      if (isSaving(editor)) { event.preventDefault(); return; }
+      if (event.key !== 'Enter' || !event.target.matches('input[type="search"], [data-order-position]')) return;
+      event.preventDefault();
+      refreshFilter(state);
+      if (event.target === state.position && !state.buttons.move.disabled) state.buttons.move.click();
+    });
+    wrapper.addEventListener('click', function (event) {
+      var control = event.target.closest('[data-order-action]');
+      if (!control || !wrapper.contains(control) || control.disabled) return;
+      var action = control.getAttribute('data-order-action');
+      refreshFilter(state);
+      if (action === 'select') { matches(state).forEach(function (match) { state.selected.add(match.key); }); render(state); }
+      else if (action === 'clear') { state.selected.clear(); render(state); }
+      else if (action === 'az' || action === 'za') sortResults(state, action === 'za');
+      else if (action === 'undo' || action === 'redo') history(state, action === 'redo');
+      else if (action === 'restore') apply(state, state.initial.slice(), 'Ordem inicial restaurada.');
+      else if (action === 'previous' || action === 'next') { state.page += action === 'next' ? 1 : -1; render(state, true); }
+      else if (action === 'move') {
+        var destination = Number(state.position.value);
+        if (!Number.isSafeInteger(destination) || destination < 1 || destination > state.order.length) {
+          announce(state, 'Informe uma posição de 1 a ' + count(state.order.length) + '.'); state.position.focus(); return;
+        }
+        move(state, action, destination);
+      } else if (['up', 'down', 'top', 'bottom'].includes(action)) move(state, action);
+    });
+    state.list.addEventListener('change', function (event) {
+      if (!event.target.matches('input[type="checkbox"]')) return;
+      var row = event.target.closest('[data-order-key]'), key = Number(row.getAttribute('data-order-key'));
+      if (isSaving(editor)) { event.target.checked = state.selected.has(key); return; }
+      if (event.target.checked) state.selected.add(key); else state.selected.delete(key);
+      row.classList.toggle('is-selected', event.target.checked); updateControls(state);
+    });
+    state.list.addEventListener('keydown', function (event) {
+      if (isSaving(editor)) { event.preventDefault(); return; }
+      if (!event.altKey || !['ArrowUp', 'ArrowDown'].includes(event.key)) return;
+      var row = event.target.closest('[data-order-key]'); if (!row) return;
+      event.preventDefault(); var key = Number(row.getAttribute('data-order-key'));
+      move(state, event.key === 'ArrowUp' ? 'up' : 'down', null, state.selected.has(key) ? selectedKeys(state) : [key]);
+      var handle = state.list.querySelector('[data-order-key="' + key + '"] .naxx-order-handle'); if (handle) handle.focus({preventScroll: true});
+    });
+    state.list.addEventListener('dragstart', function (event) {
+      if (isSaving(editor)) { event.preventDefault(); return; }
+      var handle = event.target.closest('.naxx-order-handle'); if (!handle) { event.preventDefault(); return; }
+      var key = Number(handle.closest('[data-order-key]').getAttribute('data-order-key'));
+      state.dragKeys = state.selected.has(key) ? selectedKeys(state) : [key];
+      if (event.dataTransfer) { event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', 'naxx-order:' + state.definition.type + ':' + key); }
+    });
+    state.list.addEventListener('dragover', function (event) {
+      if (isSaving(editor)) return;
+      var row = event.target.closest('[data-order-key]');
+      if (!state.dragKeys || !row) return;
+      event.preventDefault(); if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+      state.list.querySelectorAll('.is-drop-target').forEach(function (item) { item.classList.remove('is-drop-target'); }); row.classList.add('is-drop-target');
+    });
+    state.list.addEventListener('drop', function (event) {
+      if (isSaving(editor)) { event.preventDefault(); state.dragKeys = null; return; }
+      var row = event.target.closest('[data-order-key]'); if (!state.dragKeys || !row) return;
+      event.preventDefault(); var key = Number(row.getAttribute('data-order-key')), keys = state.dragKeys; state.dragKeys = null;
+      if (keys.includes(key)) { render(state); return; }
+      var index = state.order.indexOf(key), moving = new Set(keys), before = 0;
+      for (var i = 0; i < index; i++) if (moving.has(state.order[i])) before++;
+      move(state, 'move', index - before + 1, keys);
+    });
+    state.list.addEventListener('dragend', function () { state.dragKeys = null; state.list.querySelectorAll('.is-drop-target').forEach(function (item) { item.classList.remove('is-drop-target'); }); });
+    render(state);
+  }
+  function valid(state) {
+    var form = state.editor.form;
+    if (!form.isConnected || !state.panel.isConnected || document.getElementById(state.definition.panel) !== state.panel ||
+        !state.left.isConnected || !state.right.isConnected ||
+        document.getElementById('sort_' + state.definition.type + '_l') !== state.left ||
+        document.getElementById('sort_' + state.definition.type + '_r') !== state.right ||
+        state.left.form !== form || state.right.form !== form || !form.contains(state.panel) ||
+        !state.panel.contains(state.left) || !state.panel.contains(state.right)) return false;
+    if (state.order.length !== state.entries.length || new Set(state.order).size !== state.entries.length) return false;
+    var left = state.left.options, right = state.right.options;
+    if (left.length !== state.entries.length || right.length !== state.entries.length) return false;
+    for (var i = 0; i < state.order.length; i++) {
+      var key = state.order[i], native = state.entries[state.nativeOrder[i]];
+      if (!Number.isInteger(key) || !state.entries[key] || !native || left[i] !== native.left || right[i] !== native.right ||
+          native.left.value !== native.value || native.right.value !== native.value || native.left.text !== native.text || native.right.text !== native.text) return false;
+    }
+    return true;
+  }
+  function sync(state) {
+    if (equal(state.order, state.nativeOrder)) return;
+    var left = document.createDocumentFragment(), right = document.createDocumentFragment();
+    state.order.forEach(function (key) { left.appendChild(state.entries[key].left); right.appendChild(state.entries[key].right); });
+    state.left.appendChild(left); state.right.appendChild(right); state.nativeOrder = state.order.slice();
+  }
+  function enhance() {
+    if (!isOrderPage()) return false;
+    if (active && active.form.isConnected) return true;
+    var field = document.getElementById('stream_order_array'), form = field && field.form;
+    if (!form || !form.querySelector('input[name="reorder"]')) return false;
+    var states = definitions.map(function (definition) { return readState(definition, form); });
+    if (states.some(function (state) { return !state; })) return false;
+    if (active && active.lockObserver) active.lockObserver.disconnect();
+    var editor = {form: form, field: field, states: states, submitting: false};
+    var intro = element('header', 'naxx-content-order naxx-order-intro');
+    intro.appendChild(element('span', 'naxx-order-eyebrow', 'ORDEM DO CONTEÚDO'));
+    intro.appendChild(element('h2', '', 'Ordenar conteúdos'));
+    intro.appendChild(element('p', '', 'Uma lista por tipo de conteúdo. Encontre, marque e mova os itens para definir como serão exibidos.'));
+    form.insertBefore(intro, form.firstChild);
+    editor.footer = element('div', 'naxx-content-order naxx-order-savebar');
+    var saveText = element('div'); saveText.appendChild(element('strong', '', 'Salve para aplicar a nova ordem'));
+    editor.pending = element('p'); saveText.appendChild(editor.pending); editor.footer.appendChild(saveText);
+    editor.save = element('button', 'naxx-order-save', 'Salvar alterações'); editor.save.type = 'submit';
+    // Position is an auxiliary editor input, not a backend field. Its manual
+    // Move validation must never prevent saving an otherwise valid draft.
+    editor.save.formNoValidate = true; editor.footer.appendChild(editor.save);
+    editor.lockObserver = new MutationObserver(function () { isSaving(editor); });
+    editor.lockObserver.observe(editor.save, {attributes: true, attributeFilter: ['disabled']});
+    form.appendChild(editor.footer);
+    states.forEach(function (state) { build(state, editor); });
+    states.forEach(function (state) {
+      var tab = form.querySelector('a[href="#' + state.definition.panel + '"]');
+      if (tab) {
+        var span = tab.querySelector('span'); if (span) span.textContent = state.definition.label;
+        tab.setAttribute('aria-label', state.definition.label); tab.classList.add('naxx-order-tab');
+      }
+    });
+    form.classList.add('naxx-order-form');
+    // Capture runs before the existing jQuery submit handler. Nothing is written
+    // to the native selects or payload until the user explicitly submits Save.
+    form.addEventListener('submit', function (event) {
+      if (isSaving(editor)) { event.preventDefault(); event.stopImmediatePropagation(); return; }
+      if (!isOrderPage() || document.getElementById('stream_order_array') !== field || field.form !== form || !states.every(valid)) {
+        event.preventDefault(); event.stopImmediatePropagation();
+        editor.pending.textContent = 'Não foi possível validar a ordem. Recarregue a página antes de salvar.';
+        editor.pending.setAttribute('role', 'alert'); return;
+      }
+      try {
+        states.forEach(sync);
+        var order = {stream: [], movie: [], radio: [], series: []};
+        states.forEach(function (state) { order[state.definition.type] = state.order.map(function (key) { return state.entries[key].value; }); });
+        field.value = JSON.stringify(order);
+        editor.submitting = true; editor.save.disabled = true; form.setAttribute('aria-busy', 'true');
+      } catch (_error) {
+        event.preventDefault(); event.stopImmediatePropagation();
+        editor.pending.textContent = 'Não foi possível preparar a ordem para salvar. Recarregue a página e tente novamente.';
+        editor.pending.setAttribute('role', 'alert');
+      }
+    }, true);
+    active = editor;
+    if (observer) { observer.disconnect(); observer = null; }
+    return true;
+  }
+  function bootstrap() {
+    if (!isOrderPage()) return;
+    if (enhance() || observer || !document.body) return;
+    observer = new MutationObserver(function () {
+      if (pending) return;
+      pending = window.setTimeout(function () { pending = null; enhance(); }, 50);
+    });
+    observer.observe(document.body, {childList: true, subtree: true});
+  }
+  window.NaxxBouquetOrder = {enhance: enhance};
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootstrap, {once: true});
+  else bootstrap();
+})();

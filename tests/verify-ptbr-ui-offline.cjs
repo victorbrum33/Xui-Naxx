@@ -50,6 +50,9 @@ function translated(tag, value, options) {
 
 assert.equal(translated('button', '  Manage   Bouquets  '), '  Gerenciar listas de canais  ');
 assert.equal(translated('button', 'Add Bouquet'), 'Adicionar lista de canais');
+assert.equal(translated('label', 'Topbar Theme'), 'Tema da barra superior');
+assert.equal(translated('label', 'System Theme'), 'Tema do sistema');
+assert.equal(translated('label', 'API Key'), 'Chave da API');
 assert.equal(translated('h4', 'Close', {card: true}), 'Close');
 assert.equal(translated('button', 'Close', {identity: true}), 'Close');
 assert.equal(translated('button', 'Manage Bouquets', {identity: true}), 'Manage Bouquets');
