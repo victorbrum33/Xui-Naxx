@@ -88,7 +88,7 @@ def main():
         mark('extracted')
     if not progress.get('database'):
         print('Configurando o banco de dados do painel...',flush=True)
-        put(Path('/etc/mysql/mariadb.conf.d/99-naxx.cnf'),'[mysqld]\nbind-address=127.0.0.1\nmax_connections=128\ninnodb_buffer_pool_size=256M\ninnodb_flush_log_at_trx_commit=2\nmax_allowed_packet=64M\nsql_mode=NO_ENGINE_SUBSTITUTION\n')
+        put(Path('/etc/mysql/mariadb.conf.d/99-naxx.cnf'),'[mysqld]\nbind-address=127.0.0.1\nmax_connections=128\nthread_cache_size=8\ninnodb_buffer_pool_size=256M\ninnodb_flush_log_at_trx_commit=2\nmax_allowed_packet=64M\nsql_mode=NO_ENGINE_SUBSTITUTION\n')
         run('systemctl','enable','--now','mariadb');run('systemctl','restart','mariadb')
         exists=subprocess.check_output(['mysql','-N','-u','root','-e',"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME IN ('xui','xui_migrate');"]).strip()
         if exists and not progress.get('owns_database'):raise RuntimeError('Banco xui já existe. Nenhum banco existente foi apagado.')

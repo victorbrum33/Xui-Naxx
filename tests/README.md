@@ -93,3 +93,13 @@ node --unhandled-rejections=strict tests/verify-stream-source-ui-offline.cjs
 ```
 
 Os testes usam formulários, DOM e respostas simulados. Não acessam uma instalação XUI, não enviam importações reais e não modificam o catálogo. Também verificam seleção vazia, validação prévia dos destinos, filtros, cancelamento, repetição após falha e isolamento das rotas.
+
+### Perfil opcional de memória do MariaDB — 1.14.2
+
+Com Python 3.8 ou posterior, execute na raiz do repositório:
+
+```bash
+python3 tests/test_mysql_memory.py
+```
+
+O teste usa arquivos temporários e comandos MariaDB simulados. Verifica diagnóstico sem escrita, limite sem aumentar valores menores, persistência, backup, limpeza opcional de threads ociosas, idempotência, conflitos e recuperação de falhas. Não exige root, não acessa um MariaDB real e não mede redução de RAM.

@@ -158,3 +158,17 @@ python3 xui-naxx/build.py
 
 `1.14.2` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
 
+
+## Perfil opcional de memória do MariaDB — 1.14.2
+
+Em instalações existentes com MariaDB 10.3 e `one-thread-per-connection`, o helper limita `thread_cache_size` a no máximo 8, preservando um valor atual menor. Execute no Linux como root, com autenticação local do MariaDB por socket:
+
+```bash
+sudo python3 scripts/otimizar_memoria_mysql.py --check
+sudo python3 scripts/otimizar_memoria_mysql.py --apply
+sudo python3 scripts/otimizar_memoria_mysql.py --apply --flush-idle
+```
+
+`--check` apenas diagnostica. `--apply` salva o perfil em `/etc/mysql/mariadb.conf.d/zz-naxx-memory.cnf` e ajusta o valor global quando necessário. `--flush-idle` é opcional: com `--apply`, libera o cache somente se houver mais threads ociosas que o limite. O helper não reinicia o banco, não encerra conexões ativas e não altera dados do catálogo. A redução de RAM depende do histórico e da carga; não há ganho fixo ou garantido. Novas instalações já recebem `thread_cache_size=8` no perfil inicial.
+
+Antes de mudar algo, o helper grava um backup JSON protegido em `/var/lib/naxx-performance/mysql-memory-backups/` e informa seu caminho. Para restauração manual, use `before.thread_cache_size` para repor o valor global e `previous_base64`/`previous_mode` para restaurar o arquivo anterior; se `previous_base64` for nulo, o arquivo não existia. Preserve o backup e faça a restauração como root. Threads já liberadas não são recriadas pela restauração.
