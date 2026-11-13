@@ -77,3 +77,19 @@ node --unhandled-rejections=strict tests/verify-topbar-theme-offline.cjs
 ```
 
 Os testes usam DOM e respostas simulados, sem acessar servidores ou modificar o catálogo. O teste do organizador requer o pacote jsdom no ambiente Node; os demais usam apenas módulos nativos.
+
+### Importação e edição em massa — correção 1.14.2
+
+Execute na raiz do repositório com Node.js e jsdom disponível no ambiente:
+
+```bash
+npm install --no-save jsdom
+node --unhandled-rejections=strict tests/verify-import-bouquets-offline.cjs
+node --unhandled-rejections=strict tests/verify-stream-mass-offline.cjs
+node --unhandled-rejections=strict tests/verify-content-route-offline.cjs
+node --unhandled-rejections=strict tests/verify-ptbr-ui-offline.cjs
+node --unhandled-rejections=strict tests/verify-stream-page-size-offline.cjs
+node --unhandled-rejections=strict tests/verify-stream-source-ui-offline.cjs
+```
+
+Os testes usam formulários, DOM e respostas simulados. Não acessam uma instalação XUI, não enviam importações reais e não modificam o catálogo. Também verificam seleção vazia, validação prévia dos destinos, filtros, cancelamento, repetição após falha e isolamento das rotas.

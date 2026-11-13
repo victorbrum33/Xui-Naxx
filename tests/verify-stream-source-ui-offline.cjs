@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const moduleSource = fs.readFileSync(path.join(__dirname, '../xui-naxx/src/stream-source-ui.js'), 'utf8');
-const testSource = moduleSource.replace(/\}\(\)\);\s*$/, '  window.testAjax = runAjax;\n}());');
+const testSource = moduleSource.replace(/\}\(\)\);\s*$/, '  window.testAjax = runAjax;\n  window.testFiltered = function(state, signal) { active = state; return filteredIds(state.table, signal); };\n}());');
 assert.notEqual(testSource, moduleSource, 'O teste precisa carregar a função AJAX do módulo.');
 
 function encodeParams(data) {
@@ -31,7 +31,7 @@ function data(draw, start, length) {
     columns: [{data: '0', search: {value: '', regex: false}}]};
 }
 
-function fixture({rows, total, source = '', ids = [], tableResponse}) {
+function fixture({rows, total, source = '', ids = [], tableResponse, mass = false}) {
   const requests = [], sourceRequests = [], timers = new Map();
   let timerId = 0, now = 1000;
   const window = {
@@ -63,8 +63,8 @@ function fixture({rows, total, source = '', ids = [], tableResponse}) {
   const document = {readyState: 'loading', addEventListener() {}, getElementById() {return null;}};
   vm.runInNewContext(testSource, {window, document, AbortController, URL, URLSearchParams, Date: {now: () => now}});
   const state = {
-    source, native: {url: './table', data(params) {
-      Object.assign(params, {id: 'streams', filter: '5', server: '1', category: '42'});
+    source, mass, native: {url: './table', data(params) {
+      Object.assign(params, {id: mass ? 'stream_list' : 'streams', filter: '5', server: '1', category: '42'});
     }},
     settings: {}, jq: {param: encodeParams}, table: {isConnected: true},
     status: {hidden: true, textContent: ''}, cache: null, request: null
@@ -72,7 +72,7 @@ function fixture({rows, total, source = '', ids = [], tableResponse}) {
   return {window, state, requests, sourceRequests, timers, advance(ms) {now += ms;}};
 }
 
-function uiFixture({length = 50, search = '', rows = fixtureRows(5500), complete = false} = {}) {
+function uiFixture({length = 50, search = '', rows = fixtureRows(5500), complete = false, mass = false} = {}) {
   const handlers = new Map(), documentHandlers = new Map(), requests = [], reloads = [], timers = new Map();
   let hostsResolve, initialized = complete, timerId = 0;
   function element(tagName = 'div') {
@@ -83,14 +83,15 @@ function uiFixture({length = 50, search = '', rows = fixtureRows(5500), complete
       after() {}, remove() {this.isConnected = false;}, setAttribute() {}};
   }
   const table = element('table'), filters = element(), clearButton = {disabled: true};
-  const nodes = {'datatable-streampage': table, collapse_filters: filters, clearFilters: clearButton};
+  const nodes = {'datatable-streampage': table, 'datatable-mass': table, collapse_filters: filters,
+    'stream-selection': {querySelector: selector => selector === '.row' ? filters : null}, clearFilters: clearButton};
   const document = {
     readyState: 'complete',
     getElementById: id => nodes[id] || null,
     createElement: element,
     addEventListener(name, callback) {documentHandlers.set(name, callback);}
   };
-  const settings = {_bInitComplete: complete, ajax: {url: './table', data(params) {params.id = 'streams';}}};
+  const settings = {_bInitComplete: complete, ajax: {url: './table', data(params) {params.id = mass ? 'stream_list' : 'streams';}}};
   const api = {settings: () => [settings], page: {len: () => length}, rows: () => ({count: () => 0}),
     ajax: {reload(callback, reset) {reloads.push({callback, reset});}}};
   function jq(node) {
@@ -104,7 +105,7 @@ function uiFixture({length = 50, search = '', rows = fixtureRows(5500), complete
   }
   jq.fn = {dataTable: {isDataTable: node => node === table && initialized}};
   jq.param = encodeParams;
-  const window = {jQuery: jq, location: new URL(`https://naxx.test/admin/streams${search}`),
+  const window = {jQuery: jq, location: new URL(`https://naxx.test/admin/${mass ? 'stream_mass' : 'streams'}${search}`),
     history: {replaceState(_state, _title, url) {window.location = new URL(url);}},
     clearFilters() {window.checkClear();}, checkClear() {clearButton.disabled = true;},
     setTimeout(callback) {timers.set(++timerId, callback); return timerId;},
@@ -151,9 +152,9 @@ async function run(harness, params) {
   return results[0];
 }
 
-function assertNativeFilters(requests) {
+function assertNativeFilters(requests, nativeId = 'streams') {
   for (const {searchParams} of requests) {
-    for (const [key, value] of Object.entries({id: 'streams', filter: '5', server: '1', category: '42',
+    for (const [key, value] of Object.entries({id: nativeId, filter: '5', server: '1', category: '42',
       'search[value]': 'Notícias', 'order[0][column]': '3', 'order[0][dir]': 'desc', 'columns[0][data]': '0'})) {
       assert.equal(searchParams.get(key), value, `Preserva o parâmetro nativo ${key}.`);
     }
@@ -286,5 +287,58 @@ function assertNativeFilters(requests) {
   assert.equal(error.recordsFiltered, 0);
   assert.deepEqual(idsOf(error.data), []);
   assert.match(invalid.state.status.textContent, /Não foi possível carregar os canais/);
-  console.log('PASS: preInit com 5.000, lotes de 1.000, filtros nativos, cache de 15s, fonte pendente/limpeza/CSV, ajuste de página, abort e resposta inválida.');
+
+  const massRows = fixtureRows(7300, 9000).map(row => [String(idsOf([row])[0]), '', row[1], 'Categoria', 'Main Server', '<button>DOWN</button>']);
+  const massUI = uiFixture({length: 5000, rows: massRows, mass: true});
+  massUI.preInit();
+  assert.equal(typeof massUI.settings.ajax, 'function', 'A edição em massa instala o agregador antes da primeira consulta.');
+  const massResults = [];
+  massUI.settings.ajax(data(40, 0, 5000), result => massResults.push(result));
+  await tick();
+  assert.equal(massResults[0].data.length, 5000);
+  massUI.resolveHosts(['source.example']);
+  await tick();
+  assert.equal(massUI.filters.children[0].children[0].id, 'naxx-stream-source');
+
+  function prepareAll(harness, params = data(41, 0, 50)) {
+    harness.state.api = {ajax: {params: () => params}};
+    return params;
+  }
+  const mass = fixture({rows: massRows, total: 9000, mass: true});
+  const allParams = prepareAll(mass);
+  const allIDs = await mass.window.testFiltered(mass.state, new AbortController().signal);
+  assert.equal(allIDs.length, 7300);
+  assert.equal(allIDs[0], '9000');
+  assert.equal(allIDs.at(-1), '1701');
+  assert.equal(mass.requests.length, 8);
+  assertNativeFilters(mass.requests, 'stream_list');
+  assert.equal(allParams.length, 50, 'Selecionar todos não muda a paginação nativa.');
+
+  const massSource = fixture({rows: massRows, total: 9000, mass: true, source: 'source.example', ids: [8800, 2000, 1]});
+  prepareAll(massSource);
+  const sourceIDs = await massSource.window.testFiltered(massSource.state, new AbortController().signal);
+  assert.deepEqual(Array.from(sourceIDs), ['8800', '2000'], 'Fonte intersecta categoria, servidor e busca nativos.');
+  assertNativeFilters(massSource.requests, 'stream_list');
+
+  let changingParams;
+  const staleSelection = fixture({rows: massRows, total: 9000, mass: true, tableResponse(page) {
+    if (page.data[0]?.[0] === '8000') changingParams.search.value = 'outro filtro';
+    return page;
+  }});
+  changingParams = prepareAll(staleSelection);
+  await assert.rejects(staleSelection.window.testFiltered(staleSelection.state, new AbortController().signal), /selection_changed/,
+    'Filtros alterados durante a consulta não retornam seleção antiga.');
+  const malformed = fixture({rows: [['<b>5</b>', '', 'Canal']], total: 1, mass: true});
+  prepareAll(malformed);
+  await assert.rejects(malformed.window.testFiltered(malformed.state, new AbortController().signal), /catalog_changed/,
+    'O ID da edição em massa deve seguir o contrato textual numérico confirmado.');
+  const tooMany = fixture({rows: fixtureRows(50001), total: 50001, mass: true});
+  prepareAll(tooMany);
+  await assert.rejects(tooMany.window.testFiltered(tooMany.state, new AbortController().signal), /catalog_limit/);
+  assert.equal(tooMany.requests.length, 1);
+  const controller = new AbortController();
+  const canceled = fixture({rows: massRows, total: 9000, mass: true, tableResponse(page) {controller.abort(); return page;}});
+  prepareAll(canceled);
+  await assert.rejects(canceled.window.testFiltered(canceled.state, controller.signal), /interrompida|selection_changed/);
+  console.log('PASS: Canais/edição em massa com 5.000, fonte+filtros nativos, seleção de todos validada, limite50k, filtros alterados/cancelamento, cache, abort e respostas inválidas.');
 })().catch(error => {console.error(error.stack); process.exitCode = 1;});

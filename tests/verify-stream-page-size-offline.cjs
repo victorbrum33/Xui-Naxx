@@ -29,8 +29,8 @@ const handlers = new Map(), select2Changes = [], urlWrites = [];
 const document = {
   readyState: 'complete',
   getElementById(id) {
-    if (id === 'datatable-streampage') return active.table;
-    if (id === 'stream_show_entries') return active.main;
+    if (id === 'datatable-streampage' || id === 'datatable-mass') return active.table;
+    if (id === 'stream_show_entries' || id === 'show_entries') return active.main;
     return null;
   },
   querySelector: () => active.generated,
@@ -39,7 +39,7 @@ const document = {
 function jq(node) {
   if (node === document) {
     return {on(type, selector, callback) {
-      assert.equal(selector, '#datatable-streampage');
+      assert.equal(selector, '#datatable-streampage, #datatable-mass');
       assert.equal(handlers.has(type), false, 'A troca de página não deve duplicar eventos delegados.');
       handlers.set(type, callback);
     }};
@@ -134,4 +134,18 @@ assert.deepEqual(addedOptions(active.generated), added);
 assert.equal(active.main.value, '50');
 assert.equal(handlers.size, 2);
 assert.equal(urlWrites.length, 2);
-  console.log('PASS: início independente com DOM completo, 2.000/5.000 nos selects de Canais, deep link, filtros, Select2, limpeza e troca SPA.');
+
+// Edição em massa usa IDs próprios e mantém rSelected e a URL nativa intactos.
+location.pathname = '/admin/stream_mass';
+active = page('50', 50);
+window.rSelected = ['8', '21'];
+emit(init);
+assert.deepEqual(addedOptions(active.main), added);
+assert.deepEqual(addedOptions(active.generated), added);
+active.length = 5000;
+active.generated.value = '5000';
+emit(length);
+assert.equal(active.main.value, '5000');
+assert.deepEqual(window.rSelected, ['8', '21']);
+assert.equal(urlWrites.length, 2, 'A edição em massa não usa a preferência entries da lista de canais.');
+console.log('PASS: 2.000/5.000 nos selects de Canais e edição em massa, deep link, filtros, seleção preservada, Select2, limpeza e troca SPA.');

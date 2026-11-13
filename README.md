@@ -78,6 +78,10 @@ python3 tests/test-mysql-sync.py
 
 ## Recursos
 
+### Correção de buquês e edição em massa — 1.14.2
+
+O importador permite escolher vários buquês existentes no destino da importação. A seleção principal prevalece sobre as opções avançadas e pode ficar vazia. Para filmes e séries, o destino funciona como reserva (fallback), sujeito às regras nativas de alocação por pasta. A edição em massa distingue a seleção da página e a seleção de todos os resultados filtrados. Ela também oferece filtro por domínio da fonte e páginas de 2.000 ou 5.000 entradas. Os indicadores ONDEMAND e DIRECT usam cores distintas, com textos em português brasileiro. Consulte [as correções e os pacotes complementares](releases/v1.14.2/CORRECOES.md).
+
 ### Edição 1.14.2
 
 O menu superior oferece nove paletas. Os buquês permitem selecionar o catálogo completo e organizar canais, filmes, séries e rádios com comandos simplificados.

@@ -1,20 +1,22 @@
 /* Acrescenta tamanhos à lista de Canais e mantém os dois controles nativos sincronizados. */
 (function () {
   'use strict';
-  var tableId = 'datatable-streampage';
   var sizes = [['2000', '2.000'], ['5000', '5.000']];
   var bound = false;
 
   function controls() {
     // Filmes e séries reutilizam o ID da tabela, mas têm controles próprios.
-    if (!/\/streams(?:\.php)?$/.test(window.location.pathname)) return null;
+    var mass = /\/stream_mass(?:\.php)?$/.test(window.location.pathname);
+    if (!mass && !/\/streams(?:\.php)?$/.test(window.location.pathname)) return null;
+    var tableId = mass ? 'datatable-mass' : 'datatable-streampage';
     var table = document.getElementById(tableId);
-    var main = document.getElementById('stream_show_entries');
+    var main = document.getElementById(mass ? 'show_entries' : 'stream_show_entries');
     if (!table || !main) return null;
     return {
       table: table,
       main: main,
-      generated: document.querySelector('select[name="datatable-streampage_length"][aria-controls="datatable-streampage"]')
+      mass: mass,
+      generated: document.querySelector('select[name="' + tableId + '_length"][aria-controls="' + tableId + '"]')
     };
   }
 
@@ -51,15 +53,15 @@
   function bind(jq) {
     if (bound) return;
     bound = true;
-    jq(document).on('init.dt.naxxStreamPageSize', '#' + tableId, enhance);
-    jq(document).on('length.dt.naxxStreamPageSize', '#' + tableId, function (_event, settings, length) {
+    jq(document).on('init.dt.naxxStreamPageSize', '#datatable-streampage, #datatable-mass', enhance);
+    jq(document).on('length.dt.naxxStreamPageSize', '#datatable-streampage, #datatable-mass', function (_event, settings, length) {
       var current = controls();
       if (!current || settings.nTable !== current.table) return;
       extendOptions(current.main);
       extendOptions(current.generated);
       var changed = synchronize(current, length, jq);
       // Quando o menu do DataTables mudou o tamanho, guarda entries como o Select2 nativo faria.
-      if (changed && typeof window.setParam === 'function' &&
+      if (changed && !current.mass && typeof window.setParam === 'function' &&
           new URLSearchParams(window.location.search).get('entries') !== String(length)) {
         window.setParam('entries', String(length));
       }

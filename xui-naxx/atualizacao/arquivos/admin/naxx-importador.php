@@ -5,7 +5,7 @@ if (isset($_GET['v'])) header('Clear-Site-Data: "cache"');
 $_GET['import'] = '1';
 require __DIR__ . '/stream.php';
 ?>
-<link rel="stylesheet" href="assets/css/naxx-importer.css?v=366fdc41d69c">
+<link rel="stylesheet" href="assets/css/naxx-importer.css?v=424f99ea2c5a">
 <script src="assets/js/naxx-importer.js?v=e293088d47aa"></script>
 <script src="assets/js/naxx-importer-ui.js?v=71f70a17907e"></script>
-<script src="assets/js/naxx-native-importer.js?v=3db167f1768a"></script>
+<script src="assets/js/naxx-native-importer.js?v=adc02cd9443d"></script>

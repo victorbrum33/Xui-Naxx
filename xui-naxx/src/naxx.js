@@ -40,6 +40,9 @@
   // Estes nomes também podem ser títulos e categorias cadastrados pelo usuário.
   // Traduza-os somente nos controles e cabeçalhos da interface.
   var interfaceTranslations = {
+    'Mass Edit Streams':'Editar canais em massa','Mass Edit Movies':'Editar filmes em massa','Mass Edit Series':'Editar séries em massa',
+    'Auto Restart':'Reinício automático','Mass Edit':'Editar em massa',
+    'No Servers':'Sem servidores','No Categories':'Sem categorias',
     'Topbar Theme':'Tema da barra superior','System Theme':'Tema do sistema','API Key':'Chave da API',
     'Manage Bouquets':'Gerenciar listas de canais','Add Bouquet':'Adicionar lista de canais','Edit Bouquet':'Editar lista de canais',
     'Manage Streams':'Gerenciar canais','Manage Movies':'Gerenciar filmes','Add Movie':'Adicionar filme',
@@ -60,7 +63,7 @@
     'first aired':'Estreia','last updated':'Última atualização'
   };
   var filterTranslations = {
-    'No Filter':'Sem filtro',Audio:'Áudio',Video:'Vídeo',Stopped:'Parados',Starting:'Iniciando',Timeshift:'Replay',
+    'No Filter':'Sem filtro',Audio:'Áudio',Video:'Vídeo',Down:'Indisponíveis',Stopped:'Parados',Starting:'Iniciando',Timeshift:'Replay',
     Looping:'Em repetição','Has EPG':'Com EPG','Title Sync':'Título sincronizado','No Audio':'Sem áudio','No Video':'Sem vídeo'
   };
   var interfaceLabelSelector='button,label,.navigation-menu a,.topnav-menu a,.dropdown-item,.dropdown-item span,.nav-link,.nav-tabs a,.nav-tabs a span,.nav-pills a,.nav-pills a span,.next a,.previous a,.nextb a,.prevb a,.page-title,.header-title,.jBox-title';
@@ -77,6 +80,7 @@
     if(element.matches('#datatable-streampage tbody td:last-child > div'))return normalized==='No information available'?'Nenhuma informação disponível':null;
     if(element.tagName==='TH'&&typeof column==='string')return column;
     if(nativeFilterLabel(element)&&typeof filter==='string')return filter;
+    if(element.tagName==='OPTION'&&/\/(?:streams|stream_mass)(?:\.php)?$/.test(location.pathname)&&element.closest('select')&&/^(?:stream_server_id|stream_category_id|category_search)$/.test(element.closest('select').id)&&/^-1$/.test(element.value)&&typeof label==='string')return label;
     if(!element.closest('.nav-user,.pro-user-name')&&(element.matches(interfaceLabelSelector)||element.matches('input[type="submit"],input[type="button"]'))&&typeof label==='string')return label;
     return typeof translations[key]==='string'?translations[key]:null;
   }
@@ -263,9 +267,9 @@
     }catch(error){return '';}
   }
   function enhanceModernImages(root) {
-    var contentList=/\/(?:streams|movies|series)(?:\.php)?$/.test(location.pathname);
-    if(contentList)document.body.classList.add('naxx-content-list');
-    if(/\/streams(?:\.php)?$/.test(location.pathname))document.body.classList.add('naxx-streams-page');
+    var contentList=/\/(?:streams|movies|series|stream_mass)(?:\.php)?$/.test(location.pathname);
+    document.body.classList.toggle('naxx-content-list',contentList);
+    document.body.classList.toggle('naxx-streams-page',/\/(?:streams|stream_mass)(?:\.php)?$/.test(location.pathname));
     within(root,'img[src]').forEach(function(image){
       if(contentList&&image.closest('table tbody'))image.classList.add('naxx-content-logo');
       var source=modernImageURL(image.getAttribute('src'));
@@ -691,8 +695,9 @@
     replaceLegacyLogos(root);
     enhanceModernImages(root);
     if(window.NaxxMenus&&(navigation||pageTools))window.NaxxMenus.enhance();
-    if(window.NaxxStreamPageSize&&(full||containsFeature(root,'#stream_show_entries,#datatable-streampage,select[name="datatable-streampage_length"]')))window.NaxxStreamPageSize.enhance();
-    if(window.NaxxStreamSources&&(full||pageTools||containsFeature(root,'#collapse_filters')))window.NaxxStreamSources.enhance();
+    if(window.NaxxStreamPageSize&&(full||containsFeature(root,'#stream_show_entries,#show_entries,#datatable-streampage,#datatable-mass,select[name="datatable-streampage_length"],select[name="datatable-mass_length"]')))window.NaxxStreamPageSize.enhance();
+    if(window.NaxxStreamSources&&(full||pageTools||containsFeature(root,'#collapse_filters,#stream-selection')))window.NaxxStreamSources.enhance();
+    if(window.NaxxStreamMass&&(full||pageTools||containsFeature(root,'#stream-selection,#datatable-mass')))window.NaxxStreamMass.enhance();
     if(window.NaxxBouquetSelection&&(full||pageTools||containsFeature(root,'#bouquet_form')))window.NaxxBouquetSelection.enhance();
     if(window.NaxxBouquetOrder&&(full||pageTools||containsFeature(root,'#stream_order_array')))window.NaxxBouquetOrder.enhance();
     if(window.NaxxDashboard&&dashboard)window.NaxxDashboard.enhance();

@@ -6,12 +6,49 @@
     var root=document.createElement('div');root.id='importer-root';
     document.title='XUI NAXX · Importador';
     var heading=document.querySelector('.page-title');if(heading)heading.textContent='Importador de catálogo';
-    var details=document.createElement('details');details.className='naxx-native-options';details.innerHTML='<summary>Configurações avançadas e revisão detalhada</summary><p class="text-muted">As opções originais de categorias, listas, servidores, transcodificação e revisão estão disponíveis abaixo. Ao importar, as configurações abertas para cada tipo serão usadas.</p><div class="naxx-import-tabs"></div><div data-native-frames></div>';
+    var details=document.createElement('details');details.className='naxx-native-options';details.innerHTML='<summary>Configurações avançadas e revisão detalhada</summary><p class="text-muted">As opções originais de categorias, listas, servidores, transcodificação e revisão estão disponíveis abaixo. Ao importar, as configurações abertas para cada tipo serão usadas, com os bouquets escolhidos no destino da importação.</p><div class="naxx-import-tabs"></div><div data-native-frames></div>';
     form.parentNode.insertBefore(root,form);form.parentNode.insertBefore(details,form);form.hidden=true;
     var frames={},routes={channel:'stream?import=1',movie:'movie?import=1',series:'serie?import=1',reviewChannel:'review?type=1',reviewMovie:'review?type=2'};
     Object.keys(routes).forEach(function(type){var button=document.createElement('button');button.type='button';button.className='btn btn-light';button.textContent={channel:'Canais',movie:'Filmes',series:'Séries',reviewChannel:'Revisão de canais',reviewMovie:'Revisão de filmes'}[type];details.querySelector('.naxx-import-tabs').appendChild(button);button.addEventListener('click',function(){Object.keys(frames).forEach(function(key){frames[key].hidden=true;});if(!frames[type]){var frame=document.createElement('iframe');frame.className='naxx-config-frame';frame.title='Configurações nativas: '+button.textContent;frame.src=routes[type]+'&naxx_embed=1';frames[type]=frame;details.querySelector('[data-native-frames]').appendChild(frame);}frames[type].hidden=false;});});
     var panel=document.createElement('div');panel.className='card';panel.innerHTML='<div class="card-body"><h2 class="header-title">Destino da importação</h2><p class="text-muted">Revise a lista e grave canais, filmes e séries diretamente no painel.</p><label for="naxx-mode">Modo dos canais ao vivo</label><select id="naxx-mode" class="custom-select"><option value="ondemand">Iniciar somente quando alguém reproduzir (recomendado)</option><option value="direct">Fonte direta (sem retransmissão pelo servidor)</option><option value="offline">Cadastrar sem iniciar transmissão</option></select><p class="text-muted mt-2 mb-0">No modo sob demanda, o painel inicia a fonte quando o canal é reproduzido e a encerra sem espectadores. Isso reduz o uso contínuo de CPU. Filmes e séries seguem as configurações nativas.</p></div>';
     root.before(panel);
+    function readBouquets(source){
+      var options=new Map(),select=source.querySelector('select[name="bouquets[]"]');
+      if(!select||select.matches(':disabled'))return options;
+      Array.from(select.options).forEach(function(option){
+        if(!/^[1-9]\d*$/.test(option.value)||option.disabled||option.closest('optgroup[disabled]'))return;
+        var existing=options.get(option.value);
+        if(existing){existing.selected=existing.selected||option.selected;return;}
+        options.set(option.value,{id:option.value,name:option.textContent.trim()||'Bouquet #'+option.value,selected:option.selected});
+      });
+      return options;
+    }
+    var bouquetFields=document.createElement('fieldset');bouquetFields.id='naxx-bouquets';bouquetFields.className='naxx-bouquets';
+    bouquetFields.innerHTML='<legend>Bouquets (listas de canais)</legend><p id="naxx-bouquet-help" class="text-muted">Escolha os bouquets existentes que receberão o catálogo. Sem seleção, o envio fica sem bouquet. Esta seleção prevalece sobre os bouquets das configurações avançadas.</p><label for="naxx-bouquet-search">Buscar bouquet</label><input id="naxx-bouquet-search" type="search" class="form-control" placeholder="Digite o nome do bouquet" autocomplete="off" aria-controls="naxx-bouquet-options" aria-describedby="naxx-bouquet-count"><div class="naxx-bouquet-actions"><button type="button" class="btn btn-light" data-bouquet-select-visible>Selecionar visíveis</button><button type="button" class="btn btn-light" data-bouquet-select-all>Selecionar todos</button><button type="button" class="btn btn-light" data-bouquet-clear>Limpar seleção</button></div><div id="naxx-bouquet-options" class="naxx-bouquet-options" data-bouquet-options aria-describedby="naxx-bouquet-help"></div><p class="text-muted naxx-bouquet-empty" data-bouquet-empty hidden></p><div class="naxx-bouquet-footer"><p id="naxx-bouquet-count" data-bouquet-count role="status" aria-live="polite"></p><a href="bouquets" target="_blank" rel="noopener noreferrer">Gerenciar bouquets <span class="sr-only">(abre em outra aba)</span></a></div><p class="text-muted naxx-bouquet-fallback">Para filmes e séries, estes bouquets são o destino de reserva (fallback). As regras nativas de alocação por pasta podem ter prioridade.</p><p class="naxx-bouquet-error" data-bouquet-error role="alert" hidden></p>';
+    panel.querySelector('label').before(bouquetFields);
+    var bouquetSearch=bouquetFields.querySelector('#naxx-bouquet-search'),bouquetList=bouquetFields.querySelector('[data-bouquet-options]'),bouquetEmpty=bouquetFields.querySelector('[data-bouquet-empty]'),bouquetCount=bouquetFields.querySelector('[data-bouquet-count]'),bouquetError=bouquetFields.querySelector('[data-bouquet-error]'),bouquetRows=[];
+    var selectVisible=bouquetFields.querySelector('[data-bouquet-select-visible]'),selectAll=bouquetFields.querySelector('[data-bouquet-select-all]'),clearBouquets=bouquetFields.querySelector('[data-bouquet-clear]');
+    function bouquetSearchKey(value){return value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR');}
+    readBouquets(form).forEach(function(bouquet){
+      var label=document.createElement('label'),input=document.createElement('input'),name=document.createElement('span');
+      label.className='naxx-bouquet-option';input.type='checkbox';input.value=bouquet.id;input.checked=bouquet.selected;name.textContent=bouquet.name;label.append(input,name);bouquetList.appendChild(label);
+      bouquetRows.push({id:bouquet.id,name:bouquet.name,key:bouquetSearchKey(bouquet.name),label:label,input:input});
+      input.addEventListener('change',function(){clearBouquetError();renderBouquets();});
+    });
+    function clearBouquetError(){bouquetError.hidden=true;bouquetError.textContent='';bouquetFields.removeAttribute('aria-invalid');}
+    function renderBouquets(){
+      var query=bouquetSearchKey(bouquetSearch.value.trim()),visible=0,selected=0;
+      bouquetRows.forEach(function(row){row.label.hidden=!!query&&!row.key.includes(query);if(!row.label.hidden)visible++;if(row.input.checked)selected++;});
+      bouquetList.hidden=!visible;bouquetEmpty.hidden=!!visible;
+      bouquetEmpty.textContent=bouquetRows.length?'Nenhum bouquet corresponde à busca.':'Nenhum bouquet disponível nesta conta. Crie um bouquet ou solicite acesso e depois atualize esta página.';
+      bouquetCount.textContent=selected+' de '+bouquetRows.length+' bouquets selecionados'+(query?' · '+visible+' visíveis':'');
+      bouquetSearch.disabled=!bouquetRows.length;selectVisible.disabled=!visible;selectAll.disabled=!bouquetRows.length;clearBouquets.disabled=!selected;
+    }
+    bouquetSearch.addEventListener('input',renderBouquets);
+    selectVisible.addEventListener('click',function(){bouquetRows.forEach(function(row){if(!row.label.hidden)row.input.checked=true;});clearBouquetError();renderBouquets();});
+    selectAll.addEventListener('click',function(){bouquetRows.forEach(function(row){row.input.checked=true;});clearBouquetError();renderBouquets();});
+    clearBouquets.addEventListener('click',function(){bouquetRows.forEach(function(row){row.input.checked=false;});clearBouquetError();renderBouquets();});
+    renderBouquets();
     var progress=document.createElement('section');progress.className='naxx-transfer';progress.hidden=true;progress.innerHTML='<div class="naxx-transfer-heading"><strong>Importação no painel</strong><span data-transfer-count></span></div><div class="progress"><div class="progress-bar" role="progressbar" aria-label="Progresso da importação" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div></div><p data-transfer-status role="status" aria-live="polite"></p><div class="d-flex flex-wrap" style="gap:8px"><button type="button" class="btn btn-light" data-pause>Pause após este lote</button><button type="button" class="btn btn-light" data-stop>Cancelar próximos lotes</button></div>';panel.querySelector('.card-body').appendChild(progress);
     var paused=false,stopped=false,running=false,total=0,done=0;
     var pause=progress.querySelector('[data-pause]'),stop=progress.querySelector('[data-stop]');
@@ -27,9 +64,16 @@
       // A navegação parcial original cancela os timers da fila. Outra aba mantém o envio.
       event.preventDefault();event.stopImmediatePropagation();window.open(link.href,'_blank','noopener');
     },true);
+    function nativeImportForm(doc,action){
+      var submitName={stream:'submit_stream',movie:'submit_movie',serie:'submit_series'}[action];
+      return Array.from(doc.querySelectorAll('form')).find(function(candidate){
+        var bouquets=candidate.querySelector('select[name="bouquets[]"]');
+        return submitName&&(action!=='stream'||candidate.id==='stream_form')&&candidate.querySelector('input[type="file"][name="m3u_file"]')&&candidate.querySelector('[name="server_tree_data"]')&&candidate.querySelector('[name="'+submitName+'"]')&&bouquets&&!bouquets.matches(':disabled');
+      });
+    }
     async function nativeForm(route){
       var response=await fetch(route,{credentials:'same-origin',cache:'no-store'});if(!response.ok||/\/(login|license)(?:[?/]|$)/.test(response.url))throw new Error('Sua sessão expirou. Entre novamente no painel.');
-      var doc=new DOMParser().parseFromString(await response.text(),'text/html'),form=doc.querySelector('form');
+      var doc=new DOMParser().parseFromString(await response.text(),'text/html'),form=nativeImportForm(doc,route.split('?')[0]);
       if(!form)throw new Error('O formulário nativo não está disponível para '+route+'. Verifique as permissões.');
       return {doc:doc,form:form,data:new FormData(form)};
     }
@@ -59,19 +103,39 @@
       data.set('server_tree_data',JSON.stringify(tree));
     }
     async function commit(items){
+      if(running)throw new Error('Já existe uma importação em andamento.');
       var modeControl=document.getElementById('naxx-mode'),channelMode=modeControl.value;
-      done=0;total=items.length;paused=false;stopped=false;running=true;modeControl.disabled=true;details.setAttribute('inert','');details.classList.add('naxx-options-busy');pause.disabled=false;stop.disabled=false;pause.textContent='Pausar após este lote';
+      var chosenBouquets=bouquetRows.filter(function(row){return row.input.checked;}).map(function(row){return {id:row.id,name:row.name};});
+      clearBouquetError();
+      done=0;total=items.length;paused=false;stopped=false;running=true;modeControl.disabled=true;bouquetFields.disabled=true;bouquetFields.setAttribute('aria-busy','true');details.setAttribute('inert','');details.classList.add('naxx-options-busy');pause.disabled=false;stop.disabled=false;pause.textContent='Pausar após este lote';
       // Uma única referência por item pendente; evita copiar todos por tipo e depois categoria.
       var groups={channel:new Map(),movie:new Map(),series:new Map()};
       items.forEach(function(item){if(committed.has(item.url)){done++;return;}var group=groups[item.type],list=group.get(item.category);if(!list){list=[];group.set(item.category,list);}list.push(item);});
       try{
+        // Valida todos os destinos antes do primeiro lote; uma lista removida não causa envio parcial por tipo.
+        var prepared={};
+        for(var pendingType of ['channel','movie','series']){
+          if(!groups[pendingType].size)continue;
+          await checkpoint();
+          var pendingAction={channel:'stream',movie:'movie',series:'serie'}[pendingType];
+          say('Conferindo bouquets e configurações de '+({channel:'canais',movie:'filmes',series:'séries'}[pendingType])+'…');
+          var pendingNative=await nativeForm(pendingAction+'?import=1'),validBouquets=readBouquets(pendingNative.form);
+          var missing=chosenBouquets.filter(function(bouquet){return !validBouquets.has(bouquet.id);});
+          if(missing.length){
+            var destinationError='O bouquet “'+missing[0].name+'” não está disponível para '+({channel:'canais',movie:'filmes',series:'séries'}[pendingType])+'. Atualize a página e revise a seleção. Nenhum lote foi enviado.';
+            bouquetError.textContent=destinationError;bouquetError.hidden=false;bouquetFields.setAttribute('aria-invalid','true');throw new Error(destinationError);
+          }
+          var pendingData=pendingNative.data,configured=frames[pendingType];
+          if(configured){var doc=configured.contentDocument,nativeConfig=doc&&nativeImportForm(doc,pendingAction);if(!nativeConfig)throw new Error('Aguarde o carregamento das configurações de '+pendingType+' ou confira sua sessão e permissões.');pendingData=new FormData(nativeConfig);var jq=configured.contentWindow.jQuery;if(jq&&jq.fn.jstree&&doc.getElementById('server_tree'))pendingData.set('server_tree_data',JSON.stringify(jq('#server_tree').jstree(true).get_json('source',{flat:true})));}
+          pendingData.delete('bouquets[]');chosenBouquets.forEach(function(bouquet){pendingData.append('bouquets[]',bouquet.id);});pendingData.set('bouquet_create_list','[]');
+          prepared[pendingType]={native:pendingNative,data:pendingData,configured:!!configured};
+        }
         for(var type of ['channel','movie','series']){
           if(!groups[type].size)continue;
           await checkpoint();
           var action={channel:'stream',movie:'movie',series:'serie'}[type];
           say('Importando '+({channel:'canais',movie:'filmes',series:'séries'}[type])+'… '+done+' de '+items.length+' processados.');
-          var native=await nativeForm(action+'?import=1'),data=native.data,configured=frames[type];
-          if(configured){var doc=configured.contentDocument,nativeConfig=doc&&doc.querySelector('form');if(!nativeConfig)throw new Error('Aguarde o carregamento das configurações de '+type+'.');data=new FormData(nativeConfig);var jq=configured.contentWindow.jQuery;if(jq&&jq.fn.jstree&&doc.getElementById('server_tree'))data.set('server_tree_data',JSON.stringify(jq('#server_tree').jstree(true).get_json('source',{flat:true})));}
+          var native=prepared[type].native,data=prepared[type].data,configured=prepared[type].configured;
           // Este botão importa a lista revisada. A ação por pasta fica no formulário avançado.
           data.delete('import_folder');data.delete('scan_recursive');
           if(!configured){
@@ -118,7 +182,7 @@
         say('Importação concluída: '+done+' conteúdos enviados aos importadores do painel. Consulte Canais, Filmes e Séries para acompanhar o processamento.');
         return {message:'Importação concluída. '+done+' conteúdos enviados ao painel.'};
       }catch(error){throw new Error((done?'Lotes anteriores enviados: '+done+'. Ao tentar novamente, eles serão ignorados nesta sessão. ':'')+error.message);}
-      finally{running=false;modeControl.disabled=false;details.removeAttribute('inert');details.classList.remove('naxx-options-busy');pause.disabled=true;stop.disabled=true;}
+      finally{running=false;modeControl.disabled=false;bouquetFields.disabled=false;bouquetFields.removeAttribute('aria-busy');details.removeAttribute('inert');details.classList.remove('naxx-options-busy');pause.disabled=true;stop.disabled=true;}
     }
     NaxxImporterUI.mount(root,{urlEndpoint:'naxx-import-url.php',workerURL:'assets/js/naxx-importer-worker.js?v=1.5.14-5',onImport:commit,commitLabel:'Importar no painel',commitHelp:'As categorias serão vinculadas pelos formulários do painel. A importação avança em lotes e pode ser pausada ou interrompida.'});
   }
