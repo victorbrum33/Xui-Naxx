@@ -172,3 +172,8 @@ sudo python3 scripts/otimizar_memoria_mysql.py --apply --flush-idle
 `--check` apenas diagnostica. `--apply` salva o perfil em `/etc/mysql/mariadb.conf.d/zz-naxx-memory.cnf` e ajusta o valor global quando necessário. `--flush-idle` é opcional: com `--apply`, libera o cache somente se houver mais threads ociosas que o limite. O helper não reinicia o banco, não encerra conexões ativas e não altera dados do catálogo. A redução de RAM depende do histórico e da carga; não há ganho fixo ou garantido. Novas instalações já recebem `thread_cache_size=8` no perfil inicial.
 
 Antes de mudar algo, o helper grava um backup JSON protegido em `/var/lib/naxx-performance/mysql-memory-backups/` e informa seu caminho. Para restauração manual, use `before.thread_cache_size` para repor o valor global e `previous_base64`/`previous_mode` para restaurar o arquivo anterior; se `previous_base64` for nulo, o arquivo não existia. Preserve o backup e faça a restauração como root. Threads já liberadas não são recriadas pela restauração.
+
+
+## Página inicial — 1.14.2
+
+A aba Página inicial oferece quatro modelos em Configurações, com prévia, Aplicar tema e Restaurar página original. O helper root e os modelos precisam ser instalados antes do uso. Consulte [o procedimento e os pacotes complementares](releases/v1.14.2/PAGINA-PUBLICA.md).

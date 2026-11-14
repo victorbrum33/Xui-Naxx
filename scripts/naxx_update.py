@@ -491,6 +491,16 @@ class Manager:
 
     def dispatch(self, request, uid):
         action = request.get('action')
+        if action in ('public_page_status', 'public_page_preview', 'public_page_publish', 'public_page_restore'):
+            # Independent fixed-path capability; updater actions and file allowlist stay unchanged.
+            try:
+                from naxx_public_page import PublicPageError, control_public_page
+            except ImportError as error:
+                raise UpdateError('O serviço da página pública precisa ser instalado pelo administrador.', 503) from error
+            try:
+                return control_public_page(action, request)
+            except PublicPageError as error:
+                raise UpdateError(str(error), error.status) from error
         if action == 'status':
             return {'ok': True, 'state': self.snapshot()}
         if action == 'automatic':

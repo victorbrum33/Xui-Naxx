@@ -698,6 +698,7 @@
     if(window.NaxxStreamPageSize&&(full||containsFeature(root,'#stream_show_entries,#show_entries,#datatable-streampage,#datatable-mass,select[name="datatable-streampage_length"],select[name="datatable-mass_length"]')))window.NaxxStreamPageSize.enhance();
     if(window.NaxxStreamSources&&(full||pageTools||containsFeature(root,'#collapse_filters,#stream-selection')))window.NaxxStreamSources.enhance();
     if(window.NaxxStreamMass&&(full||pageTools||containsFeature(root,'#stream-selection,#datatable-mass')))window.NaxxStreamMass.enhance();
+    if(window.NaxxPublicPage&&(full||pageTools||containsFeature(root,'#logs,#naxx-public-page,.form-wizard-header')))window.NaxxPublicPage.enhance();
     if(window.NaxxBouquetSelection&&(full||pageTools||containsFeature(root,'#bouquet_form')))window.NaxxBouquetSelection.enhance();
     if(window.NaxxBouquetOrder&&(full||pageTools||containsFeature(root,'#stream_order_array')))window.NaxxBouquetOrder.enhance();
     if(window.NaxxDashboard&&dashboard)window.NaxxDashboard.enhance();

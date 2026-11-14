@@ -103,3 +103,8 @@ python3 tests/test_mysql_memory.py
 ```
 
 O teste usa arquivos temporários e comandos MariaDB simulados. Verifica diagnóstico sem escrita, limite sem aumentar valores menores, persistência, backup, limpeza opcional de threads ociosas, idempotência, conflitos e recuperação de falhas. Não exige root, não acessa um MariaDB real e não mede redução de RAM.
+
+
+## Página pública
+
+`python3 tests/test_public_page.py`, `python3 tests/test_public_page_integration.py` e `node --unhandled-rejections=strict tests/verify-public-page-ui-offline.cjs`. O último teste requer jsdom. As operações POSIX usam somente diretórios temporários isolados; o teste do instalador simula os serviços.

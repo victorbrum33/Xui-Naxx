@@ -1,0 +1,30 @@
+[
+  {
+    "id": "naxx",
+    "name": "Naxx Azul",
+    "description": "Azul profundo com composição tecnológica e órbitas luminosas.",
+    "swatches": ["#080f20", "#4788ff", "#dceaff"],
+    "file": "naxx.html"
+  },
+  {
+    "id": "aurora",
+    "name": "Aurora",
+    "description": "Verde escuro, luz suave e formas orgânicas em uma composição acolhedora.",
+    "swatches": ["#062821", "#9fe4b0", "#e2f2dc"],
+    "file": "aurora.html"
+  },
+  {
+    "id": "claro",
+    "name": "Claro",
+    "description": "Marfim e azul em um visual editorial leve, limpo e espaçoso.",
+    "swatches": ["#f5f3ec", "#184ee8", "#161c2b"],
+    "file": "claro.html"
+  },
+  {
+    "id": "cinema",
+    "name": "Cinema",
+    "description": "Bordô e âmbar com tipografia expressiva e atmosfera cinematográfica.",
+    "swatches": ["#241013", "#e5b16f", "#faeee0"],
+    "file": "cinema.html"
+  }
+]
