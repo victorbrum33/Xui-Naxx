@@ -4686,7 +4686,7 @@ body.naxx-login{background:var(--naxx-bg)!important;background-image:none!import
 #collapse_filters.naxx-stream-source-filters>div{width:auto;min-width:0;max-width:none;padding-inline:0}
 #stream-selection>.row.naxx-stream-source-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-inline:0}
 #stream-selection>.row.naxx-stream-source-filters>div{width:auto;min-width:0;max-width:none;padding-inline:0}
-#stream-selection>.row.naxx-stream-source-filters>table,#stream-selection>.row.naxx-stream-source-filters>.dataTables_wrapper{grid-column:1/-1;width:100%;min-width:0}
+#stream-selection>.row.naxx-stream-source-filters>table,#stream-selection>.row.naxx-stream-source-filters>.dataTables_wrapper,#stream-selection>.row.naxx-stream-source-filters>.xui-table-scroll{grid-column:1/-1;width:100%;min-width:0}
 #stream-selection .naxx-stream-source-status{margin:8px 0 12px}
 .naxx-stream-mass-selection{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0;grid-column:1/-1}
 .naxx-stream-mass-selection>p{flex-basis:100%;font-size:13px;line-height:1.5}
