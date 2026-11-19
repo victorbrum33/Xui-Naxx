@@ -684,6 +684,7 @@
   }
   function enhance(root) {
     root=root||document;
+    if(window.NaxxPanelTranslations)window.NaxxPanelTranslations.enhance(root);
     if(window.NaxxPerformance&&typeof window.NaxxPerformance.enhance==='function')window.NaxxPerformance.enhance();
     var full=root===document;
     if(full||containsFeature(root,'#hue'))enhanceTopbarTheme();
@@ -766,6 +767,8 @@
     function textChanged(node){
       var parent=node.parentElement;if(!parent)return;
       var key=(node.nodeValue||'').trim();
+      var message=parent.closest('.jBox-Confirm,.jq-toast-single');
+      if(message){enqueue(message);return;}
       if((labelTranslation(parent,key)||/^\d+ (?:Hours?|Days?)$/.test(key))&&parent.matches(translationSelector)){enqueue(parent);return;}
       // Os textos extensos e avisos do cache têm tradução própria no módulo.
       if(/\/cache(?:\.php)?$/.test(location.pathname)&&parent.closest('.jBox-container,.jq-toast-wrap'))enqueue(parent);

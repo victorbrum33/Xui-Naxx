@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var overlayScript=document.currentScript;
-  var overlayRevision=window.naxxAssetRevision||'c3c79fa2258e';
+  var overlayRevision=window.naxxAssetRevision||'362a1b5dbbb3';
   var overlayAssetBase=overlayScript&&overlayScript.src?new URL('../css/',overlayScript.src):new URL('assets/css/',location.href);
   function loadOverlayStyles(){
     if(overlayScript&&overlayScript.src&&!/\/(?:naxx-overlay|app\.min)\.js(?:\?|$)/.test(overlayScript.src))return;
@@ -170,7 +170,7 @@
     llod:'NAXX Automático analisa as fontes ao salvar e escolhe um modo compatível validado. A decisão aparece abaixo do campo. Após alterar a fonte, analise novamente. Os modos manuais continuam disponíveis.'
   };
   var brandAssetVersion = 'dc7f713aa259';
-  var stylesheetVersion = 'c3c79fa2258e';
+  var stylesheetVersion = '362a1b5dbbb3';
   Object.assign(translations,{"Settings": "Configurações gerais", "Save Changes": "Salvar alterações", "General": "Geral", "Security": "Segurança", "Streaming": "Transmissão", "Web Player": "Player web", "Logs": "Registros", "Preferences": "Preferências", "Server Name": "Nome do servidor", "Server Timezone": "Fuso horário do servidor", "Message of the Day": "Mensagem do dia", "Show Entries": "Itens por página", "Fails Per Time": "Falhas por período", "Date Format": "Formato da data", "Datetime Format": "Formato de data e hora", "Group Streams Table": "Agrupar transmissões na tabela", "Seamless Navigation": "Navegação sem recarregar a página", "Show Tickets Icon": "Exibir ícone de chamados", "Disable Restart Counter": "Desativar contador de reinicializações", "Auto-Cleanup Files": "Limpar arquivos automaticamente", "Check VOD Cron": "Verificar rotina de VOD", "Show Images & Picons": "Exibir imagens e ícones de canais", "Group Buttons": "Agrupar botões", "Quick Edit Modal": "Janela de edição rápida", "MySQL Sleep Timeout": "Tempo limite de conexões ociosas no MySQL", "Show Graphs": "Exibir gráficos", "Show Connections Map": "Exibir mapa de conexões", "Alternate Server View": "Visualização alternativa de servidores", "Show Header Stats": "Exibir estatísticas no cabeçalho", "Show Service Status": "Exibir estado dos serviços", "CPU Threshold %": "Limite de CPU (%)", "Memory Threshold %": "Limite de memória (%)", "Disk Threshold %": "Limite de disco (%)", "Network Threshold %": "Limite de rede (%)", "Clients Threshold %": "Limite de clientes (%)", "Search": "Pesquisa", "Enable Search": "Ativar pesquisa", "Number of Items": "Quantidade de itens", "Reseller": "Revendedor", "Disable Trials": "Desativar testes", "SSL Custom DNS": "DNS personalizado com SSL", "Debug": "Diagnóstico", "Debug Mode": "Modo de diagnóstico", "Auto-Send Logs to XUI": "Enviar registros automaticamente ao XUI", "Enable reCAPTCHA": "Ativar reCAPTCHA", "reCAPTCHA V2 - Site Key": "reCAPTCHA V2 — chave do site", "reCAPTCHA V2 - Secret Key": "reCAPTCHA V2 — chave secreta", "Default Arguments": "Parâmetros padrão", "User Agent": "Agente de usuário", "HTTP Proxy": "Proxy HTTP", "Headers": "Cabeçalhos", "On Demand Probesize": "Tamanho da análise sob demanda", "IP Security": "Segurança de IP", "Match Subnet of IP": "Verificar sub-rede do IP", "Logout On IP Change": "Encerrar sessão ao mudar de IP", "Restrict to Same IP": "Restringir ao mesmo IP", "Random RTMP IP": "IP RTMP aleatório", "Disallow 2nd IP": "Bloquear segundo IP", "Disallow if Connections <=": "Bloquear se as conexões forem menores ou iguais a", "Restream Prevention": "Prevenção de retransmissão", "XUI Detect - Deny": "Detecção de XUI — negar acesso", "XUI Detect - Ban Lines": "Detecção de XUI — banir contas", "Block Hosting Servers": "Bloquear servidores de hospedagem", "Block Proxies / VPN's": "Bloquear proxies e VPNs", "Spam Prevention": "Prevenção de abuso", "Flood Limit": "Limite de requisições", "Per Seconds": "Período em segundos", "Auth Flood Limit": "Limite de requisições de autenticação", "Auth Flood Seconds": "Período de autenticação em segundos", "Auth Flood Sleep": "Pausa após excesso de autenticações", "Flood IP Exclusions": "IPs isentos do limite de requisições", "Detect MAC Bruteforce": "Detectar tentativas de força bruta por MAC", "Detect Username Bruteforce": "Detectar tentativas de força bruta por usuário", "Bruteforce Frequency": "Intervalo de verificação de força bruta", "Maximum Login Attempts": "Máximo de tentativas de login", "Max Simultaneous Downloads": "Máximo de downloads simultâneos", "TMDb Key": "Chave do TMDb", "TMDb Language": "Idioma do TMDb", "Download Images": "Baixar imagens", "API Redirect": "Redirecionamento da API", "Append Movie Year": "Adicionar ano ao título do filme", "API Container": "Formato de saída da API", "Cache Playlists for": "Manter listas em cache por", "Grab Playlists from MySQL": "Obter listas diretamente do MySQL", "Force EPG to UTC Timezone": "Forçar EPG no fuso UTC", "Keep Request Protocol": "Manter protocolo da requisição", "VOD Parser": "Analisador de títulos de VOD", "Enable Cloudflare": "Ativar Cloudflare", "Legacy Support": "Compatibilidade com aplicativos antigos", "Legacy Playlist URL": "URL de lista para aplicativos antigos", "Legacy XMLTV URL": "URL XMLTV para aplicativos antigos", "Legacy Panel API": "API do painel para aplicativos antigos", "Duplicate Streams in Legacy Apps": "Duplicar transmissões em aplicativos antigos", "EPG API": "API do guia de programação", "Enable EPG API": "Ativar API do guia de programação", "Append Extra Data": "Incluir dados adicionais", "Days to Fetch": "Dias para buscar", "Days to Keep": "Dias para manter", "API Services": "Serviços da API", "Admin Streaming IP's": "IPs de transmissão dos administradores", "API IP's": "IPs autorizados na API", "API Password": "Senha da API", "Disable EPG Download - Line": "Desativar download de EPG para contas", "Disable EPG Download - Restreamer": "Desativar download de EPG para retransmissores", "Disable Playlist Download - Line": "Desativar download de listas para contas", "Disable Playlist Download - Restreamer": "Desativar download de listas para retransmissores", "Disable Player API": "Desativar API do player", "Disable Enigma2 API": "Desativar API Enigma2", "Disable Ministra API": "Desativar API Ministra", "Verify Hosts": "Verificar servidores de origem", "Streaming Password": "Senha de transmissão", "Enable ISP Lock": "Ativar bloqueio por provedor", "Enable ASN Lock": "Ativar bloqueio por ASN", "Disable MPEG-TS Output": "Desativar saída MPEG-TS", "Allow Restreamers - MPEG-TS": "Permitir retransmissores em MPEG-TS", "Disable HLS Output": "Desativar saída HLS", "Allow Restreamers - HLS": "Permitir retransmissores em HLS", "Disable RTMP Output": "Desativar saída RTMP", "Allow Restreamers - RTMP": "Permitir retransmissores em RTMP", "Case Sensitive Lines": "Diferenciar maiúsculas e minúsculas nas contas", "Override Country with First": "Usar país da primeira conexão", "Encrypt HLS Segments": "Criptografar segmentos HLS", "Disallow Empty UA": "Bloquear agente de usuário vazio", "VOD Bitrate Buffer": "Buffer de taxa de bits do VOD", "VOD Limit At %": "Limitar VOD a (%)", "Auto-Kick Hours": "Desconectar automaticamente após horas", "Use Domain Name in API": "Usar nome de domínio na API", "Encrypt Playlists": "Criptografar listas", "Encrypt Restreamer Playlists": "Criptografar listas de retransmissores", "Restrictions on Playlists & EPG": "Aplicar restrições às listas e ao EPG", "Ignore Invalid Credentials": "Ignorar credenciais inválidas", "Client Prebuffer": "Buffer inicial do cliente", "Restreamer Prebuffer": "Buffer inicial do retransmissor", "Load Balancing": "Balanceamento de carga", "Restreamer Bypass Proxy": "Permitir que retransmissores ignorem o proxy", "Channel Sorting Type": "Tipo de ordenação dos canais", "Sort VOD by Date": "Ordenar VOD por data", "Use Nginx Buffer": "Usar buffer do Nginx", "Log Client ISP's": "Registrar provedor dos clientes", "Online Capacity Interval": "Intervalo de atualização da capacidade", "Monitor Connection Status": "Monitorar estado das conexões", "Auto-Restart Crashed PHP-FPM": "Reiniciar PHP-FPM automaticamente após falhas", "Kill Rogue FFMPEG PID's": "Encerrar processos FFMPEG órfãos", "Redirect Expiration": "Validade do redirecionamento", "HLS Read Native": "Leitura nativa de HLS", "Read Buffer Size": "Tamanho do buffer de leitura", "Redis Connection Sync Timer": "Intervalo de sincronização de conexões do Redis", "Allow CDN / Forwarding": "Permitir CDN e encaminhamento", "Max Failures": "Máximo de falhas", "On-Demand Settings": "Configurações sob demanda", "Instant Off": "Desligamento imediato", "Exit on Failure": "Encerrar em caso de falha", "Wait Timeout": "Tempo limite de espera", "Request Prebuffer": "Solicitar buffer inicial", "Balance As Live": "Balancear como transmissão ao vivo", "On-Demand Scanner": "Verificador de conteúdo sob demanda", "Enable Scanner": "Ativar verificador", "Scan Time": "Intervalo de verificação", "Max Probe Time": "Tempo máximo de análise", "Keep Logs For": "Manter registros por", "Encoding Queue Settings": "Configurações da fila de codificação", "Max Movie Encodes": "Máximo de filmes em codificação", "Max Channel Encodes": "Máximo de canais em codificação", "Queue Loop Timer": "Intervalo da fila", "Segment Settings": "Configurações de segmentos", "Segment Duration": "Duração do segmento", "List Size": "Tamanho da lista", "Delete Threshold": "Limite para exclusão", "Max Segment Wait Time": "Tempo máximo de espera por segmento", "Analysis Duration": "Duração da análise", "Probe Size": "Tamanho da análise", "FFMPEG Version": "Versão do FFMPEG", "FFMPEG Segment Type": "Tipo de segmento do FFMPEG", "FFMPEG Show Warnings": "Exibir avisos do FFMPEG", "Ignore Keyframes": "Ignorar quadros-chave", "DTS - Use FFMPEG v4.0": "DTS — usar FFMPEG v4.0", "Loopback Streams via PHP": "Retornar transmissões pelo PHP", "Stream Monitor Settings": "Configurações do monitor de transmissões", "Restart on Audio Loss": "Reiniciar ao perder o áudio", "Priority Backup": "Prioridade da fonte reserva", "Probe Duration": "Duração da análise inicial", "Stream Failure Sleep": "Pausa após falha de transmissão", "FPS Start Delay": "Atraso inicial da verificação de FPS", "FPS Check Type": "Tipo de verificação de FPS", "Probe via API": "Analisar pela API", "Off Air Videos": "Vídeos para conteúdo fora do ar", "Stream Down Video": "Vídeo de transmissão indisponível", "Banned Video": "Vídeo de conta banida", "Expired Video": "Vídeo de conta expirada", "Expiring Video": "Vídeo de aviso de vencimento", "2nd IP Connected Video": "Vídeo de segundo IP conectado", "Allowed Countries": "Países permitidos", "Show All Categories": "Exibir todas as categorias", "Default Container": "Formato padrão", "Always Enabled Subtitles": "Manter legendas ativadas", "Connection Problem Indiciation": "Indicar problemas de conexão", "Show Channel Logos": "Exibir logos dos canais", "Show Preview Channel Logos": "Exibir prévia dos logos dos canais", "Playback Limit": "Limite de reprodução", "Default Aspect Ratio": "Proporção de imagem padrão", "Default Theme Type": "Tipo de tema padrão", "Legacy Theme": "Tema para modelos antigos", "Legacy URL Redirect": "Redirecionar URLs antigas", "Keep URL Extension": "Manter extensão da URL", "Disable SSL": "Desativar SSL", "Load Channels on Startup": "Carregar canais ao iniciar", "Disable MAG Token": "Desativar token MAG", "Allowed STB Types": "Tipos de aparelhos permitidos", "Allowed STB Recording": "Aparelhos autorizados a gravar", "Speedtest URL": "URL do teste de velocidade", "Information Message": "Mensagem informativa", "Allow Playlist Download": "Permitir download de listas", "Allow Bouquet Ordering": "Permitir ordenar listas de canais", "Hide Incompatible Streams": "Ocultar transmissões incompatíveis", "Mark HEVC as Compatible": "Marcar HEVC como compatível", "Background Blur px": "Desfoque do fundo (px)", "Background Opacity %": "Opacidade do fundo (%)", "Extract Subtitles": "Extrair legendas", "Activity Logs": "Registros de atividade", "Client Logs": "Registros de clientes", "Login Logs": "Registros de login", "Stream Error Logs": "Registros de erros de transmissão", "Stream Restart Logs": "Registros de reinicialização de transmissões", "Brackets": "Parênteses", "Hyphen": "Hífen", "Default Format": "Formato padrão", "Extended Title": "Título ampliado", "Extended Description": "Descrição ampliada", "Max Clients": "Máximo de clientes", "Network Speed": "Velocidade da rede", "Detected Network Speed": "Velocidade de rede detectada", "Bouquet": "Lista de canais", "Legacy": "Antigo", "Progress Info": "Informações de progresso", "Modern": "Moderno", "Forever": "Para sempre", "All Countries": "Todos os países", "Remove item": "Remover item", "Choose...": "Selecione…", "Default - EN": "Padrão — inglês", "Leave blank to use default XUI video.": "Deixe em branco para usar o vídeo padrão do XUI.", "Cancel": "Cancelar", "Use Icon": "Usar ícone", "Adjust Credits": "Ajustar créditos", "Reason for Adjustment...": "Motivo do ajuste…", "Record": "Gravar", "Clear Stream Logs": "Limpar registros da transmissão", "Reinstall Server": "Reinstalar servidor", "Restart Services": "Reiniciar serviços", "Reboot Server": "Reiniciar servidor", "Update Binaries": "Atualizar binários", "Update Server": "Atualizar servidor"});
   var settingsHelpTranslations = {};
   Object.assign(settingsHelpTranslations,{"server_name": "Nome do seu serviço de transmissão.", "default_timezone": "Fuso horário padrão das interfaces de administração e revenda. É usado por todos os usuários até que escolham outro fuso no próprio perfil.", "message_of_day": "Mensagem exibida na API do player. Alguns aplicativos Android usam essa informação.", "default_entries": "Quantidade de itens exibidos por página nas tabelas das interfaces de administração e revenda.", "fails_per_time": "Período, em segundos, usado para contar as falhas na página de transmissões: falhas a cada X segundos.", "date_format": "Formato padrão das datas. Consulte os códigos de formatação de datas do PHP antes de alterar.", "datetime_format": "Formato padrão de data e hora. Consulte os códigos de formatação de datas do PHP antes de alterar.", "streams_grouped": "Agrupa os servidores de uma mesma transmissão em uma única linha, reduzindo a quantidade de linhas da tabela.", "js_navigate": "Usa JavaScript para carregar páginas sem recarregar toda a interface. Esse recurso fica desativado em dispositivos móveis.", "show_tickets": "Exibe o ícone de chamados no canto superior direito do menu. Ao desativar, os chamados ficam no menu de gerenciamento.", "hide_failures": "Oculta o contador de reinicializações ao lado do tempo de atividade da transmissão.", "cleanup": "Remove automaticamente arquivos desnecessários em segundo plano. Opção recomendada.", "check_vod": "Verifica periodicamente se os arquivos de VOD existem. Se não existirem, marca o conteúdo como não codificado. Não é recomendado para acervos muito grandes.", "show_images": "Exibe os logos dos canais e as imagens de VOD nas páginas de gerenciamento.", "group_buttons": "Agrupa os botões de ação em um menu nas páginas compatíveis.", "modal_edit": "Abre a edição em uma janela sobre a página atual, sem sair dela.", "mysql_sleep_kill": "Tempo permitido para uma conexão MySQL permanecer ociosa, no estado Sleep, antes de ser encerrada. Use 0 para desativar.", "dashboard_stats": "Exibe gráficos de recursos do sistema, rede e conexões na visão geral.", "dashboard_map": "Exibe o mapa das conexões na visão geral.", "dashboard_display_alt": "Troca os cartões dos servidores entre os formatos largo e quadrado na visão geral.", "header_stats_sh": "Exibe as estatísticas dos servidores no menu do cabeçalho.", "dashboard_status": "Exibe avisos conforme as estatísticas dos servidores.", "threshold_cpu": "Quando o uso de CPU ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_mem": "Quando o uso de memória ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_disk": "Quando o uso de disco ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_network": "Quando o uso da rede ultrapassar esta porcentagem, será exibido um aviso no quadro de estado dos serviços.", "threshold_clients": "Exibe um aviso quando a quantidade de clientes, em relação ao máximo permitido pelo servidor, ultrapassar esta porcentagem.", "enable_search": "Exibe a pesquisa no canto superior direito do cabeçalho e permite que o mecanismo de cache grave as consultas de pesquisa no banco de dados.", "search_items": "Quantidade de resultados exibidos na pesquisa. O máximo é 100.", "disable_trial": "Desativa temporariamente a criação de testes para todas as contas.", "reseller_ssl_domain": "Usa HTTPS nos downloads de listas quando o servidor principal tem SSL ativo e o revendedor usa um DNS personalizado.", "debug_show_errors": "Ativa a exibição de erros para diagnosticar problemas no painel. As mensagens podem incluir detalhes técnicos do sistema.", "auto_send_logs": "Envia automaticamente os registros de erros do painel para análise e verificação pela equipe do XUI.", "recaptcha_v2_site_key": "Acesse https://google.com/recaptcha/admin para obter as chaves do reCAPTCHA.", "recaptcha_v2_secret_key": "Acesse https://google.com/recaptcha/admin para obter as chaves do reCAPTCHA.", "http_proxy": "Formato: IP:porta.", "cookie": "Formato: chave=valor;", "headers": "Cabeçalhos enviados pelo parâmetro -headers do FFmpeg.", "probesize_ondemand": "Tamanho da análise inicial das transmissões sob demanda. Ajuste se houver problemas de ausência de áudio.", "ip_subnet_match": "Aceita mudanças de IP dentro da mesma sub-rede /24, mantendo a verificação de segurança menos restritiva. Por exemplo, 159.55.26.0 e 159.55.26.255 serão considerados equivalentes.", "ip_logout": "Encerra a sessão se o IP mudar durante o uso, ajudando a proteger contra o uso indevido de cookies.", "restrict_same_ip": "Vincula as conexões HLS ao endereço IP de origem. Desative se isso causar problemas com IPs dinâmicos.", "rtmp_random": "Usa um IP aleatório nas conexões RTMP.", "disallow_2nd_ip_con": "Impede uma conexão de outro IP enquanto a conta já estiver em uso.", "disallow_2nd_ip_max": "A restrição ao segundo IP só se aplica às contas cujo limite de conexões seja menor ou igual a este valor. Por exemplo, com 3, contas com limite de até 3 conexões serão desconectadas ao conectar por outro IP.", "restream_deny_unauthorised": "Nega conexões de contas sem permissão de retransmissão que tentem usar o XUI para retransmitir conteúdo.", "detect_restream_block_user": "Bane contas sem permissão de retransmissão que tentem usar o XUI para retransmitir conteúdo.", "block_streaming_servers": "Bloqueia automaticamente servidores identificados como pertencentes a provedores de hospedagem. Não afeta retransmissores autorizados.", "block_proxies": "Bloqueia automaticamente proxies e VPNs conforme o ASN. Não afeta retransmissores autorizados.", "flood_limit": "Quantidade de tentativas antes de bloquear o IP. Use 0 para desativar a detecção de excesso de requisições.", "flood_seconds": "Período, em segundos, usado para contar as requisições.", "auth_flood_limit": "Quantidade de requisições válidas antes de aplicar uma pausa. Use 0 para desativar.<br/><br/>Este limite se aplica apenas a clientes autenticados. Por exemplo, após 30 conexões em 10 segundos, as próximas requisições podem aguardar 1 segundo durante o período de controle.", "auth_flood_seconds": "Período, em segundos, usado para contar as requisições autenticadas.", "auth_flood_sleep": "Tempo de espera aplicado ao atingir o limite de requisições autenticadas. A requisição continua após a pausa.", "flood_ips_exclude": "Separe os endereços IP por vírgulas.", "bruteforce_mac_attempts": "Detecta e bloqueia automaticamente IPs com tentativas de força bruta contra dispositivos MAG ou Enigma. Use 0 tentativas para desativar.", "bruteforce_username_attempts": "Detecta e bloqueia automaticamente IPs com tentativas de força bruta contra contas. Use 0 tentativas para desativar.", "bruteforce_frequency": "Período usado para contar as tentativas de força bruta por MAC e usuário: X tentativas a cada X segundos.", "login_flood": "Quantidade de tentativas de login permitidas antes de bloquear o IP. Use 0 para não limitar, por exemplo, ao utilizar reCAPTCHA ou código de acesso como proteção.", "max_simultaneous_downloads": "Máximo de downloads simultâneos de EPG e listas por usuário. Não afeta retransmissores. Requisições excedentes recebem o erro HTTP 429. Use 0 para desativar o limite.", "tmdb_api_key": "Obtenha sua chave de API em <a href='https://www.themoviedb.org/settings/api'>https://www.themoviedb.org/settings/api</a>.", "tmdb_language": "Idioma padrão das consultas ao TMDb. Pode ser alterado individualmente em cada filme ou série.", "download_images": "Baixa para o servidor principal as imagens obtidas de serviços como o TMDb.", "api_redirect": "Redireciona as requisições de transmissão da API usando tokens criptografados com AES, em vez de URLs com usuário e senha. Pode permanecer desativado se seus aplicativos não utilizarem esse recurso.", "movie_year_append": "Adiciona automaticamente o ano ao título do filme ao usar o TMDb ou as pastas monitoradas.", "api_container": "Formato de saída padrão usado em aplicativos Android e Smart TVs.", "cache_playlists": "Quando maior que 0, mantém as listas baixadas pelos clientes em cache por esta quantidade de segundos. Reduz o processamento, mas pode ocupar bastante disco com muitos clientes.", "playlist_from_mysql": "Lê as transmissões diretamente do MySQL em vez do cache local. Pode ser mais rápido quando há uma grande quantidade de transmissões.", "force_epg_timezone": "Gera o EPG e os horários das APIs em UTC. Também informa UTC como fuso na API do player para sincronizar os aplicativos.", "keep_protocol": "Mantém nas listas e transmissões o protocolo solicitado pelo cliente: HTTP ou HTTPS.", "parse_type": "Escolhe entre GuessIt e PTN para interpretar nomes de arquivos nas pastas monitoradas e em outros recursos. O GuessIt costuma ser mais preciso, mas usa mais recursos.", "cloudflare": "Permite conexões dos IPs da Cloudflare e o encaminhamento do IP real do cliente para o XUI.", "legacy_get": "Redireciona requisições de get.php para a nova URL de listas.", "legacy_xmltv": "Redireciona requisições de xmltv.php para a nova URL do EPG.", "legacy_panel_api": "Redireciona requisições de panel_api.php para a nova API do player do XUI.", "show_category_duplicates": "Repete o conteúdo em cada categoria à qual ele pertence para melhorar a compatibilidade com aplicativos antigos. Como consequência, o mesmo item pode aparecer várias vezes na pesquisa ou na categoria Todos.", "enable_epg_api": "Ativa a API do guia de programação na interface de administração.", "epg_api_extended": "Acrescenta informações aos dados de EPG recebidos, como o nome do programa.", "epg_api_days_fetch": "Quantidade de dias buscados ao obter os dados de EPG.", "epg_api_days_keep": "Quantidade de dias de EPG mantidos no armazenamento.", "allowed_ips_admin": "IPs autorizados a acessar transmissões com a senha de transmissão administrativa. Separe os IPs por vírgulas.", "api_ips": "IPs autorizados a acessar a API administrativa do XUI. Separe os IPs por vírgulas.", "api_password": "Senha necessária para acessar a API administrativa do XUI. Deixe em branco para usar somente a lista de IPs autorizados.", "disable_xmltv": "Impede o download do guia de programação no formato XMLTV para contas comuns.", "disable_xmltv_restreamer": "Impede o download do guia de programação no formato XMLTV para retransmissores.", "disable_playlist": "Impede que contas comuns baixem listas HLS ou listas para dispositivos.", "disable_playlist_restreamer": "Impede que retransmissores baixem listas HLS ou listas para dispositivos.", "disable_player_api": "Impede o acesso à API por aplicativos Android e Smart TVs.", "disable_enigma2": "Impede a conexão de dispositivos Enigma.", "disable_ministra": "Impede a conexão de dispositivos MAG pela API Ministra.", "verify_host": "Confere os domínios e IPs com os endereços autorizados no banco de dados, incluindo IPs de servidores, domínios e DNS dos revendedores.", "enable_isp_lock": "Ativa ou desativa globalmente o bloqueio por provedor de internet.", "block_svp": "Ativa ou desativa globalmente o bloqueio por ASN.", "disable_ts": "Desativa a saída MPEG-TS para todos os clientes e dispositivos.", "disable_ts_allow_restream": "Permite que retransmissores continuem usando MPEG-TS mesmo com essa saída desativada.", "disable_hls": "Desativa a saída HLS para todos os clientes e dispositivos.", "disable_hls_allow_restream": "Permite que retransmissores continuem usando HLS mesmo com essa saída desativada.", "disable_rtmp": "Desativa a saída RTMP para todos os clientes e dispositivos.", "disable_rtmp_allow_restream": "Permite que retransmissores continuem usando RTMP mesmo com essa saída desativada.", "case_sensitive_line": "Diferencia letras maiúsculas e minúsculas no usuário e na senha das contas.", "county_override_1st": "Usa o país identificado na primeira conexão da conta.", "encrypt_hls": "Criptografa as transmissões HLS com AES-256 durante a reprodução. Aumenta o uso de CPU e protege o conteúdo dos pacotes.", "disallow_empty_user_agents": "Bloqueia conexões de clientes que não informam o agente de usuário.", "vod_bitrate_plus": "Buffer adicional usado na transmissão de VOD.", "vod_limit_perc": "Aplica o limite de velocidade após transmitir esta porcentagem do VOD. Use 0 para limitar desde o início ou 100 para desativar a limitação.", "user_auto_kick_hours": "Desconecta automaticamente clientes que permanecerem conectados por mais que esta quantidade de horas.", "use_mdomain_in_lists": "Usa o nome de domínio nas listas.", "encrypt_playlist": "Criptografa as credenciais das contas nos arquivos de listas.", "encrypt_playlist_restreamer": "Criptografa as credenciais nos arquivos de listas dos retransmissores.", "restrict_playlists": "Verifica agente de usuário, IP, provedor e país antes de permitir downloads de listas ou EPG. Ao desativar, os downloads podem ser feitos de qualquer IP; as restrições das transmissões continuam valendo.", "ignore_invalid_users": "Encerra rapidamente conexões com usuário ou senha incorretos, sem carregar as funções do XUI nem acionar o limite de requisições. Pode reduzir o uso de CPU em servidores com muitas requisições.", "client_prebuffer": "Quantidade de dados, em segundos de reprodução, enviada inicialmente ao cliente quando ele se conecta à transmissão. Valores maiores aumentam o buffer inicial.", "restreamer_prebuffer": "Quantidade de dados, em segundos de reprodução, enviada inicialmente ao retransmissor quando ele se conecta à transmissão. Valores maiores aumentam o buffer inicial.", "split_by": "Critério preferido para distribuir conexões entre os servidores.", "restreamer_bypass_proxy": "Encaminha retransmissores diretamente aos balanceadores, sem passar pelos proxies quando o serviço de proxy estiver ativo.", "channel_number_type": "Critério preferido para ordenar os canais nas listas e nos aplicativos.", "vod_sort_newest": "Ordena o VOD pela data de inclusão, do mais recente para o mais antigo. Para funcionar corretamente, o tipo de ordenação dos canais deve estar definido como Lista de canais.", "use_buffer": "Ativa o buffer do proxy para a conexão. Ao desativar, as respostas são enviadas sem esse buffer; ao ativar, a resposta pode ser armazenada temporariamente pelo proxy.", "show_isps": "Obtém o provedor de internet de cada cliente conectado e armazena essa informação no banco de dados.", "online_capacity_interval": "Intervalo de verificação da atividade dos servidores para calcular os limites de conexões.", "monitor_connection_status": "Verifica connection_status() do PHP durante a transmissão de canais e VOD. Encerra a conexão quando o estado retornado deixa de ser CONNECTION_NORMAL.", "restart_php_fpm": "Executa uma rotina que reinicia o PHP-FPM quando ele falha e são encontrados erros.", "kill_rogue_ffmpeg": "Verifica a cada minuto os processos FFmpeg de transmissões que deveriam estar paradas e os encerra. Também faz essa limpeza antes de iniciar uma transmissão.", "create_expiration": "Validade, em segundos, do redirecionamento do servidor principal para um balanceador. Aumente se houver muitos erros TOKEN_EXPIRED nos registros.", "read_native_hls": "Ativa a leitura nativa em todas as transmissões HLS. Desative para configurar individualmente em cada transmissão compatível.", "read_buffer_size": "Tamanho do buffer usado para ler arquivos em blocos.", "connection_sync_timer": "Intervalo entre execuções da rotina de sincronização das conexões do Redis.", "allow_cdn_access": "Aceita o IP real encaminhado pelo cabeçalho X-Forwarded-For e usa tokens no lugar da criptografia do caminho das transmissões.<br/>Exige configurar os IPs autorizados para encaminhamento. Recurso de uso avançado.", "stop_failures": "Quantidade de falhas antes de encerrar o monitor da transmissão. Com 3, o monitor para após três falhas e pode ser reiniciado pela rotina de transmissões no minuto seguinte. Use 0 para continuar tentando indefinidamente.", "on_demand_instant_off": "Ao desconectar um cliente de uma transmissão sob demanda, verifica se ainda há espectadores e desliga a transmissão se não houver nenhum.", "on_demand_failure_exit": "Se a transmissão sob demanda falhar ao iniciar, encerra a tentativa e desconecta o cliente. Uma nova conexão fará outra tentativa, evitando tentativas contínuas que ocupem a fonte.", "on_demand_wait_time": "Tempo de espera para iniciar uma transmissão sob demanda. Ao esgotar esse tempo, a conexão é encerrada. Também se aplica a transmissões comuns enquanto iniciam ou estão indisponíveis.", "request_prebuffer": "Solicita um buffer inicial ao provedor para iniciar a reprodução mais rapidamente. Requer um provedor XUI e pode deixar o conteúdo cerca de 10 segundos atrasado.<br/><br/>Pela URL: adiciona ?prebuffer=1. Pelo cabeçalho: envia a solicitação em um cabeçalho, aceito pelo XUI a partir da versão 1.4.4.", "ondemand_balance_equal": "Trata servidores sob demanda como servidores já ativos no balanceamento. Assim, um servidor sob demanda pode ser iniciado mesmo que outro servidor já transmita o mesmo conteúdo.", "on_demand_checker": "Analisa periodicamente o estado, a resolução, os codecs, o FPS e o tempo de resposta das transmissões sob demanda. Registra os erros no banco e verifica uma transmissão por vez em cada servidor.", "on_demand_scan_time": "Intervalo, em segundos, entre as verificações de uma transmissão.", "on_demand_max_probe": "Tempo máximo, em segundos, de análise da transmissão antes de cancelar.", "on_demand_scan_keep": "Tempo de retenção dos registros, em segundos. Afeta as estatísticas de disponibilidade da página de registros. O padrão é 604800 segundos, equivalente a uma semana.", "max_encode_movies": "Máximo de filmes codificados simultaneamente por servidor. Use um valor compatível com a capacidade do servidor; valores maiores são adequados quando todo o conteúdo usa links simbólicos.", "max_encode_cc": "Máximo de canais criados codificados simultaneamente por servidor. Recomenda-se 1, exceto quando todos usam links simbólicos.", "queue_loop": "Intervalo entre as verificações da fila. Se o conteúdo usar links simbólicos, recomenda-se 1 segundo.", "seg_time": "Duração de cada segmento HLS. Os quadros-chave podem impedir a duração exata, mas o valor deve funcionar na maioria das transmissões.", "seg_list_size": "Quantidade de segmentos mantidos na lista HLS.", "seg_delete_threshold": "Quantidade de segmentos antigos mantidos ao gerar a lista HLS. Valores menores economizam RAM, mas mantenha um buffer suficiente para novos clientes. Por exemplo, 30 segundos de buffer precisam de três segmentos de 10 segundos.", "segment_wait_time": "Tempo máximo, em segundos, de espera por um novo segmento. Ao esgotar esse tempo sem novos dados, a conexão do cliente é encerrada.", "stream_max_analyze": "Tempo de análise da transmissão. Um tempo maior melhora a precisão da amostra. 5.000.000 de microssegundos equivalem a 5 segundos.", "probesize": "Quantidade de dados analisados, em bytes.", "ffmpeg_cpu": "Versão do FFmpeg usada para filmes, canais criados e transmissões comuns.<br/><br/>v4.0: versão antiga, de 2018, fornecida originalmente com o XUI.<br/>v4.3.2 e v4.4: versões compiladas pelo XUI com mais bibliotecas e suporte a DASH e NVENC.", "segment_type": "Escolhe -f segment ou -f hls no processamento. A opção hls foi criada para HLS e tende a funcionar melhor. A opção segment desativa o limite de exclusão e é usada por padrão nas transmissões sob demanda para agilizar o início.", "ffmpeg_warnings": "Grava também os avisos do FFmpeg na tabela de erros das transmissões. Ao desativar, grava somente erros.", "ignore_keyframes": "Permite iniciar segmentos fora dos quadros-chave. Pode ajudar alguns players quando o intervalo entre quadros-chave varia, mas prejudicar outros ou causar tela preta no início até o vídeo começar.", "dts_legacy_ffmpeg": "Usa automaticamente o FFmpeg v4.0 em transmissões com áudio DTS. Pode corrigir falhas de sincronização do áudio. A opção de gerar PTS deve estar desativada.", "php_loopback": "Usa o PHP para ler diretamente as transmissões de retorno e gerar HLS, sem passar pelo FFmpeg.", "audio_restart_loss": "Reinicia periodicamente a transmissão se não houver áudio detectado.", "priority_backup": "Retorna à primeira fonte quando ela voltar a funcionar.", "probe_extra_wait": "Tempo de espera adicional após a duração de análise antes de cancelar a verificação da transmissão.", "stream_fail_sleep": "Tempo de espera, em segundos, após uma falha ao iniciar a transmissão antes de tentar novamente.", "fps_delay": "Tempo de espera, em segundos, antes de verificar se o FPS caiu abaixo do limite.", "fps_check_type": "Escolhe entre usar as informações de progresso após o atraso inicial ou analisar um segmento e usar avg_frame_rate para determinar o FPS.", "api_probe": "Usa chamadas de API para analisar as fontes a partir dos servidores XUI.", "show_not_on_air_video": "Exibe este vídeo quando a transmissão estiver fora do ar.", "show_banned_video": "Exibe este vídeo quando uma conta banida tentar acessar uma transmissão.", "show_expired_video": "Exibe este vídeo quando uma conta expirada tentar acessar uma transmissão.", "show_expiring_video": "Exibe este vídeo uma vez por dia durante os sete dias anteriores ao vencimento da conta.", "show_connected_video": "Exibe este vídeo quando o cliente for bloqueado por já estar conectado por outro IP.", "show_all_category_mag": "Exibe a categoria Todos nos dispositivos MAG.", "always_enabled_subtitles": "Mantém as legendas sempre ativadas.", "playback_limit": "Exibe um aviso e interrompe a transmissão após esta quantidade de horas de reprodução contínua.", "tv_channel_default_aspect": "Define a proporção de imagem padrão das transmissões. A opção Ajustar é recomendada.", "mag_default_type": "Define se novos dispositivos usam o tema moderno ou o tema antigo por padrão.", "stalker_theme": "Tema padrão do Ministra usado pelos dispositivos MAG.", "mag_legacy_redirect": "Redireciona /c para a pasta do Ministra com links simbólicos, permitindo o endereço antigo em dispositivos legados. Exige acesso de administrador do servidor e é aplicado pela rotina do minuto seguinte. Não é recomendado por segurança.", "mag_keep_extension": "Mantém a extensão nas URLs de canais ao vivo, conteúdo com deslocamento de tempo e VOD. Alguns dispositivos antigos dependem dela para escolher como reproduzir.", "mag_disable_ssl": "Força os dispositivos MAG a usarem URLs sem SSL. Considere a compatibilidade dos aparelhos antigos antes de desativar a proteção das conexões.", "mag_load_all_channels": "Carrega todos os canais ao iniciar, em vez de aguardar a seleção de uma categoria. Pode ajudar dispositivos antigos que não seguem os padrões do Ministra.", "disable_mag_token": "Desativa a verificação do token MAG durante a reprodução. Pode melhorar a compatibilidade, mas reduz a segurança.", "test_download_url": "URL do arquivo baixado durante o teste de velocidade dos dispositivos MAG.", "mag_message": "Mensagem exibida em Informações, na aba Minha conta. Aceita HTML; quebras de linha são convertidas em &lt;br/&gt;.", "player_allow_playlist": "Permite que os clientes gerem URLs de listas pelo player web.", "player_allow_bouquet": "Permite que os clientes alterem a ordem das suas listas de canais pelo player web.", "player_hide_incompatible": "Oculta transmissões incompatíveis com a maioria dos navegadores, priorizando formatos como H.264 e AV1. Também oculta canais e filmes indisponíveis.", "player_allow_hevc": "Considera HEVC compatível no player web. O suporte depende do navegador, do sistema e dos codecs disponíveis no dispositivo.", "player_blur": "Intensidade do desfoque das imagens de fundo, em pixels.", "player_opacity": "Opacidade das imagens de fundo. O padrão é 10%.", "extract_subtitles": "Extrai automaticamente as legendas de filmes e episódios durante o processamento, permitindo seu uso no player web.", "save_closed_connection": "Tempo de retenção dos registros de atividade, gravados quando uma conexão ativa é encerrada. Eles ajudam no acompanhamento do serviço, mas podem ocupar bastante espaço com muitas conexões.", "client_logs_save": "Tempo de retenção dos registros de clientes. Manter o histórico ajuda a investigar problemas, mas aumenta o espaço usado no banco.", "save_login_logs": "Tempo de retenção dos registros de login. Manter o histórico ajuda a acompanhar os acessos, mas aumenta o espaço usado no banco.", "stream_logs_save": "Tempo de retenção dos registros de erros das transmissões. Manter o histórico ajuda no diagnóstico, mas aumenta o espaço usado no banco.", "save_restart_logs": "Tempo de retenção dos registros de reinicialização das transmissões. Manter o histórico ajuda no diagnóstico, mas aumenta o espaço usado no banco."});
@@ -684,6 +684,7 @@
   }
   function enhance(root) {
     root=root||document;
+    if(window.NaxxPanelTranslations)window.NaxxPanelTranslations.enhance(root);
     if(window.NaxxPerformance&&typeof window.NaxxPerformance.enhance==='function')window.NaxxPerformance.enhance();
     var full=root===document;
     if(full||containsFeature(root,'#hue'))enhanceTopbarTheme();
@@ -766,6 +767,8 @@
     function textChanged(node){
       var parent=node.parentElement;if(!parent)return;
       var key=(node.nodeValue||'').trim();
+      var message=parent.closest('.jBox-Confirm,.jq-toast-single');
+      if(message){enqueue(message);return;}
       if((labelTranslation(parent,key)||/^\d+ (?:Hours?|Days?)$/.test(key))&&parent.matches(translationSelector)){enqueue(parent);return;}
       // Os textos extensos e avisos do cache têm tradução própria no módulo.
       if(/\/cache(?:\.php)?$/.test(location.pathname)&&parent.closest('.jBox-container,.jq-toast-wrap'))enqueue(parent);
@@ -3390,4 +3393,641 @@
   }
   window.NaxxPublicPage = {enhance:enhance}; enhance();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance, {once:true});
+}());
+
+/* Traduções contextuais do painel nativo. Nunca altera dados ou ações. */
+(function (global) {
+  'use strict';
+
+  // Textos fixos verificados no cabeçalho e nos formulários do XUI.
+  // Os seletores não incluem nomes de contas, canais, categorias ou provedores.
+  var modalHeadings = {
+    'Server Tools': 'Ferramentas do servidor',
+    'Domain List': 'Lista de domínios',
+    'XUI EPG Browser': 'Navegador de EPG do XUI',
+    'Provider Streams': 'Canais do provedor',
+    'Provider Movies': 'Filmes do provedor',
+    'Use the EPG icon for this stream?': 'Usar o ícone da EPG neste canal?',
+    'Add / Remove Credits': 'Adicionar ou remover créditos',
+    'Clear Stream Logs': 'Limpar registros dos canais'
+  };
+  var modalControls = {
+    'Credits': 'Créditos',
+    'Adjust Credits': 'Ajustar créditos',
+    'Use Icon': 'Usar ícone',
+    'Record': 'Gravar',
+    'Cancel': 'Cancelar',
+    'Close': 'Fechar',
+    'Clear Stream Logs': 'Limpar registros dos canais'
+  };
+  var formLabels = {
+    'Series Name': 'Nome da série',
+    'Poster URL': 'URL do pôster',
+    'Backdrop URL': 'URL da imagem de fundo',
+    'Plot': 'Sinopse',
+    'Cast': 'Elenco',
+    'Director': 'Diretor',
+    'Genres': 'Gêneros',
+    'Release Date': 'Data de lançamento',
+    'First Aired': 'Estreia',
+    'Runtime': 'Duração',
+    'Youtube Trailer': 'Trailer do YouTube',
+    'Rating': 'Classificação',
+    'Timezone': 'Fuso horário',
+    'Disable TMDb': 'Desativar TMDb',
+    'Ignore No Match': 'Ignorar itens sem correspondência',
+    'Show Potential Duplicates': 'Mostrar possíveis duplicados',
+    'Keep Logs For': 'Manter registros por'
+  };
+  var columns = {
+    'Credits': 'Créditos',
+    'Server Name': 'Nome do servidor',
+    'Stream Name': 'Nome do canal',
+    'Stream Info': 'Informações do canal',
+    'Provider Streams': 'Canais do provedor',
+    'Provider Movies': 'Filmes do provedor'
+  };
+  var navigation = {
+    'Server Tools': 'Ferramentas do servidor',
+    'Clear Stream Logs': 'Limpar registros dos canais',
+    'Provider Streams': 'Canais do provedor',
+    'Provider Movies': 'Filmes do provedor'
+  };
+  var accountColumns = {
+    'USERNAME': 'Usuário', 'Username': 'Usuário',
+    'PASSWORD': 'Senha', 'Password': 'Senha',
+    'OWNER': 'Responsável', 'Owner': 'Responsável',
+    'TRIAL': 'Teste', 'Trial': 'Teste',
+    'ACTIVE': 'Em uso', 'Active': 'Em uso',
+    'EXPIRATION': 'Vencimento', 'Expiration': 'Vencimento',
+    'LAST CONNECTION': 'Última conexão', 'Last Connection': 'Última conexão'
+  };
+  var accountControls = {
+    'Add Line': 'Adicionar conta', 'Filter Results': 'Filtrar resultados',
+    'Show': 'Exibir', 'No Filter': 'Sem filtro',
+    'Search for an owner...': 'Pesquisar responsável…'
+  };
+  var dialogButtons = {
+    'Confirm': 'Confirmar', 'Cancel': 'Cancelar', 'Delete': 'Excluir',
+    'Kill': 'Encerrar', 'Clear': 'Limpar', 'Close': 'Fechar'
+  };
+  // Somente mensagens estáticas emitidas pelos scripts nativos. Não há
+  // substituição parcial: um texto que contenha nomes ou valores é preservado.
+  var messages = {
+    'All connections for this line have been killed.': 'Todas as conexões desta conta foram encerradas.',
+    'An error occured while mapping streams.': 'Ocorreu um erro ao mapear os canais.',
+    'An error occured while processing your request.': 'Ocorreu um erro ao processar sua solicitação.',
+    'An invalid directory was entered, please use another.': 'A pasta informada é inválida. Escolha outra.',
+    'Are you sure you want to clear the Redis database? This will drop all connections.': 'Deseja limpar o banco do Redis? Todas as conexões serão encerradas.',
+    'Are you sure you want to delete these episodes?': 'Deseja excluir estes episódios?',
+    'Are you sure you want to delete these movies?': 'Deseja excluir estes filmes?',
+    'Are you sure you want to delete these streams?': 'Deseja excluir estes canais?',
+    'Are you sure you want to delete this series and all episodes?': 'Deseja excluir esta série e todos os episódios?',
+    'Are you sure you want to delete this stream?': 'Deseja excluir este canal?',
+    'Are you sure you want to kill all connections for this line?': 'Deseja encerrar todas as conexões desta conta?',
+    'Are you sure you want to kill all connections?': 'Deseja encerrar todas as conexões?',
+    'Cache has been completely disabled!': 'O cache foi desativado por completo.',
+    'Cache has been enabled!': 'O cache foi ativado.',
+    'Connection has been killed.': 'A conexão foi encerrada.',
+    'Connections have been killed.': 'As conexões foram encerradas.',
+    'Could not process M3U file, please use another.': 'Não foi possível processar o arquivo M3U. Escolha outro.',
+    'Credits could not be adjusted.': 'Não foi possível ajustar os créditos.',
+    'Credits have been adjusted.': 'Os créditos foram ajustados.',
+    'Enter a series name.': 'Informe o nome da série.',
+    'Episodes have been deleted.': 'Os episódios foram excluídos.',
+    'Episodes have been queued for re-encoding.': 'Os episódios foram adicionados à fila de recodificação.',
+    'Episodes have started endoding.': 'A codificação dos episódios foi iniciada.',
+    'Episodes have stopped encoding.': 'A codificação dos episódios foi interrompida.',
+    'Fingerprint signal has been sent.': 'O sinal de identificação foi enviado.',
+    'Generating CSV report...': 'Gerando relatório CSV…',
+    'Handler has been completely disabled!': 'O gerenciador de conexões foi desativado por completo.',
+    'Handler has been enabled!': 'O gerenciador de conexões foi ativado.',
+    'Individual actions disabled in multi-select mode.': 'As ações individuais estão desativadas enquanto há vários itens selecionados.',
+    'Item has been saved.': 'O item foi salvo.',
+    'Line has been banned.': 'A conta foi bloqueada.',
+    'Line has been disabled.': 'A conta foi desativada.',
+    'Line has been enabled.': 'A conta foi ativada.',
+    'Line has been unbanned.': 'A conta foi desbloqueada.',
+    'Movies have been deleted.': 'Os filmes foram excluídos.',
+    'Movies have been queued for re-encoding.': 'Os filmes foram adicionados à fila de recodificação.',
+    'Movies have started endoding.': 'A codificação dos filmes foi iniciada.',
+    'Movies have stopped encoding.': 'A codificação dos filmes foi interrompida.',
+    'No new episodes could be found in the playlist or folder.': 'Nenhum episódio novo foi encontrado na lista ou na pasta.',
+    'Please ensure the source is a local file before symlinking.': 'Para criar um link simbólico, a fonte precisa ser um arquivo local.',
+    'Please ensure you enter both a title and message.': 'Informe o título e a mensagem.',
+    'Please enter a description.': 'Informe uma descrição.',
+    'Please enter a title for the recorded event.': 'Informe um título para a gravação.',
+    'Please enter a valid IP address / CIDR.': 'Informe um endereço IP ou bloco CIDR válido.',
+    'Please enter a valid MAC address.': 'Informe um endereço MAC válido.',
+    'Please enter a valid date.': 'Informe uma data válida.',
+    'Please enter a valid email address.': 'Informe um endereço de e-mail válido.',
+    'Please enter an access code.': 'Informe um código de acesso.',
+    'Please generate a key.': 'Gere uma chave.',
+    'Please select a M3U file to upload.': 'Selecione um arquivo M3U para enviar.',
+    'Please select a destination server to record the event to.': 'Selecione o servidor de destino da gravação.',
+    'Please select a member group.': 'Selecione um grupo de usuários.',
+    'Please select a playlist to upload & review.': 'Selecione uma lista para enviar e revisar.',
+    'Please select a source server to record the event from.': 'Selecione o servidor de origem da gravação.',
+    'Please select at least one source for your channel.': 'Selecione ao menos uma fonte para o canal.',
+    'Please select at least one source for your movie.': 'Selecione ao menos uma fonte para o filme.',
+    'Please select at least one source for your station.': 'Selecione ao menos uma fonte para a estação.',
+    'Please select at least one source for your stream.': 'Selecione ao menos uma fonte para o canal.',
+    'Please select both a source and destination.': 'Selecione a origem e o destino.',
+    'Quick tool was successfully executed.': 'A ferramenta rápida foi executada.',
+    'Redis database has been cleared!': 'O banco do Redis foi limpo.',
+    'Regenerating cache in the background...': 'Recriando o cache em segundo plano…',
+    'Required entry fields have not been populated. Please check the form.': 'Preencha os campos obrigatórios e confira o formulário.',
+    'Select at least one stream to edit.': 'Selecione ao menos um canal para editar.',
+    'Series successfully deleted.': 'A série foi excluída.',
+    'Sorry, this code is reserved for system functions.': 'Este código é reservado para funções do sistema.',
+    'Stream icon has been set.': 'O ícone do canal foi definido.',
+    'Stream map complete. Please select relevant streams from the table.': 'O mapeamento foi concluído. Selecione os canais desejados na tabela.',
+    'Stream map has started, this can take a while depending on how many streams are present.': 'O mapeamento foi iniciado. O tempo necessário depende da quantidade de canais.',
+    "Stream mapping didn't return any information.": 'O mapeamento não retornou informações.',
+    'Stream monitor logs have been cleared.': 'Os registros de monitoramento dos canais foram limpos.',
+    'Stream successfully deleted.': 'O canal foi excluído.',
+    'Stream successfully restarted.': 'O canal foi reiniciado.',
+    'Stream successfully started.': 'O canal foi iniciado.',
+    'Stream successfully stopped.': 'O canal foi interrompido.',
+    'Streams have been deleted.': 'Os canais foram excluídos.',
+    'Streams have been restarted.': 'Os canais foram reiniciados.',
+    'Streams have been started.': 'Os canais foram iniciados.',
+    'Streams have been stopped.': 'Os canais foram interrompidos.',
+    'The MAC address you entered is already in use.': 'O endereço MAC informado já está em uso.',
+    'The paired user does not exist! Please unlink it.': 'O usuário vinculado não existe. Remova o vínculo.',
+    'The username you selected already exists. Please use another.': 'O nome de usuário informado já existe. Escolha outro.',
+    'This HMAC Key already exists, please use another.': 'Esta chave HMAC já existe. Use outra.',
+    'This IP address is already in the database. Please use another.': 'Este endereço IP já está cadastrado. Use outro.',
+    'This ISP has already been blocked.': 'Este provedor de internet já está bloqueado.',
+    'This access code already exists, please use another.': 'Este código de acesso já existe. Use outro.',
+    'This directory is already being watched, please use another.': 'Esta pasta já está sendo monitorada. Escolha outra.',
+    'This group name is already in use. Please use another.': 'Este nome de grupo já está em uso. Escolha outro.',
+    'This library is already being synced, please use another.': 'Esta biblioteca já está sendo sincronizada. Escolha outra.',
+    'This movie already exists in your database. Please use another name.': 'Este filme já está cadastrado. Use outro nome.',
+    'This package name is already in use. Please use another.': 'Este nome de pacote já está em uso. Escolha outro.',
+    'This provider is already being tracked on the system.': 'Este provedor já está sendo acompanhado pelo sistema.',
+    'This series already exists in your database.': 'Esta série já está cadastrada.',
+    'This station source is already in your database. Please use another URL.': 'Esta fonte de estação já está cadastrada. Use outra URL.',
+    'This stream source is already in your database. Please use another URL.': 'Esta fonte de canal já está cadastrada. Use outra URL.',
+    'User has been disabled.': 'O usuário foi desativado.',
+    'User has been enabled.': 'O usuário foi ativado.',
+    'You already have an empty row.': 'Já existe uma linha vazia.',
+    'Your access code needs to be at least 8 characters long.': 'O código de acesso precisa ter pelo menos 8 caracteres.',
+    'Your report has been submitted.': 'O relatório foi enviado.'
+  };
+  var headingSelector = '#restartServicesLabel,#epgBrowserLabel,#providerStreamsLabel,#providerMoviesLabel,#epgPiconLabel,#failuresLabel,.bs-domains #modalLabel,.creditsModal h4';
+  var controlSelector = '.creditsModal label,.creditsModal button,.bs-picon-modal-center button,#programmeRecord,.bs-failures-modal-center button';
+  var fieldSelector = ['title', 'cover', 'backdrop_path', 'plot', 'cast', 'director', 'genre', 'release_date', 'episode_run_time', 'youtube_trailer', 'rating', 'timezone', 'disable_tmdb', 'ignore_no_match', 'show_duplicates', 'keep_logs'].map(function (id) { return 'label[for="' + id + '"]'; }).join(',');
+  var protectedSelector = '.nav-user,.pro-user-name,tbody,input,textarea,select,option,[contenteditable="true"],script,style';
+
+  function within(root, selector) {
+    var elements = [];
+    if (root.nodeType === 1 && root.matches(selector)) elements.push(root);
+    return elements.concat(Array.from(root.querySelectorAll(selector)));
+  }
+  function lookup(dictionary, text) {
+    var key = text.replace(/\s+/g, ' ').trim();
+    return Object.prototype.hasOwnProperty.call(dictionary, key) ? dictionary[key] : null;
+  }
+  function translateNode(node, dictionary) {
+    var text = node.nodeValue, translated = lookup(dictionary, text);
+    if (translated) node.nodeValue = text.replace(/\S[\s\S]*\S|\S/, translated);
+  }
+  function translateElement(element, dictionary, descendants) {
+    if (element.closest(protectedSelector)) return;
+    Array.from(element.childNodes).forEach(function (node) {
+      if (node.nodeType === 3) translateNode(node, dictionary);
+      else if (descendants && node.nodeType === 1 && !node.matches('br,svg,i,.close-jq-toast-single') && !node.closest(protectedSelector)) translateElement(node, dictionary, true);
+    });
+  }
+  function translateGroup(root, selector, dictionary, descendants) {
+    within(root, selector).forEach(function (element) { translateElement(element, dictionary, descendants); });
+  }
+  function translateAccounts(root) {
+    var document = root.ownerDocument || root;
+    var table = document.getElementById('datatable-users');
+    if (!table) return;
+    translateGroup(root, '#datatable-users thead th', accountColumns, true);
+    translateGroup(root, '.page-title-box button,#collapse_filters > label', accountControls, true);
+    translateGroup(root, '#select2-user_filter-container,[id^="select2-user_filter-result-"]', accountControls, true);
+    within(root, '#select2-user_reseller-container').forEach(function (container) {
+      var ownerSelect = document.getElementById('user_reseller');
+      if (container.querySelector('.select2-selection__placeholder') || (ownerSelect && ownerSelect.value === '')) translateElement(container, accountControls, true);
+    });
+    within(root, '#user_filter option').forEach(function (option) {
+      Array.from(option.childNodes).forEach(function (node) { if (node.nodeType === 3) translateNode(node, accountControls); });
+    });
+    // Só a opção vazia é uma instrução do seletor de responsáveis. As demais
+    // opções e os resultados da busca são nomes cadastrados pelo administrador.
+    within(root, '#user_reseller option').forEach(function (option) {
+      if (option.value === '') Array.from(option.childNodes).forEach(function (node) { if (node.nodeType === 3) translateNode(node, accountControls); });
+    });
+    // "Never" é um marcador nativo apenas na coluna de data da última conexão.
+    // As outras células, inclusive usuários chamados "Never", são preservadas.
+    var headers = Array.from(table.querySelectorAll('thead tr:last-child th'));
+    var connectionIndex = headers.findIndex(function (header) { return /^(?:last connection|última conexão)$/i.test(header.textContent.trim()); });
+    if (connectionIndex < 0) return;
+    var rows = root === document || root === table || (root.nodeType === 1 && root.contains(table)) ? table.querySelectorAll('tbody tr') : within(root, '#datatable-users tbody tr');
+    if (root.nodeType === 1 && root.closest('#datatable-users tbody tr')) rows = [root.closest('#datatable-users tbody tr')];
+    Array.from(rows).forEach(function (row) {
+      var cell = row.children[connectionIndex];
+      if (!cell || cell.tagName !== 'TD' || cell.childElementCount || !cell.classList.contains('dt-center')) return;
+      Array.from(cell.childNodes).forEach(function (node) { if (node.nodeType === 3) translateNode(node, {'Never': 'Nunca'}); });
+    });
+  }
+  function enhance(root) {
+    root = root || global.document;
+    if (root.nodeType === 3) root = root.parentElement;
+    if (!root || !root.querySelectorAll) return;
+    translateGroup(root, headingSelector, modalHeadings, true);
+    translateGroup(root, controlSelector, modalControls, true);
+    translateGroup(root, fieldSelector, formLabels, false);
+    translateGroup(root, 'table thead th', columns, true);
+    translateGroup(root, '.navigation-menu a,.navigation-menu a > span,.page-title,.header-title', navigation, false);
+    translateAccounts(root);
+    translateGroup(root, '.jBox-Confirm .jBox-content,.jq-toast-single', messages, true);
+    translateGroup(root, '.jBox-Confirm .jBox-title,.jBox-Confirm .jBox-button,.jBox-Confirm .jBox-Confirm-button', dialogButtons, true);
+    // Atributos aqui pertencem somente aos controles conhecidos dos diálogos.
+    within(root, controlSelector).forEach(function (element) {
+      ['title', 'data-original-title', 'aria-label'].forEach(function (attribute) {
+        var value = element.getAttribute(attribute);
+        if (value) {
+          var translated = lookup(modalControls, value);
+          if (translated) element.setAttribute(attribute, translated);
+        }
+      });
+    });
+  }
+
+  global.NaxxPanelTranslations = { enhance: enhance };
+  if (global.document.readyState === 'loading') {
+    global.document.addEventListener('DOMContentLoaded', function () { enhance(global.document); }, {once:true});
+  } else enhance(global.document);
+})(window);
+
+/* Melhoria da janela nativa. A conta, as opções e a geração do link continuam no XUI. */
+(function () {
+  'use strict';
+  if (window.NaxxPlaylistDownloadUI) {
+    window.NaxxPlaylistDownloadUI.refresh();
+    return;
+  }
+
+  var states = new WeakMap();
+  var sequence = 0;
+  var scanTimer = null;
+  var pollTimer = null;
+  var jqueryBound = false;
+  var contentLabels = {
+    live: 'Canais ao vivo', movie: 'Filmes', created_live: 'Canais criados',
+    radio_streams: 'Rádios', series: 'Séries'
+  };
+
+  function text(node, value) {
+    if (node && node.textContent !== value) node.textContent = value;
+  }
+
+  function appendDescription(node, id) {
+    var ids = (node.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (ids.indexOf(id) < 0) {
+      ids.push(id);
+      node.setAttribute('aria-describedby', ids.join(' '));
+    }
+  }
+
+  function help(parent, className, message, id) {
+    var node = document.createElement('p');
+    node.className = className;
+    if (id) node.id = id;
+    node.textContent = message;
+    parent.appendChild(node);
+    return node;
+  }
+
+  function labelButton(button, label) {
+    button.type = 'button';
+    var node = button.querySelector('.naxx-playlist-action-label');
+    if (!node) {
+      node = document.createElement('span');
+      node.className = 'naxx-playlist-action-label';
+      button.appendChild(node);
+    }
+    text(node, label);
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    var icon = button.querySelector('i');
+    if (icon && icon.getAttribute('aria-hidden') !== 'true') icon.setAttribute('aria-hidden', 'true');
+  }
+
+  function safeURL(value) {
+    if (!value || value.trim() !== value || /[\u0000-\u001f\u007f\\]/.test(value)) return false;
+    try {
+      var absolute = /^https?:\/\//i.test(value);
+      if (!absolute && !/^(?:\/(?!\/)|\.\.?\/|\?)/.test(value)) return false;
+      var url = new URL(value, window.location.href);
+      return /^(?:http:|https:)$/.test(url.protocol) &&
+        (absolute || url.origin === window.location.origin);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function payload(state) {
+    var value = state.url.value;
+    if (!value) return {kind: 'empty', text: ''};
+    if (safeURL(value)) return {kind: 'url', text: value};
+    // Alguns formatos nativos produzem um comando de instalação. Ele só pode
+    // ser copiado; o endereço contido nele nunca é executado por esta melhoria.
+    var option = state.format.options[state.format.selectedIndex];
+    var template = option && option.getAttribute('data-text');
+    if (template && template.split('{DEVICE_LINK}').length === 2) {
+      var parts = template.split('{DEVICE_LINK}');
+      if (value.indexOf(parts[0]) === 0 &&
+          value.slice(value.length - parts[1].length) === parts[1]) {
+        var quoted = value.slice(parts[0].length, parts[1].length ? -parts[1].length : undefined);
+        var address = quoted.slice(1, -1);
+        if (quoted.charAt(0) === '"' && quoted.charAt(quoted.length - 1) === '"' &&
+            safeURL(address) && template.replace('{DEVICE_LINK}', '"' + address + '"') === value) {
+          return {kind: 'command', text: value};
+        }
+      }
+    }
+    return {kind: 'invalid', text: ''};
+  }
+
+  function setFeedback(state, message, kind) {
+    text(state.feedback, message);
+    state.feedback.setAttribute('data-state', kind);
+  }
+
+  function selectedLabels(select) {
+    return Array.prototype.filter.call(select.options, function (option) {
+      return option.selected && option.value;
+    }).map(function (option) { return option.textContent.trim(); });
+  }
+
+  function update(state) {
+    if (!currentState(state)) return;
+    var current = payload(state);
+    var signature = state.url.value + '\n' + state.format.value + '\n' + selectedLabels(state.content).join('|');
+    if (signature !== state.signature) {
+      state.signature = signature;
+      state.feedbackKind = '';
+    }
+    var command = current.kind === 'command';
+    var copyDisabled = current.kind !== 'url' && !command;
+    if (state.copy.disabled !== copyDisabled) state.copy.disabled = copyDisabled;
+    // O gerador nativo é o único responsável por habilitar o download. Apenas
+    // bloqueamos resultados vazios, comandos ou endereços não navegáveis.
+    if (current.kind !== 'url' && !state.download.disabled) state.download.disabled = true;
+    state.copy.setAttribute('aria-disabled', String(state.copy.disabled));
+    state.download.setAttribute('aria-disabled', String(state.download.disabled));
+    labelButton(state.copy, state.feedbackKind === 'copied' ? 'Copiado!' : command ? 'Copiar comando' : 'Copiar link');
+    labelButton(state.download, 'Baixar playlist');
+    text(state.linkLabel, command ? 'Comando do dispositivo' : 'Link da playlist');
+    state.url.setAttribute('aria-label', command ? 'Comando do dispositivo' : 'Link da playlist');
+    state.url.placeholder = 'Selecione o formato para gerar o link.';
+    var rendered = state.modal.querySelector('#select2-download_type-container');
+    if (rendered && !state.format.value) text(rendered, 'Selecione um formato');
+    var search = state.content.parentElement.querySelector('.select2-search__field');
+    if (search) search.placeholder = 'Todos os conteúdos';
+    var selected = selectedLabels(state.content);
+    text(state.summary, selected.length ? 'Conteúdo: ' + selected.join(', ') + '.' : 'Todos os conteúdos permitidos para esta conta.');
+    if (!state.feedbackKind) {
+      if (current.kind === 'url') setFeedback(state, 'Link pronto. Copie ou baixe a playlist.', 'ready');
+      else if (command) setFeedback(state, 'Comando pronto. Copie para o dispositivo compatível.', 'ready');
+      else if (current.kind === 'invalid') setFeedback(state, 'O link gerado não é válido. Selecione a conta novamente.', 'error');
+      else setFeedback(state, 'Escolha um formato para gerar o link desta conta.', 'empty');
+    }
+  }
+
+  function copyFallback(state, expected) {
+    if (!currentState(state) || state.url.value !== expected) return false;
+    var previousFocus = document.activeElement;
+    var start = state.url.selectionStart;
+    var end = state.url.selectionEnd;
+    try {
+      state.url.focus();
+      state.url.select();
+      state.url.setSelectionRange(0, state.url.value.length);
+      return Boolean(document.execCommand && document.execCommand('copy'));
+    } catch (error) {
+      return false;
+    } finally {
+      if (start !== null && end !== null) {
+        try { state.url.setSelectionRange(start, end); } catch (error) { /* Campo nativo sem seleção. */ }
+      }
+      if (previousFocus && previousFocus.isConnected && previousFocus.focus) previousFocus.focus();
+    }
+  }
+
+  function copy(state, event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    update(state);
+    var current = payload(state);
+    if (state.copy.disabled) return;
+    var operation;
+    try {
+      operation = window.navigator.clipboard && window.navigator.clipboard.writeText ?
+        Promise.resolve(window.navigator.clipboard.writeText(current.text)).then(function () { return true; }, function () {
+          return copyFallback(state, current.text);
+        }) : Promise.resolve(copyFallback(state, current.text));
+    } catch (error) {
+      operation = Promise.resolve(copyFallback(state, current.text));
+    }
+    operation.then(function (success) {
+      if (!currentState(state) || state.url.value !== current.text) return;
+      state.feedbackKind = success ? 'copied' : 'copy-error';
+      setFeedback(state, success ? (current.kind === 'command' ? 'Comando copiado.' : 'Link copiado.') :
+        'Não foi possível copiar. Selecione o campo e copie manualmente.', success ? 'success' : 'error');
+      update(state);
+    });
+  }
+
+  function currentState(state) {
+    return state.modal.isConnected && states.get(state.modal) === state && state.modal.contains(state.url);
+  }
+
+  function release(state) {
+    state.copy.removeEventListener('click', state.copyHandler, true);
+    state.download.removeEventListener('click', state.downloadHandler, true);
+    state.modal.removeEventListener('change', state.changeHandler);
+    state.url.removeEventListener('input', state.changeHandler);
+    states.delete(state.modal);
+  }
+
+  function enhance(modal) {
+    var previous = states.get(modal);
+    if (previous) {
+      if (previous.url === modal.querySelector('#download_url') &&
+          previous.copy === modal.querySelector('button[onclick*="copyDownload"]') &&
+          previous.download === modal.querySelector('#download_button') &&
+          previous.format === modal.querySelector('#download_type') &&
+          previous.content === modal.querySelector('#output_type')) return previous;
+      release(previous);
+    }
+    var format = modal.querySelector('#download_type');
+    var content = modal.querySelector('#output_type');
+    var url = modal.querySelector('#download_url');
+    var download = modal.querySelector('#download_button');
+    var copyButton = modal.querySelector('button[onclick*="copyDownload"]');
+    var body = modal.querySelector('.modal-body');
+    if (!format || !content || !url || !download || !copyButton || !body) return null;
+    Array.prototype.forEach.call(modal.querySelectorAll('.naxx-playlist-intro,.naxx-playlist-help,.naxx-playlist-summary,.naxx-playlist-link-label,.naxx-playlist-feedback,.naxx-playlist-security'), function (node) { node.remove(); });
+    [format, content, url].forEach(function (node) {
+      var descriptions = (node.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (item) {
+        return item && !/^naxx-playlist-\d+-(?:format|content|feedback)$/.test(item);
+      });
+      if (descriptions.length) node.setAttribute('aria-describedby', descriptions.join(' '));
+      else node.removeAttribute('aria-describedby');
+    });
+    // Não substituir controles: o XUI mantém os eventos e o Select2 existentes.
+    var id = 'naxx-playlist-' + (++sequence);
+    var state = {modal: modal, format: format, content: content, url: url,
+      copy: copyButton, download: download, signature: null, feedbackKind: ''};
+    states.set(modal, state);
+    modal.classList.add('naxx-playlist-modal');
+    var title = modal.querySelector('.modal-title');
+    text(title, 'Baixar playlist');
+    if (title && title.id) modal.setAttribute('aria-labelledby', title.id);
+    var close = modal.querySelector('[data-dismiss="modal"]');
+    if (close) close.setAttribute('aria-label', 'Fechar');
+    var intro = document.createElement('p');
+    intro.className = 'naxx-playlist-intro';
+    intro.textContent = 'Escolha o formato compatível com o aplicativo ou dispositivo do cliente.';
+    body.insertBefore(intro, body.firstChild);
+    text(modal.querySelector('label[for="download_type"]'), 'Formato da playlist');
+    text(modal.querySelector('label[for="output_type"]'), 'Conteúdo da lista');
+    format.setAttribute('aria-label', 'Formato da playlist');
+    format.setAttribute('data-placeholder', 'Selecione um formato');
+    content.setAttribute('aria-label', 'Conteúdo da lista');
+    content.setAttribute('data-placeholder', 'Todos os conteúdos');
+    Array.prototype.forEach.call(content.options, function (option) {
+      if (contentLabels[option.value]) text(option, contentLabels[option.value]);
+    });
+    var formatHelp = help(format.parentElement, 'naxx-playlist-help',
+      'M3U e M3U Plus atendem à maioria dos aplicativos. HLS usa M3U8; MPEG-TS usa TS. Para receptores, escolha o modelo.', id + '-format');
+    var contentHelp = help(content.parentElement, 'naxx-playlist-help',
+      'Opcional. Selecione os tipos desejados ou deixe vazio para incluir todos.', id + '-content');
+    appendDescription(format, formatHelp.id);
+    appendDescription(content, contentHelp.id);
+    state.summary = help(content.parentElement, 'naxx-playlist-summary', '');
+    var group = url.closest('.input-group');
+    if (group) group.classList.add('naxx-playlist-url-group');
+    var actions = copyButton.parentElement;
+    if (actions) actions.classList.add('naxx-playlist-actions');
+    state.linkLabel = document.createElement('label');
+    state.linkLabel.className = 'naxx-playlist-link-label';
+    state.linkLabel.htmlFor = url.id;
+    state.linkLabel.textContent = 'Link da playlist';
+    (group || url).parentElement.insertBefore(state.linkLabel, group || url);
+    url.readOnly = true;
+    url.autocomplete = 'off';
+    url.spellcheck = false;
+    url.setAttribute('autocapitalize', 'off');
+    state.feedback = help(body, 'naxx-playlist-feedback', '', id + '-feedback');
+    state.feedback.setAttribute('role', 'status');
+    state.feedback.setAttribute('aria-live', 'polite');
+    state.feedback.setAttribute('aria-atomic', 'true');
+    appendDescription(url, state.feedback.id);
+    help(body, 'naxx-playlist-security', 'Este link contém os dados de acesso da conta. Compartilhe apenas com o cliente.');
+    state.copyHandler = function (event) { copy(state, event); };
+    state.downloadHandler = function (event) {
+      update(state);
+      if (payload(state).kind !== 'url' || download.disabled) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      // O onclick do XUI continua fazendo o download, com seu endereço intacto.
+      window.setTimeout(function () {
+        if (!currentState(state)) return;
+        state.feedbackKind = 'download';
+        setFeedback(state, 'Download solicitado. Verifique os downloads do navegador.', 'success');
+      }, 0);
+    };
+    state.changeHandler = function () { state.feedbackKind = ''; schedule(); };
+    copyButton.addEventListener('click', state.copyHandler, true);
+    download.addEventListener('click', state.downloadHandler, true);
+    modal.addEventListener('change', state.changeHandler);
+    url.addEventListener('input', state.changeHandler);
+    if (visible(modal)) defaultFormat(state);
+    return state;
+  }
+
+  function visible(modal) {
+    return !modal.hidden && (modal.classList.contains('show') || modal.getAttribute('aria-hidden') === 'false' ||
+      Boolean(modal.style.display && modal.style.display !== 'none'));
+  }
+
+  function defaultFormat(state) {
+    var jq = window.jQuery;
+    if (!state || state.format.value || !jq || typeof window.openDownload !== 'function' ||
+        typeof window.doDownload !== 'function') return;
+    var account = jq(state.modal);
+    if (!account.data('username') || !account.data('password')) return;
+    var option = Array.prototype.find.call(state.format.options, function (item) {
+      return item.value === 'm3u_plus' && !item.disabled;
+    });
+    if (!option) return;
+    // O evento shown ocorre depois de openDownload definir os dados da conta.
+    // O próprio XUI gera o link, com o formato que ele já oferece no seletor.
+    jq(state.format).val(option.value).trigger('change');
+  }
+
+  function bindJquery() {
+    var jq = window.jQuery;
+    if (jqueryBound || !jq || !jq.fn || !jq.fn.on) return;
+    jq(document).on('shown.bs.modal.naxxPlaylistDownload', '.downloadModal', function () {
+      defaultFormat(enhance(this));
+      schedule();
+    });
+    jq(document).on('hidden.bs.modal.naxxPlaylistDownload', '.downloadModal', schedule);
+    // Select2 notifica mudanças através do jQuery, sem evento DOM obrigatório.
+    jq(document).on('change.naxxPlaylistDownload', '.downloadModal #download_type,.downloadModal #output_type', schedule);
+    jqueryBound = true;
+  }
+
+  function refresh() {
+    scanTimer = null;
+    bindJquery();
+    var hasVisibleModal = false;
+    Array.prototype.forEach.call(document.querySelectorAll('.downloadModal'), function (modal) {
+      var state = enhance(modal);
+      if (!state) return;
+      update(state);
+      if (visible(modal)) hasVisibleModal = true;
+    });
+    if (hasVisibleModal && pollTimer === null) {
+      // .val() nativo não emite input. Observar apenas a janela aberta também
+      // contempla a geração assíncrona, sem interceptar funções do painel.
+      pollTimer = window.setTimeout(function () { pollTimer = null; refresh(); }, 220);
+    } else if (!hasVisibleModal && pollTimer !== null) {
+      window.clearTimeout(pollTimer);
+      pollTimer = null;
+    }
+  }
+
+  function schedule() {
+    if (scanTimer === null) scanTimer = window.setTimeout(refresh, 0);
+  }
+
+  window.NaxxPlaylistDownloadUI = {refresh: refresh};
+  var observer = new MutationObserver(function (mutations) {
+    if (mutations.some(function (mutation) {
+      var node = mutation.target;
+      if (node.nodeType === 1 && node.closest('.downloadModal')) return true;
+      return Array.prototype.some.call(mutation.addedNodes, function (added) {
+        return added.nodeType === 1 && (added.matches('.downloadModal') || added.querySelector('.downloadModal'));
+      });
+    })) schedule();
+  });
+  function start() {
+    refresh();
+    observer.observe(document.documentElement, {childList: true, subtree: true, attributes: true,
+      attributeFilter: ['class', 'style', 'aria-hidden', 'disabled', 'value', 'data-username', 'data-password']});
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once: true});
+  else start();
 }());
