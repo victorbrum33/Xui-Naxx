@@ -12,7 +12,7 @@
   };
   function text(node, value) {value = String(value);if (node.textContent !== value) node.textContent = value;}
   function validState(value) {return value && typeof value === 'object' && !Array.isArray(value) && typeof value.busy === 'boolean' && typeof value.automatic === 'boolean' && typeof value.status === 'string';}
-  function version(value) {return typeof value === 'string' && value.trim() ? value.slice(0, 100) : 'Não identificada';}
+  function version(value) {if(value === '1.15.0')value='1.15';return typeof value === 'string' && value.trim() ? value.slice(0, 100) : 'Não identificada';}
   function date(value) {
     if (typeof value !== 'string' || !value) return 'Ainda não realizada';
     var parsed = new Date(value);

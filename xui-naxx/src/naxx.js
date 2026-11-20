@@ -706,7 +706,7 @@
     if(full||containsFeature(root,'.page-title-box'))addEpgSyncButton();
     if(containsFeature(root,'#login_button')&&document.getElementById('login_button')){
       document.body.classList.add('naxx-login');
-      if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.14.2';document.querySelector('#login_button').after(note);}
+      if(!document.querySelector('.naxx-login-version')){var note=document.createElement('p');note.className='naxx-login-version text-muted text-center';note.textContent='© 2026 XUI NAXX · v1.15';document.querySelector('#login_button').after(note);}
     }
     within(root,translationSelector).forEach(translate);
     within(root,'[placeholder],[title],[data-original-title],[data-content],[aria-label]').forEach(function(element){translatedAttributes.forEach(function(attribute){var value=element.getAttribute(attribute),translated=value&&attributeTranslation(element,attribute,value);if(translated&&translated!==value)element.setAttribute(attribute,translated);});});
@@ -721,7 +721,7 @@
     if(/\/settings(?:\.php)?$/.test(location.pathname))pageTitle=pageTitle.replace(/\|\s*Settings$/,'| Configurações gerais');
     if(/\/stream(?:\.php)?$/.test(location.pathname) && !new URLSearchParams(location.search).has('import'))pageTitle=pageTitle.replace(/\|\s*Stream$/,'| Adicionar canal');
     within(root,'input[placeholder],input[type="submit"],input[type="button"]').forEach(translateInput);
-    within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.14.2';});
+    within(root,'.copyright').forEach(function(footer){if(footer.dataset.naxxVersion)return;footer.dataset.naxxVersion='1';footer.textContent='© 2026 XUI NAXX · v1.15';});
     pageTitle=pageTitle.replace(/^XUI(?:\.one)?\s*\|/, 'XUI NAXX |');
     var titleParts=pageTitle.split('|');if(titleParts.length===2){var titleLabel=titleParts[1].trim(),titleTranslation=translations[titleLabel]||interfaceTranslations[titleLabel];if(titleTranslation)pageTitle=titleParts[0].trim()+' | '+titleTranslation;}
     if(document.title!==pageTitle)document.title=pageTitle;

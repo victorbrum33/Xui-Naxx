@@ -1,4 +1,6 @@
-# Xui Naxx · 1.14.2
+# Xui Naxx · 1.15
+
+A edição **1.15** acrescenta filtro de fonte na exclusão em massa de canais e opções de **2.000 e 5.000 itens por página**. Mantém as melhorias de playlist e as traduções PT-BR. Consulte as [notas da versão 1.15](releases/v1.15/NOTAS.md).
 
 Painel em português brasileiro, com identidade azul, temas claro e escuro, interface adaptada a dispositivos móveis e ferramentas para canais, filmes e séries.
 
@@ -156,7 +158,7 @@ sudo python3 xui-naxx/atualizacao/aplicar.py --restore /home/xui/.naxx-backups/S
 python3 xui-naxx/build.py
 ```
 
-`1.14.2` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
+`1.15` identifica a edição Xui Naxx; a base do núcleo é XUI 1.5.12. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para as origens dos componentes.
 
 
 ## Perfil opcional de memória do MariaDB — 1.14.2

@@ -9,7 +9,8 @@ import zipfile
 HERE = Path(__file__).resolve().parent
 ORIGINAL = HERE.parent / 'xui-original'
 PAYLOAD = HERE / 'atualizacao' / 'arquivos'
-EDITION = '1.14.2'
+EDITION = '1.15'
+PACKAGE_VERSION = EDITION + '.0' if EDITION.count('.') == 1 else EDITION
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
@@ -51,7 +52,7 @@ def build():
             raise ValueError(f'Ajuda de configuração repetida: {key}')
         settings_help_translations[key] = value
     js = js.replace('/* NAXX_SETTINGS_HELP_TRANSLATIONS */', 'Object.assign(settingsHelpTranslations,' + json.dumps(settings_help_translations, ensure_ascii=False) + ');')
-    manifest = {'name': 'XUI NAXX', 'version': EDITION, 'base_version': '1.5.12', 'language_keys': len(keys), 'files': []}
+    manifest = {'name': 'XUI NAXX', 'version': PACKAGE_VERSION, 'base_version': '1.5.12', 'language_keys': len(keys), 'files': []}
     files = {
         'includes/langs/en.ini': translated,
         'includes/langs/pt_br.ini': translated,
@@ -99,7 +100,7 @@ def build():
     js = js.replace('/* NAXX_BRAND_ASSET_VERSION */', sha(files['admin/assets/images/naxx-favicon.svg'].encode())[:12])
     stylesheet_version = sha((css + (HERE / 'src/naxx-light.css').read_text(encoding='utf-8')).encode())[:12]
     js = js.replace('/* NAXX_STYLESHEET_VERSION */', stylesheet_version)
-    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('performance-ui.js','accessibility-ui.js','menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js','ondemand-ui.js','stream-page-size.js','stream-source-ui.js','bouquet-selection-ui.js','bouquet-order-ui.js','stream-mass-ui.js','public-page-ui.js','panel-translations-ui.js','playlist-download-ui.js'))
+    files['admin/assets/js/naxx-overlay.js'] = js + '\n' + '\n'.join((HERE / 'src' / name).read_text(encoding='utf-8') for name in ('performance-ui.js','accessibility-ui.js','menu-tools.js','cache-ui.js','dashboard-ui.js','cleanup-tools.js','ondemand-ui.js','stream-page-size.js','stream-source-ui.js','bouquet-selection-ui.js','bouquet-order-ui.js','stream-mass-ui.js','public-page-ui.js','panel-translations-ui.js','playlist-download-ui.js','bulk-delete-ui.js'))
     files['admin/assets/js/naxx-base.min.js'] = original_js
     # Loader instalado uma vez. O canal público distribui somente as melhorias próprias.
     files['admin/assets/js/app.min.js'] = '''(function(){

@@ -108,3 +108,12 @@ O teste usa arquivos temporários e comandos MariaDB simulados. Verifica diagnó
 ## Página pública
 
 `python3 tests/test_public_page.py`, `python3 tests/test_public_page_integration.py` e `node --unhandled-rejections=strict tests/verify-public-page-ui-offline.cjs`. O último teste requer jsdom. As operações POSIX usam somente diretórios temporários isolados; o teste do instalador simula os serviços.
+## Exclusão em massa — 1.15
+
+Com Node.js e jsdom disponível no ambiente, execute na raiz do repositório:
+
+```bash
+node --unhandled-rejections=strict tests/verify-bulk-delete-offline.cjs
+```
+
+A verificação usa tabelas, seleção e respostas sintéticas. Não acessa uma instalação XUI nem executa exclusões reais.
