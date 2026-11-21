@@ -559,6 +559,44 @@ body.naxx-login{background:var(--naxx-bg)!important;background-image:none!import
 @media(max-width:575px){.naxx-bulk-delete-filters.row{grid-template-columns:minmax(0,1fr)}}
 /* FIM NAXX BULK DELETE */
 
+/* NAXX STREAM LINK EDIT */
+.naxx-stream-link-edit{margin:0 0 28px;padding:24px;border:1px solid var(--naxx-border);border-radius:14px;background:var(--naxx-raised);color:var(--naxx-text);min-width:0}
+.naxx-stream-link-edit h3{margin:0 0 8px;font-size:20px;line-height:1.35;font-weight:750;color:var(--naxx-text)}
+.naxx-stream-link-edit__notice,.naxx-stream-link-edit__count{margin:0 0 14px;font-size:13px;line-height:1.6;color:var(--naxx-muted)}
+.naxx-stream-link-edit__count{font-weight:700;color:var(--naxx-blue)}
+.naxx-stream-link-edit fieldset{border:0;margin:0;padding:0;min-width:0}
+.naxx-stream-link-edit__fields>.naxx-stream-link-edit__field{max-width:480px;margin-bottom:20px}
+.naxx-stream-link-edit__pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:10px 0 16px!important}
+.naxx-stream-link-edit__field{display:flex;flex-direction:column;gap:8px;margin:12px 0;font-size:13px;font-weight:650;color:var(--naxx-text);min-width:0}
+.naxx-stream-link-edit__pair>.naxx-stream-link-edit__field{margin:0}
+.naxx-stream-link-edit__field .form-control{width:100%;min-width:0;min-height:42px;font-weight:400;font-size:13px}
+.naxx-stream-link-edit input[type=file]{height:auto;padding:10px;white-space:normal}
+.naxx-stream-link-edit__check{display:flex;align-items:center;gap:9px;margin:16px 0 10px;font-size:13px;line-height:1.5;font-weight:650;cursor:pointer}
+.naxx-stream-link-edit__check input{width:17px;height:17px;flex:0 0 17px;accent-color:var(--naxx-accent);margin:0}
+.naxx-stream-link-edit__replace>p,.naxx-stream-link-edit__import>p{font-size:12px;line-height:1.65;margin:10px 0 16px}
+.naxx-stream-link-edit__replace>fieldset>select,.naxx-stream-link-edit__import>select{max-width:480px;margin:10px 0 14px}
+.naxx-stream-link-edit__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.naxx-stream-link-edit .btn{min-height:40px;padding:9px 15px;border-radius:8px;font-size:13px;font-weight:700}
+.naxx-stream-link-edit .btn:disabled{opacity:.5;cursor:default}
+.naxx-stream-link-edit fieldset:disabled{opacity:.65}
+.naxx-stream-link-edit__status{min-height:20px;margin:14px 0 0;font-size:13px;line-height:1.6;color:var(--naxx-muted);overflow-wrap:anywhere}
+.naxx-stream-link-edit__preview{margin-top:20px;padding-top:20px;border-top:1px solid var(--naxx-border)}
+.naxx-stream-link-edit__summary{font-size:14px;font-weight:700;color:var(--naxx-text);line-height:1.65}
+.naxx-stream-link-edit__table{max-height:450px;overflow:auto;margin:14px 0;border:1px solid var(--naxx-border);border-radius:9px;scrollbar-gutter:stable}
+.naxx-stream-link-edit__table table{margin:0;width:100%;table-layout:fixed;min-width:650px}
+.naxx-stream-link-edit__table th:first-child{width:24%}
+.naxx-stream-link-edit__table th{position:sticky;top:0;z-index:1;background:var(--naxx-surface)}
+.naxx-stream-link-edit__table td{vertical-align:top;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.naxx-stream-link-edit__url{display:block;white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}
+.naxx-stream-link-edit__issues{margin:16px 0;padding:12px;border:1px solid var(--naxx-border);border-radius:9px;font-size:12px;line-height:1.6;background:var(--naxx-surface)}
+.naxx-stream-link-edit__issues summary{cursor:pointer;font-weight:700;color:var(--naxx-text)}
+.naxx-stream-link-edit__issues ul{padding-left:20px;max-height:240px;overflow:auto;margin:12px 0 0}
+.naxx-stream-link-edit__preview>.btn{margin:4px 10px 4px 0}
+.naxx-stream-link-edit [hidden]{display:none!important}
+.naxx-stream-link-edit input:focus-visible,.naxx-stream-link-edit select:focus-visible,.naxx-stream-link-edit button:focus-visible,.naxx-stream-link-edit summary:focus-visible{outline:3px solid var(--naxx-blue);outline-offset:3px}
+@media(max-width:767px){.naxx-stream-link-edit{padding:18px}.naxx-stream-link-edit__pair{grid-template-columns:minmax(0,1fr)}.naxx-stream-link-edit__actions>.btn{flex:1 1 180px}.naxx-stream-link-edit__preview>.btn{width:100%;margin-right:0}}
+/* FIM NAXX STREAM LINK EDIT */
+
 /* Paleta clara da edição NAXX. Mantém a escolha de tema do perfil. */
 :root {--naxx-bg:#f3f6fa;--naxx-surface:#ffffff;--naxx-raised:#eef3f8;--naxx-border:#d8e1eb;--naxx-control-border:#78899d;--naxx-disabled-bg:#eaf0f6;--naxx-disabled-text:#52657c;--naxx-text:#172b43;--naxx-muted:#52657c;--naxx-accent:#2563eb;--naxx-blue:#175caa;--naxx-error:#a9223b;color-scheme:light;}
 #topnav,.navbar-custom,.topbar-dark .navbar-custom,.menubar-light #topnav{background:#fff!important;box-shadow:0 3px 18px #172b4308;}

@@ -117,3 +117,12 @@ node --unhandled-rejections=strict tests/verify-bulk-delete-offline.cjs
 ```
 
 A verificação usa tabelas, seleção e respostas sintéticas. Não acessa uma instalação XUI nem executa exclusões reais.
+
+## Links e logos em massa — complemento 1.15
+
+```bash
+node --unhandled-rejections=strict tests/verify-stream-link-edit-offline.cjs
+php tests/verify-stream-link-edit-core.php
+```
+
+Os testes usam seleção, playlist e canais sintéticos. Não alteram um catálogo real.
